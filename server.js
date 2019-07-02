@@ -7,6 +7,7 @@ const mongoose = require("./config/mongoDBConfig");
 const { verifyToken } = require("./helpers/securityUtils");
 
 const express = require("express");
+const cors = require('cors');
 
 /* =============================
         Initialize The App
@@ -31,9 +32,12 @@ const mongoDB = mongoose.connection;
 ================================ */
 // Logging
 app.use((req, res, next) => {
-  console.log(`Logged  ${req.baseUrl}  ${req.method} -- ${new Date()}`);
-  next();
+        console.log(`Logged  ${req.baseUrl}  ${req.method} -- ${new Date()}`);
+        next();
 });
+
+// Enable all cors
+app.use(cors());
 
 // Authentication && Authrization
 app.delete("/api/*", verifyToken);
@@ -51,7 +55,19 @@ app.use("/uploads", express.static("uploads"));
 
 // Default Route
 app.get("/", (req, res) => {
-  res.send("Hello viva cms back end.");
+        res.send("Hello viva cms back end.");
+});
+
+// Test Route
+app.post("/uploads", (req, res) => {
+
+        // console.log(req)
+
+        return res.status(200).json({
+                status: "success",
+                message: "successfully added image.",
+                link: "/uploads/2019-04-30T04:37:58.467Zwith-search.png"
+        });
 });
 
 // Auth Routes
@@ -71,5 +87,5 @@ let port = process.env.PORT || 3000;
         Specified Port
 ================================ */
 app.listen(port, () => {
-  console.log(`Runnig backend viva cms on port ${port}`);
+        console.log(`Runnig backend viva cms on port ${port}`);
 });

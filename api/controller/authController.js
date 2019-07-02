@@ -35,11 +35,17 @@ exports.login = (req, res) => {
       bcrypt.compareSync(req.body.password, userInfo.password)
     ) {
       const token = generateToken(userInfo);
+
+      let resUserInfo = {
+        name: userInfo.name,
+        email: userInfo.email
+      };
+
       return res.json({
         status: "success",
         message: "user found!!!",
         data: {
-          user: userInfo,
+          user: resUserInfo,
           token: token
         }
       });
