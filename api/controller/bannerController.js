@@ -6,23 +6,32 @@ exports.findAllBanners = (req, res) => {
   Banner.getAllBanners((err, banners) => {
     return err
       ? res.status(500).json({
-          status: "error",
-          message: err
-        })
+        status: "error",
+        message: err
+      })
       : res.json({
-          status: "success",
-          message: "Banners retrieved successfully!",
-          data: banners
-        });
+        status: "success",
+        message: "Banners retrieved successfully!",
+        data: banners
+      });
   });
 };
 
 // Save Banner
 exports.saveBanner = (req, res) => {
+
   let banner = new Banner(req.body);
+
+  if (!req.file) {
+    return res.status(400).json({
+      status: "error",
+      message: "Must be provide a banner image."
+    });
+  }
+
   banner.image = req.file.path;
 
-  banner.save(function(err) {
+  banner.save(function (err) {
     if (err) {
       return res.status(400).json({
         status: "error",
@@ -50,14 +59,14 @@ exports.findBannerById = (req, res) => {
 
     return !banner
       ? res.status(400).json({
-          status: "error",
-          message: `Banner not found by id = ${id}`
-        })
+        status: "error",
+        message: `Banner not found by id = ${id}`
+      })
       : res.json({
-          status: "success",
-          message: "Successfully retrieved individual Banner.",
-          Banner: banner
-        });
+        status: "success",
+        message: "Successfully retrieved individual Banner.",
+        Banner: banner
+      });
   });
 };
 
@@ -73,13 +82,13 @@ exports.deleteById = (req, res) => {
 
     return !banner
       ? res.status(400).json({
-          status: "error",
-          message: `Banner not found by id = ${id}`
-        })
+        status: "error",
+        message: `Banner not found by id = ${id}`
+      })
       : res.json({
-          status: "success",
-          message: "Successfully deleted individual Banner."
-        });
+        status: "success",
+        message: "Successfully deleted individual Banner."
+      });
   });
 };
 
@@ -100,13 +109,13 @@ exports.updateBanner = (req, res) => {
 
       return !banner
         ? res.status(400).json({
-            status: "error",
-            message: `Banner not found by id = ${id}`
-          })
+          status: "error",
+          message: `Banner not found by id = ${id}`
+        })
         : res.json({
-            status: "success",
-            message: "Successfully updated individual Banner.",
-            Banner: banner
-          });
+          status: "success",
+          message: "Successfully updated individual Banner.",
+          Banner: banner
+        });
     });
 };
