@@ -5,6 +5,7 @@ const apiRoutes = require("./api/routes/apiRoutes");
 const authRoutes = require("./api/routes/authRoutes");
 const mongoose = require("./config/mongoDBConfig");
 const { verifyToken } = require("./helpers/securityUtils");
+const { imageUpload } = require("./helpers/fileUploadUtils");
 
 const express = require("express");
 const cors = require('cors');
@@ -58,15 +59,16 @@ app.get("/", (req, res) => {
         res.send("Hello viva cms back end.");
 });
 
-// Test Route
-app.post("/uploads", (req, res) => {
+// Test Upload Route
+// app.post("/uploads", verifyToken, imageUpload.single("file"), (req, res) => {
+app.post("/uploads", imageUpload.single("file"), (req, res) => {
 
-        // console.log(req)
+        console.log(req.file)
 
         return res.status(200).json({
                 status: "success",
                 message: "successfully added image.",
-                link: "/uploads/2019-04-30T04:37:58.467Zwith-search.png"
+                link: `/${req.file.path}`
         });
 });
 

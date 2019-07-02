@@ -12,7 +12,7 @@ module.exports = {
     if (authorization) token = authorization.replace("bearer ", "");
 
     jwt.verify(token, secret, (err, decoded) => {
-      if (err) return res.json({ status: "error", message: err });
+      if (err) return res.status(401).json({ status: "error", message: err });
       return next();
     });
   }
