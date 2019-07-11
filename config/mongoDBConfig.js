@@ -9,8 +9,8 @@ let mongoose = require('mongoose');
 
 console.log('in mongo db config');
 
-// const mongoDB = 'mongodb://username:password@localhost:port/vivaCMS';
-const mongoDB = 'mongodb://localhost/vivaCMS';
+const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
+// const mongoDB = 'mongodb://localhost/vivaCMS';
 
 /* const options = {
     useNewUrlParser: true,
