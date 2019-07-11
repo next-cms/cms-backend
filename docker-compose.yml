@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  mongodb:
+    image: 'bitnami/mongodb:latest'
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb-data:/bitnami
+    environment:
+      - MONGODB_ROOT_PASSWORD=password123
+      - MONGODB_USERNAME=user
+      - MONGODB_PASSWORD=password123
+      - MONGODB_DATABASE=pi_cms

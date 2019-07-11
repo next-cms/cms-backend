@@ -1,5 +1,5 @@
 // Import Setting Model
-const Setting = require("../model/settingModel");
+const Setting = require("../model/Setting");
 
 // Find All Settings
 exports.findAllSettings = (req, res) => {

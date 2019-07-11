@@ -1,5 +1,5 @@
 // Import Page Model
-const Page = require("../model/pageModel");
+const Page = require("../model/Page");
 
 // Find All Pages
 exports.findAllPages = (req, res) => {

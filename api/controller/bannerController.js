@@ -1,5 +1,5 @@
 // Import Banner Model
-const Banner = require("../model/bannerModel");
+const Banner = require("../model/Banner");
 
 // Find All Banners
 exports.findAllBanners = (req, res) => {
