@@ -1,7 +1,9 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
+import express from "express";
+import utils from "./utils";
+import middleware from "./middleware";
+import routes from "./api/services";
 
-const { verifyToken } = require("../helpers/securityUtils");
+const { verifyToken } = require("./utils/securityUtils");
 
 class App {
 
@@ -13,11 +15,8 @@ class App {
     }
 
     private config(): void{
-        // support application/json type post data
-        this.app.use(bodyParser.json());
-        //support application/x-www-form-urlencoded post data
-        this.app.use(bodyParser.urlencoded({ extended: false }));
-
+        utils.applyMiddleware(middleware, this.app);
+        utils.applyRoutes(routes, this.app);
         /* =============================
                 Middleware
         ================================ */
@@ -27,7 +26,7 @@ class App {
             next();
         });
 
-        // Authentication && Authrization
+        // Authentication && Authorization
         this.app.delete("/api/*", verifyToken);
         this.app.post("/api/*", verifyToken);
         this.app.put("/api/*", verifyToken);

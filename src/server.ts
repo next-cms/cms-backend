@@ -1,9 +1,7 @@
 /* =============================
         Import All
 ================================ */
-const apiRoutes = require("../api/routes/apiRoutes");
-const authRoutes = require("../api/routes/authRoutes");
-const mongoose = require("../config/mongoDBConfig");
+const mongoose = require("./config/mongoDBConfig");
 const { ApolloServer, gql } = require('apollo-server-express');
 
 /* =============================
@@ -23,18 +21,6 @@ const mongoDB = mongoose.connection;
 
 const server = new ApolloServer({ typeDefs, resolvers });
 server.applyMiddleware({ app });
-
-// Default Route
-app.get("/", (req, res) => {
-  res.send("Hello viva cms back end.");
-});
-
-// Auth Routes
-app.use("/auth", authRoutes);
-
-// API Routes
-app.use("/api", apiRoutes);
-
 
 /*==============================
         Setup Server Port
