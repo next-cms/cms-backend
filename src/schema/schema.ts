@@ -42,8 +42,12 @@ export const typeDefs = gql`
 export const resolvers = {
     Query: {
         books: () => books,
-        bookById(_, {id}) {
-            console.log(id);
+        /** All resolvers receive 3 params. They are parent, args, context.
+         * @param _ is the parent
+         * @param id is from args
+         * @param context*/
+        bookById(_, {id}, context) {
+            console.log(context);
             return books.filter((book)=> book.id===id)
         },
     },

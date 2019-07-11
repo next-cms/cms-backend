@@ -2,7 +2,9 @@
         Import All
 ================================ */
 import mongoose from "./config/mongoDBConfig";
-import {ApolloServer} from 'apollo-server-express';
+import {ApolloServer, AuthenticationError} from 'apollo-server-express';
+import jwt from "jsonwebtoken";
+
 /* =============================
         Import The App
 ================================ */
@@ -26,10 +28,31 @@ process.on("unhandledRejection", e => {
 const mongoDB = mongoose.connection;
 
 /* =============================
-        Setup Routes
+        Setup GraphQL
 ================================ */
-
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => {
+        const authorization = req.headers["authorization"];
+        let token = null;
+        if (authorization) token = authorization.replace("bearer ", "");
+        const secret = process.env.JWT_TOKEN_SECRET;
+        return { JWTDecoded: jwt.decode(token, secret) };
+    },
+    mocks: true,
+    mockEntireSchema: false,
+    introspection: true,
+    playground: true,
+    formatError: error => {
+        console.log(error);
+        return error;
+    },
+    formatResponse: response => {
+        // console.log(response);
+        return response;
+    },
+});
 server.applyMiddleware({app});
 
 /*==============================

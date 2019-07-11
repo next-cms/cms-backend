@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Request, Response} from "express";
 import utils from "./utils";
 import middleware from "./middleware";
 import routes from "./services";
@@ -23,7 +23,7 @@ class App {
                 Middleware
         ================================ */
         // Logging
-        this.app.use((req, res, next) => {
+        this.app.use((req: Request, res: Response, next) => {
             console.log(`Logged  ${req.baseUrl}  ${req.method} -- ${new Date()}`);
             next();
         });

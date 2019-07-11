@@ -3,8 +3,9 @@ import * as ErrorHandler from "../utils/ErrorHandler";
 import {HTTPClientError} from "../utils/httpErrors";
 
 const handle404Error = (router: Router) => {
-    router.use((req: Request, res: Response) => {
-        ErrorHandler.notFoundError();
+    router.use((req: Request, res: Response, next: NextFunction) => {
+        if (req.path === '/graphql') next();
+        else ErrorHandler.notFoundError();
     });
 };
 
