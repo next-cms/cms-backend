@@ -1,7 +1,8 @@
 import express from "express";
 import utils from "./utils";
 import middleware from "./middleware";
-import routes from "./api/services";
+import routes from "./services";
+import errorHandlers from "./middleware/errorHandlers";
 
 const { verifyToken } = require("./utils/securityUtils");
 
@@ -17,6 +18,7 @@ class App {
     private config(): void{
         utils.applyMiddleware(middleware, this.app);
         utils.applyRoutes(routes, this.app);
+        utils.applyMiddleware(errorHandlers, this.app);
         /* =============================
                 Middleware
         ================================ */

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
-const secret = "secret";
-const tokenExpires = "1h";
+const secret = process.env.JWT_TOKEN_SECRET;
+const tokenExpires = process.env.JWT_TOKEN_EXPIRES_DEFAULT;
 
 export function generateToken(user) {
     return jwt.sign({id: user._id}, secret, {expiresIn: tokenExpires});

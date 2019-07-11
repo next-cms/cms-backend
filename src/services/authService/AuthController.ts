@@ -1,4 +1,4 @@
-import User from "../model/User";
+import User from "../../model/User";
 import bcrypt from "bcrypt";
 import utils from "../../utils";
 import {Request, Response} from "express";

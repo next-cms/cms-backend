@@ -1,6 +1,7 @@
 mongodb-data/
 dist/
 .grunt
+.env
 
 # Bower dependency directory (https://bower.io/)
 bower_components

@@ -1,5 +1,6 @@
-import AuthController from "../controller/authController";
+import AuthController from "./authController";
 import {Route} from "../../utils/routeUtils";
+import {checkReqBodyEmail, checkRequestBody} from "../../middleware/checks";
 
 const Routes: Route[] = [
     {
@@ -10,12 +11,18 @@ const Routes: Route[] = [
     {
         path: "/auth/signup",
         method: "post",
-        handler: AuthController.saveUser
+        handler: [
+            checkRequestBody,
+            AuthController.saveUser
+        ]
     },
     {
         path: "/auth/login",
         method: "post",
-        handler: AuthController.login
+        handler: [
+            checkReqBodyEmail,
+            AuthController.login
+        ]
     }
 ];
 

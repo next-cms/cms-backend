@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 /* ===========================
         Setup Config
 ============================== */
-export default (function connectWithMongoDB() {
+const mongooseClient = (function connectWithMongoDB() {
     console.log('in mongo db config');
 
     const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
@@ -38,4 +38,8 @@ export default (function connectWithMongoDB() {
             console.log("MongoDB Failed Connected!");
             console.log(err);
         });
+
+    return mongoose;
 })();
+
+export default mongooseClient;
