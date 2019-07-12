@@ -1,10 +1,10 @@
 import User from "../../model/User";
 import bcrypt from "bcrypt";
 import utils from "../../utils";
-import {Request, Response} from "express";
+import { Request, Response } from "express";
 
 class AuthController {
-    public static async saveUser (req: Request, res: Response) {
+    public static async saveUser(req: Request, res: Response) {
         const newUser = new User(req.body);
 
         newUser.save((err, result) => {
@@ -21,8 +21,8 @@ class AuthController {
         });
     };
 
-    public static async login (req: Request, res: Response) {
-        User.findOne({ email: req.body.email }, (err, userInfo) => {
+    public static async login(req: Request, res: Response) {
+        User.findOne({ email: req.body.email }, (err, userInfo: any) => {
             if (err)
                 return res.status(400).json({
                     status: "error",

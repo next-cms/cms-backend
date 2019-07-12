@@ -2,14 +2,14 @@
         Import All
 ================================ */
 import mongoose from "./config/mongoDBConfig";
-import {ApolloServer, AuthenticationError} from 'apollo-server-express';
+import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import jwt from "jsonwebtoken";
 
 /* =============================
         Import The App
 ================================ */
 import app from "./app";
-import {resolvers, typeDefs} from './schema/schema';
+import { resolvers, typeDefs } from './schema/schema';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -40,8 +40,8 @@ const server = new ApolloServer({
         const secret = process.env.JWT_TOKEN_SECRET;
         return { JWTDecoded: jwt.decode(token, secret) };
     },
-    mocks: true,
-    mockEntireSchema: false,
+    // mocks: true,
+    // mockEntireSchema: false,
     introspection: true,
     playground: true,
     formatError: error => {
@@ -53,7 +53,7 @@ const server = new ApolloServer({
         return response;
     },
 });
-server.applyMiddleware({app});
+server.applyMiddleware({ app });
 
 /*==============================
         Setup Server Port

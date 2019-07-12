@@ -9,8 +9,8 @@ import mongoose from 'mongoose';
 const mongooseClient = (function connectWithMongoDB() {
     console.log('in mongo db config');
 
-    const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
-// const mongoDB = 'mongodb://localhost/vivaCMS';
+    // const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
+    const mongoDB = 'mongodb://localhost/pi_cms';
 
     /* const options = {
         useNewUrlParser: true,

@@ -1,6 +1,6 @@
-import AuthController from "./authController";
-import {Route} from "../../utils/routeUtils";
-import {checkReqBodyEmail, checkRequestBody} from "../../middleware/checks";
+import AuthController from "./AuthController";
+import { Route } from "../../utils/routeUtils";
+import { checkReqBodyEmail, checkRequestBody } from "../../middleware/checks";
 
 const Routes: Route[] = [
     {

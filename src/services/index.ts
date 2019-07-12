@@ -1,3 +1,3 @@
-import authRoutes from "./authService/authRoutes";
+import authRoutes from "./authService/AuthRoutes";
 
 export default [...authRoutes];

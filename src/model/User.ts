@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { isEmail } from "validator";
 
 // Setup Schema
-const UserSchema:mongoose = mongoose.Schema({
+const UserSchema: any = new mongoose.Schema({
     name: {
         type: String,
         trim: true,
@@ -22,10 +22,11 @@ const UserSchema:mongoose = mongoose.Schema({
         required: true
     }
 });
-UserSchema.pre("save", function(next) {
+
+UserSchema.pre("save", function (next) {
     this.password = bcrypt.hashSync(this.password, 10);
     next();
 });
-const User:mongoose = mongoose.model("user", UserSchema);
 
-export default User;
+export default mongoose.model("user", UserSchema);
+
