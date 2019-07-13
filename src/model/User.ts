@@ -1,4 +1,4 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, {Model, Schema} from "mongoose";
 import bcrypt from "bcrypt";
 import {isEmail} from "validator";
 
@@ -44,7 +44,7 @@ UserSchema.methods.validatePassword = async function(password) {
     return await bcrypt.compare(password, this.password);
 };
 
-const User: any = mongoose.model("User", UserSchema);
+const User: Model<any, any>|any = mongoose.model("User", UserSchema);
 
 export default User;
 

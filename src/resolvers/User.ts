@@ -36,11 +36,17 @@ export default {
             context,
         ) => {
             try {
-                const user = new User({name, email, password});
+                let user = null;
+                // console.log(await User.count({}));
+                if (await User.count({}) === 0) {
+                    user = new User({name, email, password, role: "ADMIN"});
+                } else {
+                    user = new User({name, email, password, role: "USER"});
+                }
                 return user.save().then(res => {
                     return res;
                 }).catch(err => {
-                    console.log(err)
+                    console.log(err);
                     return err;
                 })
             } catch (e) {
@@ -83,11 +89,11 @@ export default {
 
         deleteUser: combineResolvers(
             isAdmin,
-            async (parent, { id }, { admin }) => {
-                const user = await User.findById(id);
+            async (parent, { id }, { user }) => {
+                const userInDB = await User.findById(id);
 
-                if (user) {
-                    await user.remove();
+                if (userInDB) {
+                    await userInDB.remove();
                     return true;
                 } else {
                     return false;

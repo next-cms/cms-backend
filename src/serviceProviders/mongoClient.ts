@@ -2,6 +2,7 @@
         Import All
 ============================== */
 import mongoose from 'mongoose';
+import User from "../model/User";
 
 /* ===========================
         Setup Config
@@ -31,7 +32,11 @@ const mongooseClient = (function connectWithMongoDB() {
         useCreateIndex: true
     };
 
-    mongoose.connect(mongoDB, options).then(() => console.log("MongoDB Connected! Ready to use MongoDB."),
+    mongoose.connect(mongoDB, options).then(
+        () => {
+            console.log("MongoDB Connected! Ready to use MongoDB.")
+            // User.collection.drop();
+        },
         err => {
             console.log("Failed to connect with MongoDB!");
             console.log(err);
