@@ -3,14 +3,15 @@ import cors from "cors";
 import parser from "body-parser";
 import compression from "compression";
 
-export const handleCors = (router: Router) =>
-    router.use(cors({ credentials: true, origin: true }));
+export function handleCors (router: Router) {
+    router.use(cors({credentials: true, origin: true}));
+}
 
-export const handleBodyRequestParsing = (router: Router) => {
+export function handleBodyRequestParsing (router: Router) {
     router.use(parser.urlencoded({ extended: true }));
     router.use(parser.json());
-};
+}
 
-export const handleCompression = (router: Router) => {
+export function handleCompression (router: Router) {
     router.use(compression());
-};
+}

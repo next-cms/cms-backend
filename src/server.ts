@@ -1,16 +1,18 @@
 /* =============================
         Import All
 ================================ */
-import mongoose from "./config/mongoDBConfig";
+import mongoClient from "./serviceProviders/mongoClient";
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import {Request, Response} from 'express';
+import schemas from './schemas';
+import resolvers from './resolvers';
 
 /* =============================
         Import The App
 ================================ */
 import app from "./app";
-import { resolvers, typeDefs } from './schema/schema';
-import dotenv from "dotenv";
 
 dotenv.config();
 process.on("uncaughtException", e => {
@@ -25,20 +27,37 @@ process.on("unhandledRejection", e => {
 /* =============================
         Setup Database
 ================================ */
-const mongoDB = mongoose.connection;
+const mongoConnection = mongoClient.connection;
 
 /* =============================
         Setup GraphQL
 ================================ */
+async function resolveUserWithToken(req: Request) {
+    const authorization = req.headers["authorization"];
+    if (authorization) {
+        const token = authorization.replace("Bearer ", "");
+        if (token) {
+            try {
+                const secret = process.env.JWT_TOKEN_SECRET;
+                return await jwt.verify(token, secret);
+            } catch (e) {
+                throw new AuthenticationError(
+                    'Your session expired. Sign in again.',
+                );
+            }
+        }
+    }
+}
+
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: ({ req }) => {
-        const authorization = req.headers["authorization"];
-        let token = null;
-        if (authorization) token = authorization.replace("bearer ", "");
-        const secret = process.env.JWT_TOKEN_SECRET;
-        return { JWTDecoded: jwt.decode(token, secret) };
+    typeDefs: schemas,
+    resolvers: resolvers,
+    context: async ({ req }) => {
+        const currentUser = await resolveUserWithToken(req);
+        return {
+            user: currentUser,
+            secret: process.env.JWT_TOKEN_SECRET
+        }
     },
     // mocks: true,
     // mockEntireSchema: false,
@@ -48,12 +67,12 @@ const server = new ApolloServer({
         console.log(error);
         return error;
     },
-    formatResponse: response => {
+    formatResponse: (response: Response) => {
         // console.log(response);
         return response;
     },
 });
-server.applyMiddleware({ app });
+server.applyMiddleware({ app, path: '/graphql' });
 
 /*==============================
         Setup Server Port
@@ -66,5 +85,10 @@ let port = process.env.SERVER_PORT || 3000;
            Specified Port
 ================================ */
 app.listen(port, () => {
-    console.log(`Running backend pi cms on port ${port}. GraphQL path is ${server.graphqlPath}`);
+    console.log(`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Running backend Pi-CMS on port ${port}.
+    GraphQL Path: ${server.graphqlPath}
+    MongoDB Models: ${mongoConnection.modelNames()}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`);
 });

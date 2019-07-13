@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, {Schema} from "mongoose";
 
-const Project:mongoose = mongoose.model("project", mongoose.Schema({
+const ProjectSchema: any = new Schema({
     parentId: {
         type: String
     },
@@ -25,12 +25,12 @@ const Project:mongoose = mongoose.model("project", mongoose.Schema({
         type: Date,
         default: Date.now
     }
-}));
+});
 
-Project.getAllPages = (callback, limit) => {
-    Project.find(callback).limit(limit);
+ProjectSchema.statics.getAllProjects = async function (limit) {
+    return await this.find().limit(limit);
 };
 
-
-// Export Page Model/Schema
+const Project = mongoose.model("Project", ProjectSchema);
+// Export Project Model/Schema
 export default Project;

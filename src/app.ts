@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
 import utils from "./utils";
-import middleware from "./middleware";
 import routes from "./services";
-import errorHandlers from "./middleware/errorHandlers";
 import { verifyToken } from "./utils/securityUtils";
+import errorHandlers from "./middleware/errorHandlers";
+import middleware from "./middleware";
 
 class App {
 

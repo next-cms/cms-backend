@@ -7,10 +7,8 @@ import mongoose from 'mongoose';
         Setup Config
 ============================== */
 const mongooseClient = (function connectWithMongoDB() {
-    console.log('in mongo db config');
-
-    // const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
-    const mongoDB = 'mongodb://localhost/pi_cms';
+    const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
+    // const mongoDB = 'mongodb://localhost/pi_cms';
 
     /* const options = {
         useNewUrlParser: true,
@@ -33,9 +31,9 @@ const mongooseClient = (function connectWithMongoDB() {
         useCreateIndex: true
     };
 
-    mongoose.connect(mongoDB, options).then(() => console.log("MongoDB Connected! Ready to use mongoDB."),
+    mongoose.connect(mongoDB, options).then(() => console.log("MongoDB Connected! Ready to use MongoDB."),
         err => {
-            console.log("MongoDB Failed Connected!");
+            console.log("Failed to connect with MongoDB!");
             console.log(err);
         });
 
