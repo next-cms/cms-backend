@@ -1,7 +1,7 @@
 /* =============================
         Import All
 ================================ */
-import mongoClient from "./serviceProviders/mongoClient";
+import mongoClient from "./service-providers/mongoClient";
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
@@ -13,6 +13,7 @@ import resolvers from './resolvers';
         Import The App
 ================================ */
 import app from "./app";
+import {resolveUserWithToken} from "./utils/securityUtils";
 
 dotenv.config();
 process.on("uncaughtException", e => {
@@ -32,26 +33,9 @@ const mongoConnection = mongoClient.connection;
 /* =============================
         Setup GraphQL
 ================================ */
-async function resolveUserWithToken(req: Request) {
-    const authorization = req.headers["authorization"];
-    if (authorization) {
-        const token = authorization.replace("Bearer ", "");
-        if (token) {
-            try {
-                const secret = process.env.JWT_TOKEN_SECRET;
-                return await jwt.verify(token, secret);
-            } catch (e) {
-                throw new AuthenticationError(
-                    'Your session expired. Sign in again.',
-                );
-            }
-        }
-    }
-}
-
 const server = new ApolloServer({
     typeDefs: schemas,
-    resolvers: resolvers,
+    resolvers: resolvers as any,
     context: async ({ req }) => {
         const currentUser = await resolveUserWithToken(req);
         return {

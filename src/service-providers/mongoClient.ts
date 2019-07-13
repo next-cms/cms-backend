@@ -7,7 +7,7 @@ import User from "../model/User";
 /* ===========================
         Setup Config
 ============================== */
-const mongooseClient = (function connectWithMongoDB() {
+const mongoClient = (function connectWithMongoDB() {
     const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
     // const mongoDB = 'mongodb://localhost/pi_cms';
 
@@ -45,4 +45,4 @@ const mongooseClient = (function connectWithMongoDB() {
     return mongoose;
 })();
 
-export default mongooseClient;
+export default mongoClient;

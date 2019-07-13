@@ -1,9 +1,6 @@
 import mongoose, {Schema} from "mongoose";
 
 const ProjectSchema: any = new Schema({
-    parentId: {
-        type: String
-    },
     title: {
         type: String,
         required: true

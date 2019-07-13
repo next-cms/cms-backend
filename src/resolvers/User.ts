@@ -1,18 +1,11 @@
-import jwt from 'jsonwebtoken';
 import { combineResolvers } from 'graphql-resolvers';
-import { AuthenticationError, UserInputError } from 'apollo-server-express';
+import {AuthenticationError, IResolverObject, IResolvers, UserInputError} from 'apollo-server-express';
 
 import { isAdmin, isAuthenticated } from './authorization';
 import User from "../model/User";
+import {createToken} from "../utils/securityUtils";
 
-const createToken = async (user, secret, expiresIn) => {
-    const { id, email, name, role } = user;
-    return await jwt.sign({ id, email, name, role }, secret, {
-        expiresIn,
-    });
-};
-
-export default {
+const UserResolver: IResolvers = {
     Query: {
         users: async (parent, args, context) => {
             return await User.find();
@@ -73,7 +66,7 @@ export default {
                 throw new AuthenticationError('Invalid password.');
             }
 
-            return { token: createToken(user, secret, '30m') };
+            return { token: createToken(user, secret, '24h') };
         },
 
         updateUser: combineResolvers(
@@ -102,3 +95,5 @@ export default {
         ),
     }
 };
+
+export default UserResolver;

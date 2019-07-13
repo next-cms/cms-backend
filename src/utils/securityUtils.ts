@@ -1,10 +1,22 @@
 import jwt from "jsonwebtoken";
+import {Request} from "express";
+import { AuthenticationError } from 'apollo-server-express';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const secret = process.env.JWT_TOKEN_SECRET;
 const tokenExpires = process.env.JWT_TOKEN_EXPIRES_DEFAULT;
 
-export function generateToken(user) {
-    return jwt.sign({id: user._id}, secret, {expiresIn: tokenExpires});
+export async function generateToken(user) {
+    return await createToken(user, secret, tokenExpires);
+}
+
+export async function createToken (user, secret, expiresIn) {
+    const { id, email, name, role } = user;
+    return await jwt.sign({ id, email, name, role }, secret, {
+        expiresIn,
+    });
 }
 
 export function verifyToken(req, res, next) {
@@ -16,4 +28,21 @@ export function verifyToken(req, res, next) {
         if (err) return res.status(401).json({status: "error", message: err});
         return next();
     });
+}
+
+export async function resolveUserWithToken(req: Request) {
+    const authorization = req.headers["authorization"];
+    if (authorization) {
+        const token = authorization.replace("Bearer ", "");
+        if (token) {
+            try {
+                const secret = process.env.JWT_TOKEN_SECRET;
+                return await jwt.verify(token, secret);
+            } catch (e) {
+                throw new AuthenticationError(
+                    'Your session expired. Sign in again.',
+                );
+            }
+        }
+    }
 }

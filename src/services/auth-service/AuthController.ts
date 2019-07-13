@@ -22,7 +22,7 @@ class AuthController {
     };
 
     static async login(req: Request, res: Response) {
-        User.findOne({ email: req.body.email }, (err, userInfo: any) => {
+        User.findOne({ email: req.body.email }, async (err, userInfo: any) => {
             if (err)
                 return res.status(400).json({
                     status: "error",
@@ -34,11 +34,12 @@ class AuthController {
                 userInfo != null &&
                 bcrypt.compareSync(req.body.password, userInfo.password)
             ) {
-                const token = utils.generateToken(userInfo);
+                const token = await utils.generateToken(userInfo);
 
                 let resUserInfo = {
                     name: userInfo.name,
-                    email: userInfo.email
+                    email: userInfo.email,
+                    role: userInfo.role
                 };
 
                 return res.json({
@@ -61,6 +62,24 @@ class AuthController {
 
     static async ping(req: Request, res: Response) {
         res.send("From auth route.");
+    }
+
+    static async resolve(req: Request, res: Response) {
+        try {
+            const data = await utils.resolveUserWithToken(req);
+            console.log("resolved data ", data);
+            res.send({
+                status: "success",
+                message: "user found!!!",
+                data: data
+            });
+        } catch (e) {
+            console.log("resolved data ", e);
+            res.status(403).json({
+                status: "error",
+                message: e
+            });
+        }
     }
 }
 

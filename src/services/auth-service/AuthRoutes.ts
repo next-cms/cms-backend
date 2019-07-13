@@ -23,6 +23,13 @@ const Routes: Route[] = [
             checkReqBodyEmail,
             AuthController.login
         ]
+    },
+    {
+        path: "/auth/resolve",
+        method: "get",
+        handler: [
+            AuthController.resolve
+        ]
     }
 ];
 
