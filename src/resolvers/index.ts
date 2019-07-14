@@ -1,7 +1,8 @@
 import { GraphQLDateTime } from 'graphql-iso-date';
 
-import userResolvers from './user';
-import {IResolverObject, IResolvers} from "graphql-tools";
+import userResolvers from './User';
+import projectResolvers from './Project';
+import {IResolvers} from "graphql-tools";
 
 const customScalarResolver: IResolvers = {
     Date: GraphQLDateTime,
@@ -9,7 +10,8 @@ const customScalarResolver: IResolvers = {
 
 const resolvers: IResolvers[] = [
     customScalarResolver,
-    userResolvers
+    userResolvers,
+    projectResolvers
 ];
 
 export default resolvers;

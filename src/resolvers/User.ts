@@ -31,7 +31,7 @@ const UserResolver: IResolvers = {
             try {
                 let user = null;
                 // console.log(await User.count({}));
-                if (await User.count({}) === 0) {
+                if (await User.countDocuments({}) === 0) {
                     user = new User({name, email, password, role: "ADMIN"});
                 } else {
                     user = new User({name, email, password, role: "USER"});

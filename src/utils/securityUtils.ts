@@ -22,7 +22,7 @@ export async function createToken (user, secret, expiresIn) {
 export function verifyToken(req, res, next) {
     const authorization = req.headers["authorization"];
     let token = null;
-    if (authorization) token = authorization.replace("bearer ", "");
+    if (authorization) token = authorization.replace("Bearer ", "");
 
     jwt.verify(token, secret, (err, decoded) => {
         if (err) return res.status(401).json({status: "error", message: err});
@@ -39,6 +39,8 @@ export async function resolveUserWithToken(req: Request) {
                 const secret = process.env.JWT_TOKEN_SECRET;
                 return await jwt.verify(token, secret);
             } catch (e) {
+                console.log("Token Provided: ", token);
+                console.log(e);
                 throw new AuthenticationError(
                     'Your session expired. Sign in again.',
                 );
