@@ -5,6 +5,11 @@ export default gql`
     icon: String
     siteTitle: String
   }
+  input BrandInput {
+    icon: String
+    siteTitle: String
+  }
+  
   type Project {
     id: ID!
     title: String!
@@ -24,7 +29,7 @@ export default gql`
   extend type Query {
     allProjects(limit: Int, skip: Int): [Project!]
     projects(limit: Int, skip: Int): [Project!]
-    project(id: ID!): Project
+    project(id: String!): Project
     _projectsMeta: ProjectMeta
   }
   extend type Mutation {
@@ -34,13 +39,12 @@ export default gql`
       websiteUrl: String!
     ): Project!
     updateProject(
-      id: ID!
+      id: String!
       title: String
       description: String
       websiteUrl: String
-      icon: String
-      siteTitle: String
       siteMeta: String
+      brand: BrandInput
     ): Project!
     deleteProject(id: ID!): Boolean!
   }
