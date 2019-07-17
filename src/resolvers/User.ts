@@ -1,9 +1,9 @@
 import { combineResolvers } from 'graphql-resolvers';
-import {AuthenticationError, IResolverObject, IResolvers, UserInputError} from 'apollo-server-express';
+import { AuthenticationError, IResolverObject, IResolvers, UserInputError } from 'apollo-server-express';
 
 import { isAdmin, isAuthenticated } from './Authorization';
 import User from "../model/User";
-import {createToken} from "../utils/securityUtils";
+import { createToken } from "../utils/securityUtils";
 
 const UserResolver: IResolvers = {
     Query: {
@@ -13,7 +13,7 @@ const UserResolver: IResolvers = {
         user: async (parent, { id }, context) => {
             return await User.findById(id);
         },
-        currentUser: async (parent, args, {user}) => {
+        currentUser: async (parent, args, { user }) => {
             if (!user) {
                 return null;
             }
@@ -32,9 +32,9 @@ const UserResolver: IResolvers = {
                 let user = null;
                 // console.log(await User.count({}));
                 if (await User.countDocuments({}) === 0) {
-                    user = new User({name, email, password, role: "ADMIN"});
+                    user = new User({ name, email, password, role: "ADMIN" });
                 } else {
-                    user = new User({name, email, password, role: "USER"});
+                    user = new User({ name, email, password, role: "USER" });
                 }
                 return user.save().then(res => {
                     return res;
@@ -50,9 +50,9 @@ const UserResolver: IResolvers = {
         signIn: async (
             parent,
             { email, password },
-            {secret},
+            { secret },
         ) => {
-            const user = await User.findOne({email});
+            const user = await User.findOne({ email });
 
             if (!user) {
                 throw new UserInputError(

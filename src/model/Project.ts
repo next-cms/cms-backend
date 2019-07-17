@@ -1,4 +1,4 @@
-import mongoose, {Model, Schema} from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
 
 const ProjectSchema: any = new Schema({
     title: {
@@ -14,6 +14,20 @@ const ProjectSchema: any = new Schema({
         required: false
     },
     websiteUrl: {
+        type: String,
+        required: true
+    },
+    brand: {
+        icon: {
+            type: String,
+            required: true
+        },
+        siteTitle: {
+            type: String,
+            required: true
+        }
+    },
+    siteMeta: {
         type: String,
         required: true
     },
@@ -35,13 +49,13 @@ const ProjectSchema: any = new Schema({
 });
 
 ProjectSchema.statics.getAllProjects = async function (limit, skip) {
-    return await this.find().sort({modifiedAt: -1}).skip(skip).limit(limit);
+    return await this.find().sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
 
 ProjectSchema.statics.getAllProjectsByOwnerId = async function (ownerId, limit, skip) {
-    return await this.find({ownerId}).sort({modifiedAt: -1}).skip(skip).limit(limit);
+    return await this.find({ ownerId }).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
 
-const Project: Model<any, any>|any = mongoose.model("Project", ProjectSchema);
+const Project: Model<any, any> | any = mongoose.model("Project", ProjectSchema);
 // Export Project Model/Schema
 export default Project;
