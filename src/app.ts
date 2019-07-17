@@ -23,6 +23,13 @@ class App {
         /* =============================
                 Middleware
         ================================ */
+        // this.app.set('etag', false);
+        // this.app.use(function(req, res, next) {
+        //     delete all headers related to cache
+            // req.headers['if-none-match'] = '';
+            // req.headers['if-modified-since'] = '';
+            // next();
+        // });
 
         // Logging
         this.app.use((req: Request, res: Response, next) => {
@@ -31,9 +38,9 @@ class App {
         });
 
         // Authentication && Authorization
-        this.app.delete("/api/*", verifyToken);
-        this.app.post("/api/*", verifyToken);
-        this.app.put("/api/*", verifyToken);
+        // this.app.delete("/api/*", verifyToken);
+        // this.app.post("/api/*", verifyToken);
+        // this.app.put("/api/*", verifyToken);
 
         /* =============================
                 Setup Static File

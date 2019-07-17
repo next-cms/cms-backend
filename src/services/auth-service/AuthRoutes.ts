@@ -1,6 +1,7 @@
 import AuthController from "./AuthController";
 import { Route } from "../../utils/routeUtils";
 import { checkReqBodyEmail, checkRequestBody } from "../../middleware/checks";
+import {nocache, verifyToken} from "../../utils/securityUtils";
 
 const Routes: Route[] = [
     {
@@ -28,6 +29,8 @@ const Routes: Route[] = [
         path: "/auth/resolve",
         method: "get",
         handler: [
+            nocache,
+            // verifyToken,
             AuthController.resolve
         ]
     }

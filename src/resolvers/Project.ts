@@ -62,7 +62,7 @@ const ProjectResolver: IResolvers = {
                 return project;
             }),
 
-        deleteUser: combineResolvers(
+        deleteProject: combineResolvers(
             isAuthenticated,
             async (parent, { id }, { user }) => {
                 const project = await Project.findById(id);

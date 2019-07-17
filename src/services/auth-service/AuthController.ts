@@ -2,6 +2,8 @@ import User from "../../model/User";
 import bcrypt from "bcrypt";
 import utils from "../../utils";
 import { Request, Response } from "express";
+import {resolveUserWithToken} from "../../utils/securityUtils";
+import { ForbiddenError } from 'apollo-server-express';
 
 class AuthController {
     static async saveUser(req: Request, res: Response) {
@@ -47,11 +49,12 @@ class AuthController {
                     message: "user found!!!",
                     data: {
                         user: resUserInfo,
-                        token: token
+                        token: token,
+                        expires: process.env.JWT_TOKEN_EXPIRES_DEFAULT
                     }
                 });
             } else {
-                return res.json({
+                return res.status(403).json({
                     status: "error",
                     message: "Invalid email/password!!!",
                     data: null
@@ -66,13 +69,28 @@ class AuthController {
 
     static async resolve(req: Request, res: Response) {
         try {
-            const data = await utils.resolveUserWithToken(req);
-            console.log("resolved data ", data);
-            res.send({
-                status: "success",
-                message: "user found!!!",
-                data: data
+            utils.verifyToken(req, res, (data)=>{
+                console.log("resolved data ", data);
+                res.send({
+                    status: "success",
+                    message: "user found!!!",
+                    data: data
+                });
             });
+            // const user = await resolveUserWithToken(req);
+            // console.log("resolved data ", user);
+            // if (user) {
+            //     res.send({
+            //         status: "success",
+            //         message: "user found!!!",
+            //         data: user
+            //     });
+            // } else {
+            //     res.status(403).json({
+            //         status: "error",
+            //         message: 'Not authenticated as user.'
+            //     });
+            // }
         } catch (e) {
             console.log("resolved data ", e);
             res.status(403).json({
