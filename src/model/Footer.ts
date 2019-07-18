@@ -1,6 +1,6 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-const FooterSchema: any = new Schema({
+export const FooterSchema: any = new Schema({
     title: {
         type: String,
         required: true

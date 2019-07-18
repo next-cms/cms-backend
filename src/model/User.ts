@@ -2,7 +2,7 @@ import mongoose, {Model, Schema} from "mongoose";
 import bcrypt from "bcrypt";
 import {isEmail} from "validator";
 
-const UserSchema: any = new Schema({
+export const UserSchema: any = new Schema({
     name: {
         type: String,
         trim: true,
@@ -24,6 +24,10 @@ const UserSchema: any = new Schema({
         type: String,
     },
 });
+
+UserSchema.statics.getAllUsers = async function (limit, skip) {
+    return await this.find().sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+};
 
 UserSchema.statics.findByEmail = async function(email) {
     return await this.findOne({

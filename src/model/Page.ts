@@ -1,8 +1,25 @@
 import mongoose, { Model, Schema } from "mongoose";
+import {ComponentSchema} from "./Component";
 
-const PageSchema: any = new Schema({
+export const PageSchema: any = new Schema({
     title: {
         type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        required: true
+    },
+    header: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    footer: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+    contents: {
+        type: [ComponentSchema],
         required: true
     },
     createdAt: {

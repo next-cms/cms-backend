@@ -1,6 +1,6 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-const NavHeaderSchema: any = new Schema({
+export const NavHeaderSchema: any = new Schema({
     title: {
         type: String,
         required: true
