@@ -19,17 +19,14 @@ const ProjectSchema: any = new Schema({
     },
     brand: {
         icon: {
-            type: String,
-            required: true
+            type: String
         },
         siteTitle: {
-            type: String,
-            required: true
+            type: String
         }
     },
     siteMeta: {
         type: String,
-        required: true
     },
     createdAt: {
         type: Date,
