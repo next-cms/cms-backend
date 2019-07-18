@@ -47,11 +47,11 @@ const ProjectResolver: IResolvers = {
 
         updateProject: combineResolvers(
             isAuthenticated, async (parent,
-                { id, title, description, websiteUrl, icon, siteTitle, siteMeta },
+                { id, title, description, websiteUrl, brand, siteMeta },
                 { user },
             ) => {
                 const project = await Project.findByIdAndUpdate(id, {
-                    title, description, websiteUrl, brand: { icon, siteTitle }, siteMeta, modifiedAt: Date.now()
+                    title, description, websiteUrl, brand, siteMeta, modifiedAt: Date.now()
                 }, { new: true });
 
                 if (!project) {

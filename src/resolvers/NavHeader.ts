@@ -17,9 +17,9 @@ const NavHeaderResolver: IResolvers = {
     },
 
     Mutation: {
-        addHeader: async (parent, { title }, { user }) => {
+        addHeader: async (parent, { title, navMenu }, { user }) => {
             try {
-                let navHeader = new NavHeader({ title });
+                let navHeader = new NavHeader({ title, navMenu });
                 return navHeader.save().then(res => {
                     return res;
                 }).catch(err => {
@@ -30,9 +30,9 @@ const NavHeaderResolver: IResolvers = {
                 return e.message;
             }
         },
-        updateHeader: async (parent, { id, title }, { user }) => {
+        updateHeader: async (parent, { id, title, navMenu }, { user }) => {
             try {
-                return NavHeader.findByIdAndUpdate(id, { title, modifiedAt: Date.now() }, { new: true }).then(res => {
+                return NavHeader.findByIdAndUpdate(id, { title, navMenu, modifiedAt: Date.now() }, { new: true }).then(res => {
                     return res;
                 }).catch(err => {
                     console.log(err);

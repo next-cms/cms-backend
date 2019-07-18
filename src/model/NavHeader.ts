@@ -5,6 +5,18 @@ const NavHeaderSchema: any = new Schema({
         type: String,
         required: true
     },
+    navMenu: [
+        {
+            menuText: {
+                type: String,
+                require: true
+            },
+            slug: {
+                type: String,
+                require: true
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now
