@@ -1,7 +1,10 @@
 import mongoose, { Model, Schema } from "mongoose";
-import {ComponentSchema} from "./Component";
 
 export const PageSchema: any = new Schema({
+    projectId: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
     title: {
         type: String,
         required: true
@@ -12,15 +15,15 @@ export const PageSchema: any = new Schema({
     },
     header: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: false
     },
     footer: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: false
     },
     contents: {
-        type: [ComponentSchema],
-        required: true
+        type: [Schema.Types.ObjectId],
+        required: false
     },
     createdAt: {
         type: Date,
@@ -32,8 +35,8 @@ export const PageSchema: any = new Schema({
     }
 });
 
-PageSchema.statics.getAllPage = async function (limit, skip) {
-    return await this.find().sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+PageSchema.statics.getAllPage = async function (projectId, limit, skip) {
+    return await this.find({projectId: projectId}).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
 
 const Page: Model<any, any> | any = mongoose.model("Page", PageSchema);

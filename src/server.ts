@@ -14,6 +14,8 @@ import resolvers from './resolvers';
 ================================ */
 import app from "./app";
 import {resolveUserWithToken} from "./utils/securityUtils";
+import Project from "./model/Project";
+import {createContext} from "./resolvers/Authorization";
 
 dotenv.config();
 process.on("uncaughtException", e => {
@@ -36,13 +38,7 @@ const mongoConnection = mongoClient.connection;
 const server = new ApolloServer({
     typeDefs: schemas,
     resolvers: resolvers as any,
-    context: async ({ req }) => {
-        const currentUser = await resolveUserWithToken(req);
-        return {
-            user: currentUser,
-            secret: process.env.JWT_TOKEN_SECRET
-        }
-    },
+    context: createContext,
     // mocks: true,
     // mockEntireSchema: false,
     introspection: true,

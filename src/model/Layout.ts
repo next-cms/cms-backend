@@ -5,7 +5,7 @@ const ImportSignatureSchema: any = new Schema({
     from: String
 });
 
-export const ComponentSchema: any = new Schema({
+export const LayoutSchema: any = new Schema({
     title: {
         type: String,
         required: false
@@ -32,10 +32,10 @@ export const ComponentSchema: any = new Schema({
     }
 });
 
-ComponentSchema.statics.getAllComponent = async function (limit, skip) {
+LayoutSchema.statics.getAllLayout = async function (limit, skip) {
     return await this.find().sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
 
-const Component: Model<any, any> | any = mongoose.model("Component", ComponentSchema);
+const Layout: Model<any, any> | any = mongoose.model("Layout", LayoutSchema);
 // Export Footer Model/Schema
-export default Component;
+export default Layout;
