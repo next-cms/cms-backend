@@ -3,17 +3,17 @@ import { gql } from 'apollo-server-express';
 export default gql`
   type Page {
     id: ID!
+    key: String!
     title: String!
-    createdAt: Date
-    modifiedAt: Date
+    slug: String!
   }
   extend type Query {
-    getAllPage: [Page!]
-    getPageById(id: ID!): Page
+    allPages: [Page!]
+    page(id: String!): Page
   }
   extend type Mutation {
     addPage(title: String!): Page!
-    updatePage(id: ID!, title: String): Page!
-    deletePage(id: ID!): Boolean!
+    updatePage(id: String!, title: String): Page!
+    deletePage(id: String!): Boolean!
   }
 `;

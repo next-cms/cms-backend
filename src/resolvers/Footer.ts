@@ -1,6 +1,6 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { IResolvers, UserInputError } from 'apollo-server-express';
-import Footer from '../model/Footer';
+import Footer from '../models/Footer';
 
 
 /* Todo:

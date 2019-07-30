@@ -1,6 +1,6 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { IResolvers, UserInputError } from 'apollo-server-express';
-import NavHeader from '../model/NavHeader';
+import NavHeader from '../models/NavHeader';
 
 
 /* Todo:

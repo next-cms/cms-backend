@@ -1,14 +1,17 @@
 import {combineResolvers} from 'graphql-resolvers';
 import {IResolvers} from 'apollo-server-express';
-import Page from '../model/Page';
+import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
+import * as PagesCollector from "../code-parsers/PagesCollector";
 
 const PageResolver: IResolvers = {
     Query: {
-        getAllPage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {projectId, limit, skip}, context) => {
-                return await Page.getAllPage(projectId, limit, skip);
+        allPages: combineResolvers(isAuthenticated, isAuthorized,
+            async (parent, {}, {project}) => {
+                const pages = await PagesCollector.getProjectPages(project.id);
+                console.log(pages);
+                return pages;
             }
         )
     },

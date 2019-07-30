@@ -1,7 +1,7 @@
-import applyMiddleware from "./middlewareUtils";
-import applyRoutes from "./routeUtils";
-import imageUpload from "./fileUploadUtils";
-import {createToken, generateToken, resolveUserWithToken, verifyToken} from "./securityUtils";
+import applyMiddleware from "./MiddlewareUtils";
+import applyRoutes from "./RouteUtils";
+import imageUpload from "./FileUploadUtils";
+import {createToken, generateToken, resolveUserWithToken, verifyToken} from "./SecurityUtils";
 
 export default {
     applyMiddleware,

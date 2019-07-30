@@ -1,12 +1,12 @@
 import { ForbiddenError } from 'apollo-server-express';
 import { combineResolvers, skip } from 'graphql-resolvers';
-import {resolveUserWithToken} from "../utils/securityUtils";
-import Project from "../model/Project";
+import {resolveUserWithToken} from "../utils/SecurityUtils";
+import Project from "../models/Project";
 
 export const isAuthenticated = (parent, args, { user }) =>
     user ? skip : new ForbiddenError('Not authenticated as user.');
 
-export const isAuthorized = async (parent, { user, project }) => {
+export const isAuthorized = async (parent, {}, { user, project }) => {
     if (project && project.ownerId === user.id) return skip;
     return new ForbiddenError('Not authorized.');
 };
@@ -27,7 +27,7 @@ export const createContext = async ({ req }) => {
     };
     if (req.body.projectId) {
         if (context.user) {
-            const project = Project.findById(req.body.projectId);
+            const project = await Project.findById(req.body.projectId);
             if (project.ownerId === context.user.id) {
                 context.project = project;
             }

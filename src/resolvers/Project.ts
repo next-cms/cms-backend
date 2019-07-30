@@ -1,7 +1,7 @@
 import {combineResolvers} from 'graphql-resolvers';
 import {ForbiddenError, IResolvers, UserInputError} from 'apollo-server-express';
 
-import Project from "../model/Project";
+import Project from "../models/Project";
 import {isAdmin, isAuthenticated, isAuthorized} from "./Authorization";
 
 const ProjectResolver: IResolvers = {

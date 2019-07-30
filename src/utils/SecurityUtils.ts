@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-import { AuthenticationError } from 'apollo-server-express';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -27,7 +26,7 @@ export async function createToken(user, secret, expiresIn) {
 }
 
 export function verifyToken(req: Request, res: Response, next) {
-    console.log("verifyToken: ", req.path);
+    // console.log("verifyToken: ", req.path);
     const authorization = req.headers["authorization"];
     let token = null;
     if (authorization) token = authorization.replace("Bearer ", "");
@@ -40,7 +39,7 @@ export function verifyToken(req: Request, res: Response, next) {
 }
 
 export async function resolveUserWithToken(req: Request) {
-    console.log("resolveUserWithToken: ", req.path);
+    // console.log("resolveUserWithToken: ", req.path);
     const authorization = req.headers["authorization"];
     if (authorization) {
         const token = authorization.replace("Bearer ", "");

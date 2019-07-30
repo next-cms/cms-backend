@@ -1,9 +1,7 @@
-import User from "../../model/User";
+import User from "../../models/User";
 import bcrypt from "bcrypt";
 import utils from "../../utils";
 import { Request, Response } from "express";
-import {resolveUserWithToken} from "../../utils/securityUtils";
-import { ForbiddenError } from 'apollo-server-express';
 
 class AuthController {
     static async saveUser(req: Request, res: Response) {

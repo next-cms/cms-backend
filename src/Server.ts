@@ -1,20 +1,17 @@
 /* =============================
         Import All
 ================================ */
-import mongoClient from "./service-providers/mongoClient";
-import { ApolloServer, AuthenticationError } from 'apollo-server-express';
+import mongoClient from "./service-providers/MongoClient";
+import { ApolloServer} from 'apollo-server-express';
 import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-import {Request, Response} from 'express';
+import {Response} from 'express';
 import schemas from './schemas';
 import resolvers from './resolvers';
 
 /* =============================
         Import The App
 ================================ */
-import app from "./app";
-import {resolveUserWithToken} from "./utils/securityUtils";
-import Project from "./model/Project";
+import app from "./App";
 import {createContext} from "./resolvers/Authorization";
 
 dotenv.config();

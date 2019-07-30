@@ -2,13 +2,13 @@
         Import All
 ============================== */
 import mongoose from 'mongoose';
-import User from "../model/User";
-
+import dotenv from "dotenv";
+dotenv.config();
 /* ===========================
         Setup Config
 ============================== */
 const mongoClient = (function connectWithMongoDB() {
-    const mongoDB = 'mongodb://user:password123@localhost:27017/pi_cms';
+    const mongoDB = `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}`;
     // const mongoDB = 'mongodb://localhost/pi_cms';
 
     /* const options = {
