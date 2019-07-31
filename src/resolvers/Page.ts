@@ -13,6 +13,11 @@ const PageResolver: IResolvers = {
                 console.debug(pages);
                 return pages;
             }
+        ),
+        page: combineResolvers(isAuthenticated, isAuthorized,
+            async (parent, {page}, {project}) => {
+                return await PagesCollector.getProjectPageDetails(project.id, page);
+            }
         )
     },
 

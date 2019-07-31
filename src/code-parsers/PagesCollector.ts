@@ -1,10 +1,9 @@
 import * as acorn from "acorn";
 import jsx from "acorn-jsx";
-import { generate } from 'astring';
+import {generate} from 'astring';
 import fs from 'fs';
 import path from 'path';
-import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
-import {PROJECT_FRONTEND} from "../constants/DirectoryStructureConstants";
+import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
 const JSXParser = acorn.Parser.extend(jsx());
 const fsp = fs.promises;
@@ -17,7 +16,7 @@ export async function getProjectPages(projectId) {
         return files.filter(file=>!file.startsWith('_')).map(function (file) {
             const slug = file.replace('.js', '');
             return {
-                id: file,
+                slug: slug,
                 title: slug,
                 key: file,
                 path: `/project?component=pages&page=${slug}&id=${projectId}`,
@@ -29,4 +28,21 @@ export async function getProjectPages(projectId) {
         console.log('Unable to scan directory: ' + err);
         return [];
     });
+}
+
+export async function getProjectPageDetails(projectId, page) {
+    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
+    console.log("filePath", filePath);
+    return await fsp.readFile(filePath, 'utf8')
+        .then((srcCode)=>{
+            return {
+                parsed: JSON.stringify(JSXParser.parse(srcCode, {
+                    sourceType: 'module'
+                }))
+            }
+        })
+        .catch((err)=>{
+            console.log("File read failed:", err);
+            return {};
+        });
 }

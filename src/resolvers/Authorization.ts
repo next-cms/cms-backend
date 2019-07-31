@@ -25,9 +25,9 @@ export const createContext = async ({ req }) => {
         secret: process.env.JWT_TOKEN_SECRET,
         project: undefined
     };
-    if (req.body.projectId) {
+    if (req.body.projectId || req.body.variables.projectId) {
         if (context.user) {
-            const project = await Project.findById(req.body.projectId);
+            const project = await Project.findById(req.body.projectId || req.body.variables.projectId);
             if (project.ownerId === context.user.id) {
                 context.project = project;
             }

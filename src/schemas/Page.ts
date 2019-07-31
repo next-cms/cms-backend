@@ -2,16 +2,22 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   type Page {
-    id: ID!
+    slug: String!
     key: String!
     title: String!
     path: String!
     pathAs: String!
     pathParam: String!
   }
+  type PageDetails {
+    parsed: String
+    components: String
+    hooks: String
+    effects: String
+  }
   extend type Query {
     allPages: [Page!]
-    page(id: String!): Page
+    page(id: String!, page: String!): PageDetails
   }
   extend type Mutation {
     addPage(title: String!): Page!
