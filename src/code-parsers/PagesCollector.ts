@@ -15,11 +15,14 @@ export async function getProjectPages(projectId) {
     return await fsp.readdir(projectDir).then((files)=>{
         //listing all files using forEach
         return files.filter(file=>!file.startsWith('_')).map(function (file) {
+            const slug = file.replace('.js', '');
             return {
                 id: file,
-                title: file.split('.')[0],
+                title: slug,
                 key: file,
-                slug: file,
+                path: `/project?component=pages&page=${slug}&id=${projectId}`,
+                pathAs: `/project/pages/${slug}?id=${projectId}`,
+                pathParam: slug,
             }
         });
     }).catch((err)=>{

@@ -5,7 +5,9 @@ export default gql`
     id: ID!
     key: String!
     title: String!
-    slug: String!
+    path: String!
+    pathAs: String!
+    pathParam: String!
   }
   extend type Query {
     allPages: [Page!]

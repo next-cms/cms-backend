@@ -10,7 +10,7 @@ const PageResolver: IResolvers = {
         allPages: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {}, {project}) => {
                 const pages = await PagesCollector.getProjectPages(project.id);
-                console.log(pages);
+                console.debug(pages);
                 return pages;
             }
         )
