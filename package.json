@@ -51,7 +51,8 @@
         "mongoose": "^5.6.4",
         "multer": "^1.4.1",
         "pm2": "^3.5.1",
-        "validator": "^11.1.0"
+        "validator": "^11.1.0",
+        "xtend": "^4.0.2"
     },
     "devDependencies": {
         "@types/acorn": "^4.0.5",

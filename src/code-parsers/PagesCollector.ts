@@ -4,6 +4,8 @@ import {generate} from 'astring';
 import fs from 'fs';
 import path from 'path';
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
+import {extractPageDetails} from "./PageDetailsExtractor";
+import {Node} from "acorn";
 
 const JSXParser = acorn.Parser.extend(jsx());
 const fsp = fs.promises;
@@ -35,10 +37,13 @@ export async function getProjectPageDetails(projectId, page) {
     console.log("filePath", filePath);
     return await fsp.readFile(filePath, 'utf8')
         .then((srcCode)=>{
+            const ast: Node =  JSXParser.parse(srcCode, {
+                sourceType: 'module'
+            });
+            const pageDetails = extractPageDetails(ast);
             return {
-                parsed: JSON.stringify(JSXParser.parse(srcCode, {
-                    sourceType: 'module'
-                }))
+                parsed: JSON.stringify(ast),
+                details: pageDetails
             }
         })
         .catch((err)=>{
