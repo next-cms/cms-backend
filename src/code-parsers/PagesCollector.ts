@@ -6,6 +6,7 @@ import path from 'path';
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import {extractPageDetails} from "./PageDetailsExtractor";
 import {Node} from "acorn";
+import {PageDetails} from "../api-models/PageDetails";
 
 const JSXParser = acorn.Parser.extend(jsx());
 const fsp = fs.promises;
@@ -20,8 +21,8 @@ export async function getProjectPages(projectId) {
             return {
                 slug: slug,
                 title: slug,
-                key: file,
-                path: `/project?component=pages&page=${slug}&id=${projectId}`,
+                key: slug,
+                path: `/project?component=pages&subComponent=${slug}&id=${projectId}`,
                 pathAs: `/project/pages/${slug}?id=${projectId}`,
                 pathParam: slug,
             }
@@ -32,7 +33,7 @@ export async function getProjectPages(projectId) {
     });
 }
 
-export async function getProjectPageDetails(projectId, page) {
+export async function getProjectPageDetails(projectId, page): Promise<PageDetails> {
     const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
     console.log("filePath", filePath);
     return await fsp.readFile(filePath, 'utf8')
@@ -41,13 +42,11 @@ export async function getProjectPageDetails(projectId, page) {
                 sourceType: 'module'
             });
             const pageDetails = extractPageDetails(ast);
-            return {
-                parsed: JSON.stringify(ast),
-                details: pageDetails
-            }
+            console.log(pageDetails);
+            return pageDetails;
         })
         .catch((err)=>{
             console.log("File read failed:", err);
-            return {};
+            return new PageDetails();
         });
 }

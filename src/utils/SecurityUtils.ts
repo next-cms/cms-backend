@@ -30,9 +30,9 @@ export function verifyToken(req: Request, res: Response, next) {
     const authorization = req.headers["authorization"];
     let token = null;
     if (authorization) token = authorization.replace("Bearer ", "");
-    console.log("verifyToken: given token: ", token);
+    // console.log("verifyToken: given token: ", token);
     jwt.verify(token, secret, (err, decoded) => {
-        console.log("verifyToken: err: ", err, decoded);
+        // console.log("verifyToken: err: ", err, decoded);
         if (err) return res.status(401).json({ status: "error", message: err });
         return next(decoded);
     });
@@ -48,8 +48,8 @@ export async function resolveUserWithToken(req: Request) {
                 const secret = process.env.JWT_TOKEN_SECRET;
                 return await jwt.verify(token, secret);
             } catch (e) {
-                console.log("Token Provided: ", token);
-                console.log(e.toString());
+                // console.log("Token Provided: ", token);
+                // console.log(e.toString());
                 return null;
             }
         }

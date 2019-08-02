@@ -68,7 +68,7 @@ class AuthController {
     static async resolve(req: Request, res: Response) {
         try {
             utils.verifyToken(req, res, (data)=>{
-                console.log("resolved data ", data);
+                // console.log("resolved data ", data);
                 res.send({
                     status: "success",
                     message: "user found!!!",

@@ -10,10 +10,10 @@ export default gql`
     pathParam: String!
   }
   type PageDetails {
-    parsed: String
-    components: String
-    hooks: String
-    effects: String
+    title: String
+    components: [String]
+    hooks: [String]
+    effects: [String]
   }
   extend type Query {
     allPages: [Page!]

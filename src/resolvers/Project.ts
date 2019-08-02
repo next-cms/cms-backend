@@ -26,7 +26,7 @@ const ProjectResolver: IResolvers = {
         _projectsMeta: combineResolvers(isAuthenticated,
             async (parent, args, {user}) => {
                 return {
-                    count: await Project.count({ownerId: user.id})
+                    count: await Project.countDocuments({ownerId: user.id})
                     // count: await Project.estimatedDocumentCount({})
                 };
             }
