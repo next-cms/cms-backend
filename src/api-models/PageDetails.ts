@@ -1,5 +1,11 @@
+export class Value {
+    value: string | number | Value;
+    start: number;
+    end: number;
+}
+
 export class PageDetails {
-    title: string;
+    title: Value;
     components: [];
     hooks: [];
     effects: [];

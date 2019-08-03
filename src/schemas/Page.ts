@@ -9,8 +9,9 @@ export default gql`
     pathAs: String!
     pathParam: String!
   }
+  
   type PageDetails {
-    title: String
+    title: StringBox
     components: [String]
     hooks: [String]
     effects: [String]
