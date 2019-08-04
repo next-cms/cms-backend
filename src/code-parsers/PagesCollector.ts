@@ -13,7 +13,7 @@ const fsp = fs.promises;
 
 export async function getProjectPages(projectId) {
     const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages');
-    console.log("projectDir", projectDir);
+    // console.log("projectDir", projectDir);
     return await fsp.readdir(projectDir).then((files)=>{
         //listing all files using forEach
         return files.filter(file=>!file.startsWith('_')).map(function (file) {
@@ -35,7 +35,7 @@ export async function getProjectPages(projectId) {
 
 export async function getProjectPageDetails(projectId, page): Promise<PageDetails> {
     const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
-    console.log("filePath", filePath);
+    // console.log("filePath", filePath);
     return await fsp.readFile(filePath, 'utf8')
         .then((srcCode)=>{
             const ast: Node =  JSXParser.parse(srcCode, {

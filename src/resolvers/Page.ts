@@ -9,9 +9,9 @@ const PageResolver: IResolvers = {
     Query: {
         allPages: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {}, {project}) => {
-                const pages = await PagesCollector.getProjectPages(project.id);
-                console.debug(pages);
-                return pages;
+
+                // console.debug(pages);
+                return await PagesCollector.getProjectPages(project.id);
             }
         ),
         page: combineResolvers(isAuthenticated, isAuthorized,
