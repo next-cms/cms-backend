@@ -4,12 +4,12 @@ import userSchema from './User';
 import projectSchema from './Project';
 import navHeaderSchema from './NavHeader';
 import footerSchema from './Footer';
-import valueSchema from './ValueTypes';
 import pageSchema from './Page';
-import jsxSchema from './JSXElement';
 
 const linkSchema = gql`
   scalar Date
+  scalar JSON
+  scalar JSONObject
   type Query {
     _: Boolean
   }
@@ -21,4 +21,4 @@ const linkSchema = gql`
   }
 `;
 
-export default [linkSchema, userSchema, projectSchema, navHeaderSchema, footerSchema, pageSchema, valueSchema, jsxSchema];
+export default [linkSchema, userSchema, projectSchema, navHeaderSchema, footerSchema, pageSchema];

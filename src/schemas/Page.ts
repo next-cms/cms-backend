@@ -10,9 +10,16 @@ export default gql`
     pathParam: String!
   }
   
+  type Component {
+    name: String
+    start: Int
+    end: Int
+    attributes: [JSONObject]
+    children: [JSONObject]
+  }
+  
   type PageDetails {
-    title: StringBox
-    components: [String]
+    children: [JSONObject]
     hooks: [String]
     effects: [String]
   }
