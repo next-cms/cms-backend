@@ -4,7 +4,7 @@ import {HTTPClientError} from "../utils/HttpErrors";
 
 function handle404Error (router: Router) {
     router.use((req: Request, res: Response, next: NextFunction) => {
-        if (req.path === '/graphql') next();
+        if (req.path === '/graphql' || req.path.startsWith('/next-project')) next();
         else ErrorHandler.notFoundError();
     });
 }

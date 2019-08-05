@@ -13,16 +13,17 @@ import resolvers from './resolvers';
 ================================ */
 import app from "./App";
 import {createContext} from "./resolvers/Authorization";
+import ProjectController from "./services/project-service/ProjectController";
 
 dotenv.config();
-process.on("uncaughtException", e => {
-    console.log(e);
-    process.exit(1);
-});
-process.on("unhandledRejection", e => {
-    console.log(e);
-    process.exit(1);
-});
+process.on('exit', ProjectController.cleanUp);
+process.on('SIGINT', ProjectController.cleanUp); //catch ctrl+c event
+process.on('SIGTERM', ProjectController.cleanUp); // catch kill
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', ProjectController.cleanUp);
+process.on('SIGUSR2', ProjectController.cleanUp);
+//catches uncaught exceptions
+process.on('uncaughtException', ProjectController.cleanUp);
 
 /* =============================
         Setup Database

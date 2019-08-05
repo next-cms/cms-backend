@@ -3,9 +3,6 @@ import {ForbiddenError, IResolvers, UserInputError} from 'apollo-server-express'
 
 import Project from "../models/Project";
 import {isAdmin, isAuthenticated, isAuthorized} from "./Authorization";
-import {exec} from 'child_process';
-import path from "path";
-import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
 const ProjectResolver: IResolvers = {
     Query: {
@@ -23,17 +20,6 @@ const ProjectResolver: IResolvers = {
             isAuthenticated, async (parent, {id}, {user}) => {
                 const project = await Project.findById(id);
                 if (project && project.ownerId === user.id) {
-                    const projectDir = path.join(PROJECT_ROOT, id, PROJECT_FRONTEND);
-                    const project_process = await exec(`${path.join(__dirname, "../bash-scripts/start-project.sh")} ${projectDir}`, (err, stdout, stderr) => {
-                        if (err) {
-                            console.error(err);
-                            return;
-                        }
-                        console.log(stdout);
-                    });
-                    setTimeout(()=>{
-                        project_process.kill();
-                    }, 15*60*1000);
                     return project;
                 }
                 return new ForbiddenError('Not authorized.');
