@@ -1,5 +1,5 @@
-import {ATTR_extra, ATTR_subTitle, ATTR_title} from "../constants/PageConstants";
-import {Component} from "../api-models/PageDetails";
+import {ATTR_extra, ATTR_subTitle, ATTR_title} from "../../constants/PageConstants";
+import {Component} from "../../api-models/PageDetails";
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
 import ancestorWalkerFunctions from "./AncestorWalkerFunctions";

@@ -1,8 +1,8 @@
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
-import {ATTR_extra} from "../constants/PageConstants";
+import {ATTR_extra} from "../../constants/PageConstants";
 import recursiveWalkerFunctions from "./RecursiveWalkerFunctions";
-import {Component} from "../api-models/PageDetails";
+import {Component} from "../../api-models/PageDetails";
 
 extend(walk.base);
 

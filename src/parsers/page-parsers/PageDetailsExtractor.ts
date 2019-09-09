@@ -1,8 +1,8 @@
 import {Node} from "acorn";
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
-import {Component, PageDetails} from "../api-models/PageDetails";
-import recursiveWalkerFunctions from "./RecursiveWalkerFunctions";
+import {Component, PageDetails} from "../../api-models/PageDetails";
+import recursiveWalkerFunctions from "../core/RecursiveWalkerFunctions";
 
 extend(walk.base);
 

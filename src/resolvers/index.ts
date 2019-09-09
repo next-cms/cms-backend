@@ -7,6 +7,7 @@ import { IResolvers } from "graphql-tools";
 import navHeaderResolver from './NavHeader';
 import footerResolver from './Footer';
 import pageResolver from './Page';
+import componentResolver from './Component';
 
 const customScalarResolver: IResolvers = {
     Date: GraphQLDateTime,
@@ -20,7 +21,8 @@ const resolvers: IResolvers[] = [
     projectResolvers,
     navHeaderResolver,
     footerResolver,
-    pageResolver
+    pageResolver,
+    componentResolver
 ];
 
 export default resolvers;

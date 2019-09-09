@@ -1,5 +1,6 @@
 mongodb-data/
 _projects/
+_components/
 dist/
 .grunt
 .env

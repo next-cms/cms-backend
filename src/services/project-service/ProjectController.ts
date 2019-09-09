@@ -3,6 +3,7 @@ import path from "path";
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../../constants/DirectoryStructureConstants";
 import next from "next";
 import {URL} from "url";
+import {getNextServerConfig} from "./NextConfig";
 
 class ProjectController {
     static timeouts = {};
@@ -13,21 +14,26 @@ class ProjectController {
             if (!projectId) return res.send({error: true, message: "projectId is undefined"});
             const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND);
 
-            const {app, handle} = await ProjectController.getNextHandle(projectId, projectDir);
+            const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
 
-            return app.render(req, res, '/index').then(()=>ProjectController.configureCleanUp(projectId));
+            return await app.render(req, res, '/index');
         } catch (e) {
             console.error(e);
         }
     }
     static async getNextHandle(projectId, projectDir) {
+        let cached = true;
         if (!ProjectController.apps[projectId]) {
-            ProjectController.apps[projectId] = {};
-            ProjectController.apps[projectId].app = next({ dir: projectDir, dev: true });
-            ProjectController.apps[projectId].handle = ProjectController.apps[projectId].app.getRequestHandler();
-            await ProjectController.apps[projectId].app.prepare();
+            const app = await next({ dir: projectDir, dev: true, conf: getNextServerConfig(projectDir) });
+            ProjectController.apps[projectId] = {
+                app: app,
+                handle: app.getRequestHandler()
+            };
+            await app.prepare();
+            cached = false;
         }
-        return {app: ProjectController.apps[projectId].app, handle: ProjectController.apps[projectId].handle};
+        ProjectController.configureCleanUp(projectId);
+        return {app: ProjectController.apps[projectId].app, handle: ProjectController.apps[projectId].handle, cached};
     }
     static async loadProjectPage(req: Request, res: Response) {
         try {
@@ -36,9 +42,9 @@ class ProjectController {
             const page = req.params.page;
             const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND);
 
-            const {app, handle} = await ProjectController.getNextHandle(projectId, projectDir);
+            const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
 
-            return app.render(req, res, `/${page}`).then(()=>ProjectController.configureCleanUp(projectId));
+            return await app.render(req, res, `/${page}`);
         } catch (e) {
             console.error(e);
         }
@@ -49,15 +55,28 @@ class ProjectController {
             if (!projectId) return res.send({error: true, message: "projectId is undefined"});
             const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND);
 
-            const {app, handle} = await ProjectController.getNextHandle(projectId, projectDir);
-            return handle(req, res).then(()=>ProjectController.configureCleanUp(projectId));
+            const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
+            if (!cached) {
+
+            }
+            return await handle(req, res);
         } catch (e) {
             console.error(e);
         }
     }
 
     static async handleHMR(req: Request, res: Response) {
-        res.type('text/event-stream').send("{success: true}");
+        const projectId = (req.header('Referer') ? new URL(req.header('Referer')).searchParams.get('projectId') : null) || req.query.projectId;
+        if (!projectId) return res.send({error: true, message: "projectId is undefined"});
+        ProjectController.configureCleanUp(projectId);
+        return await res.type('text/event-stream').send("{success: true}");
+    }
+
+    static async handleServiceWorkerRequest(req: Request, res: Response) {
+        const projectId = (req.header('Referer') ? new URL(req.header('Referer')).searchParams.get('projectId') : null) || req.query.projectId;
+        if (!projectId) return res.send({error: true, message: "projectId is undefined"});
+        ProjectController.configureCleanUp(projectId);
+        return await res.send("{message: \"Not Supported or Required while designing your site.\"}");
     }
 
     static cleanUp(exitCode) {
@@ -67,10 +86,7 @@ class ProjectController {
             delete ProjectController.timeouts[key]
         });
         Object.keys(ProjectController.apps).forEach((key)=>{
-            if (!ProjectController.apps[key]) {
-                delete ProjectController.apps[key];
-                return
-            }
+            console.log('ProjectController.apps', key);
             ProjectController.apps[key].close();
             delete ProjectController.apps[key]
         });
@@ -85,8 +101,10 @@ class ProjectController {
         }
         // @ts-ignore
         ProjectController.timeouts[projectId] = setTimeout(()=>{
-            ProjectController.apps[projectId].app.close();
-            delete ProjectController.apps[projectId];
+            if (ProjectController.apps[projectId]) {
+                ProjectController.apps[projectId].app.close();
+                delete ProjectController.apps[projectId];
+            }
         }, 10*60*1000);
     }
 }

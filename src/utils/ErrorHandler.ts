@@ -1,8 +1,8 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { HTTPClientError, HTTP404Error } from "./HttpErrors";
 
-export const notFoundError = () => {
-    throw new HTTP404Error("Method not found.");
+export const notFoundError = (req: Request) => {
+    throw new HTTP404Error(`Method not found: ${req.path}`);
 };
 
 export const clientError = (err: HTTPClientError, res: Response, next: NextFunction) => {

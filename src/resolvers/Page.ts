@@ -3,7 +3,7 @@ import {IResolvers} from 'apollo-server-express';
 import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
-import * as PagesCollector from "../code-parsers/PagesCollector";
+import {getProjectPages, addNewPage, getProjectPageDetails} from "../parsers/page-parsers/PageParser";
 
 const PageResolver: IResolvers = {
     Query: {
@@ -11,22 +11,21 @@ const PageResolver: IResolvers = {
             async (parent, {}, {project}) => {
 
                 // console.debug(pages);
-                return await PagesCollector.getProjectPages(project.id);
+                return await getProjectPages(project.id);
             }
         ),
         page: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {page}, {project}) => {
-                return await PagesCollector.getProjectPageDetails(project.id, page);
+                return await getProjectPageDetails(project.id, page);
             }
         )
     },
 
     Mutation: {
         addPage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {projectId, title}, {user}) => {
+            async (parent, {}, {user, project}) => {
                 try {
-                    let page = new Page({title});
-                    return page.save().then(res => {
+                    return addNewPage(project.id).then(res => {
                         return res;
                     }).catch(err => {
                         console.log(err);

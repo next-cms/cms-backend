@@ -21,6 +21,11 @@ const Routes: Route[] = [
         path: "/_next/*",
         method: "get",
         handler: ProjectController.handleNextJSRequest
+    },
+    {
+        path: "/service-worker.js",
+        method: "get",
+        handler: ProjectController.handleServiceWorkerRequest
     }
 ];
 
