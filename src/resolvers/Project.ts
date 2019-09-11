@@ -1,23 +1,26 @@
-import {combineResolvers} from 'graphql-resolvers';
-import {ForbiddenError, IResolvers, UserInputError} from 'apollo-server-express';
+import { combineResolvers } from 'graphql-resolvers';
+import { ForbiddenError, IResolvers, UserInputError } from 'apollo-server-express';
 
 import Project from "../models/Project";
-import {isAdmin, isAuthenticated, isAuthorized} from "./Authorization";
+import { isAdmin, isAuthenticated, isAuthorized } from "./Authorization";
+
+import { executeCommand } from '../project-initialize';
+
 
 const ProjectResolver: IResolvers = {
     Query: {
         allProjects: combineResolvers(
-            isAdmin, async (parent, {limit, skip}, context) => {
+            isAdmin, async (parent, { limit, skip }, context) => {
                 return await Project.getAllProjects(limit, skip);
             }
         ),
         projects: combineResolvers(
-            isAuthenticated, async (parent, {limit, skip}, {user}) => {
+            isAuthenticated, async (parent, { limit, skip }, { user }) => {
                 return await Project.getAllProjectsByOwnerId(user.id, limit, skip);
             }
         ),
         project: combineResolvers(
-            isAuthenticated, async (parent, {id}, {user}) => {
+            isAuthenticated, async (parent, { id }, { user }) => {
                 const project = await Project.findById(id);
                 if (project && project.ownerId === user.id) {
                     return project;
@@ -26,9 +29,9 @@ const ProjectResolver: IResolvers = {
             }
         ),
         _projectsMeta: combineResolvers(isAuthenticated,
-            async (parent, args, {user}) => {
+            async (parent, args, { user }) => {
                 return {
-                    count: await Project.countDocuments({ownerId: user.id})
+                    count: await Project.countDocuments({ ownerId: user.id })
                     // count: await Project.estimatedDocumentCount({})
                 };
             }
@@ -38,28 +41,30 @@ const ProjectResolver: IResolvers = {
     Mutation: {
         createProject: combineResolvers(
             isAuthenticated, async (parent,
-                                    {title, description, websiteUrl},
-                                    {user},
-            ) => {
-                try {
-                    let project = new Project({title, description, websiteUrl, ownerId: user.id});
-                    return project.save().then(res => {
-                        return res;
-                    }).catch(err => {
-                        console.log(err);
-                        return err;
-                    })
-                } catch (e) {
-                    return e.message;
-                }
+                { title, description, websiteUrl },
+                { user },
+        ) => {
+            try {
+                let project = new Project({ title, description, websiteUrl, ownerId: user.id });
+                return project.save().then(res => {
+                    console.log(res);
+                    executeCommand(res._id);
+                    return res;
+                }).catch(err => {
+                    console.log(err);
+                    return err;
+                })
+            } catch (e) {
+                return e.message;
             }
+        }
         ),
 
         updateProject: combineResolvers(
             isAuthenticated,
             async (parent,
-                   {id, title, description, websiteUrl, brand, siteMeta},
-                   {user},
+                { id, title, description, websiteUrl, brand, siteMeta },
+                { user },
             ) => {
                 const project = await Project.findById(id);
                 if (!project) {
@@ -81,7 +86,7 @@ const ProjectResolver: IResolvers = {
         ),
         deleteProject: combineResolvers(
             isAuthenticated,
-            async (parent, {id}, {user}) => {
+            async (parent, { id }, { user }) => {
                 const project = await Project.findById(id);
 
                 if (project && project.ownerId === user.id) {
