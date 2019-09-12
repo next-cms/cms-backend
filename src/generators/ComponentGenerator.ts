@@ -51,16 +51,16 @@ export async function addNewComponentInSourceCode(sourceCode: string, component:
 
     if (!parent) {
         if (await isFragment(jsxElement)) {
-            // TODO
+            // TODO insert new element inside fragment
         } else {
             let newJsxElement = wrapWithFragment(jsxElement);
             console.dir(newJsxElement);
             const code = generateJsx(newJsxElement);
             console.dir(code);
-            // TODO
+            // TODO insert new element inside the new fragment
         }
     } else {
-
+        // TODO insert new element inside parent element
     }
     return sourceCode;
 }
