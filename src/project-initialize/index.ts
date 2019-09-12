@@ -30,7 +30,7 @@ export const executeCommand = (projectDirName: string) => {
                 return;
             }
 
-            exec('npm i -s', { cwd: `${PROJECT_ROOT}/${projectDirName}/${PROJECT_FRONTEND}` }, (err, stdout, stderr) => {
+            exec('npm install --save', { cwd: `${PROJECT_ROOT}/${projectDirName}/${PROJECT_FRONTEND}` }, (err, stdout, stderr) => {
                 if (err) {
                     console.log(`stdout: ${stdout}`);
                     console.log(`stderr: ${stderr}`);
@@ -45,3 +45,22 @@ export const executeCommand = (projectDirName: string) => {
         })
     })
 };
+
+
+// Async
+const executeShellCommandAsync = async (cmd, options) => {
+    return await exec(cmd, options);
+}
+
+
+// Prominse 
+const executeShellCommand = (cmd, options: null) => {
+    return new Promise((resolve, reject) => {
+        exec(cmd, options, (err, stdout, stderr) => {
+            if (err) {
+                console.warn(err);
+            }
+            resolve(stdout ? stdout : stderr)
+        })
+    })
+}
