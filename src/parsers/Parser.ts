@@ -1,6 +1,6 @@
 import * as acorn from "acorn";
 import jsx from "acorn-jsx";
-import {generateJsx} from '../code-generators/JSXGenerator';
+import {generateJsx} from '../generators/JSXGenerator';
 import fs from 'fs';
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import {PROJECT_FRONTEND} from "../constants/DirectoryStructureConstants";

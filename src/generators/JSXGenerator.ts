@@ -72,6 +72,19 @@ const generator = Object.assign({}, astring.baseGenerator,{
     },
     'JSXText': function JSXText(node, state) {
         state.write(node.value);
+    },
+    'JSXFragment': function JSXText(node, state) {
+        state.write("<React.Fragment");
+        if (node.closingFragment) {
+            state.write('>');
+            for (let i = 0; i < node.children.length; i++) {
+                const child = node.children[i];
+                this[child.type](child, state);
+            }
+            state.write('</React.Fragment>');
+        } else {
+            state.write(' />');
+        }
     }
 });
 

@@ -12,6 +12,6 @@ export default gql`
         getAvailableComponentById(id: String!): AvailableComponent
     }
     extend type Mutation {
-        addComponent(componentId: String!, parent: JSONObject, projectId: String!, page: String!): PageDetails
+        addComponent(componentId: String!, parent: JSONObject, projectId: String!, page: String!): Boolean
     }
 `;

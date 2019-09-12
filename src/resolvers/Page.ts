@@ -3,7 +3,8 @@ import {IResolvers} from 'apollo-server-express';
 import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
-import {getProjectPages, addNewPage, getProjectPageDetails} from "../parsers/page-parsers/PageParser";
+import {getProjectPages, getProjectPageDetails} from "../parsers/page-parsers/PageParser";
+import {addNewPage} from "../generators/PageGenerator";
 
 const PageResolver: IResolvers = {
     Query: {

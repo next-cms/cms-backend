@@ -19,7 +19,7 @@
         "watch": [
             "src"
         ],
-        "exec": "npm start",
+        "exec": "NODE_DEBUG=pi-cms.* npm start",
         "ext": "ts"
     },
     "repository": {
@@ -62,7 +62,7 @@
         "merge-graphql-schemas": "^1.7.0",
         "mongoose": "^5.6.8",
         "multer": "^1.4.2",
-        "next": "^9.0.3",
+        "next": "^9.0.5",
         "next-cookies": "^1.1.2",
         "node-sass": "^4.12.0",
         "null-loader": "^3.0.0",

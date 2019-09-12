@@ -11,7 +11,7 @@ export class Component {
     end: number;
     attributes: Value[] = [];
     children: Component[] = [];
-    constructor(name: string, start: number, end: number, attributes: Value[] = [], children: Component[] = []){
+    constructor(name?: string, start?: number, end?: number, attributes: Value[] = [], children: Component[] = []){
         this.name = name;
         this.start = start;
         this.end = end;
