@@ -2,7 +2,7 @@ import { combineResolvers } from 'graphql-resolvers';
 import { IResolvers } from 'apollo-server-express';
 import {getAvailableComponents} from "../parsers/component-parsers/AvailableComponentsCollector";
 import {debuglog} from "util";
-import {addNewComponent} from "../generators/ComponentGenerator";
+import {addNewElement} from "../generators/JSXElementModifiers";
 const debug = debuglog("pi-cms.resolvers.Component");
 
 const FooterResolver: IResolvers = {
@@ -16,7 +16,7 @@ const FooterResolver: IResolvers = {
     },
     Mutation: {
         addComponent: async (parentMutation, {componentId, parent, projectId, page}, context) => {
-            return addNewComponent(projectId, page, {id: componentId}, parent);
+            return addNewElement(projectId, page, {id: componentId}, parent);
         }
     }
 };

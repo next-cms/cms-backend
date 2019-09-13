@@ -1,7 +1,6 @@
 import {Page} from "../api-models/Page";
 import path from "path";
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
-import * as acorn from "acorn";
 import fs from "fs";
 import {debuglog} from "util";
 const fsp = fs.promises;

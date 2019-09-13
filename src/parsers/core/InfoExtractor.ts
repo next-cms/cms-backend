@@ -2,6 +2,7 @@ import {CallExpression, ExportDefaultDeclaration, Identifier, Program, VariableD
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
 import {Node} from "acorn";
+import {Component} from "../../api-models/PageDetails";
 
 extend(walk.base);
 
@@ -70,6 +71,27 @@ export async function getJSXElement(ast: Program|Node): Promise<Node> {
         },
         JSXFragment(node, state, c) {
             jsxElement = node;
+        }
+    });
+    return jsxElement;
+}
+
+export async function getJSXElementFromInfo(ast: Program|Node, componentInfo: Component): Promise<Node> {
+    let jsxElement: any = null;
+    await walk.recursive(ast, {}, {
+        JSXElement(node, state, c) {
+            if (componentInfo.start === node.start && componentInfo.end === node.end) {
+                jsxElement = node;
+            } else {
+                node.children.forEach(n => c(n))
+            }
+        },
+        JSXFragment(node, state, c) {
+            if (componentInfo.start === node.start && componentInfo.end === node.end) {
+                jsxElement = node;
+            } else {
+                node.children.forEach(n => c(n))
+            }
         }
     });
     return jsxElement;
