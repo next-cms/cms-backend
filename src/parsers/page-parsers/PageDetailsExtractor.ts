@@ -28,7 +28,11 @@ export async function extractPageDetails(ast: Node) {
         },
         JSXOpeningElement(node, state, c) {
             // const att = {}
-            state.details.name = node.name.name;
+            if (node.name.type === "JSXIdentifier") {
+                state.details.name = node.name.name;
+            } else {
+                state.details.name = `${node.name.object.name}.${node.name.property.name}`;
+            }
             // state.details.attributes.push();
             const newState = {
                 ...state,
