@@ -8,7 +8,7 @@ export default gql`
         modifiedAt: Date
     }
     extend type Query {
-        getAllAvailableComponent: [AvailableComponent!]
+        getAllAvailableComponents(projectId: String!, limit: Int, skip: Int): [AvailableComponent!]
         getAvailableComponentById(id: String!): AvailableComponent
     }
     extend type Mutation {

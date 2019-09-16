@@ -38,7 +38,7 @@ export const executeCommand = (projectDirName: string) => {
                 }
                 console.log(`stdout: ${stdout}`);
                 console.log(`stderr: ${stderr}`);
-            })
+            });
 
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
@@ -50,10 +50,10 @@ export const executeCommand = (projectDirName: string) => {
 // Async
 const executeShellCommandAsync = async (cmd, options) => {
     return await exec(cmd, options);
-}
+};
 
 
-// Prominse 
+// Prominse
 const executeShellCommand = (cmd, options: null) => {
     return new Promise((resolve, reject) => {
         exec(cmd, options, (err, stdout, stderr) => {
@@ -63,4 +63,4 @@ const executeShellCommand = (cmd, options: null) => {
             resolve(stdout ? stdout : stderr)
         })
     })
-}
+};

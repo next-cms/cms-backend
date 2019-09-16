@@ -7,8 +7,8 @@ const debug = debuglog("pi-cms.resolvers.Component");
 
 const FooterResolver: IResolvers = {
     Query: {
-        getAllAvailableComponent: async (parent, { limit, skip }, context) => {
-            return await getAvailableComponents();
+        getAllAvailableComponents: async (parent, { projectId, limit, skip }, context) => {
+            return await getAvailableComponents(projectId);
         },
         getAvailableComponentById: async (parent, { limit, skip }, context) => {
             // return await Footer.getAllFooter(limit, skip);

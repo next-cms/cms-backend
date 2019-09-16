@@ -5,4 +5,5 @@ export class AvailableComponentInfo {
 export class AvailableComponent extends AvailableComponentInfo{
     id: string = "";
     name: string = "";
+    props: any;
 }
