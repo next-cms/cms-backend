@@ -1,25 +1,30 @@
 import {
+    AssignmentExpression,
     CallExpression,
     ExportDefaultDeclaration,
     Identifier,
-    ImportDeclaration, ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier,
+    ImportDeclaration,
+    ImportDefaultSpecifier,
+    ImportNamespaceSpecifier,
+    ImportSpecifier,
     Program,
     VariableDeclarator
 } from "estree";
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
+import * as acorn from "acorn";
 import {Node} from "acorn";
 import {Component} from "../../api-models/PageDetails";
-import {AvailableComponent, AvailableComponentInfo} from "../../api-models/AvailableComponent";
+import {AvailableComponent} from "../../api-models/AvailableComponent";
 import fs from "fs";
 import * as Path from "path";
-import * as acorn from "acorn";
-const fsp = fs.promises;
 import jsx from "acorn-jsx";
+
+const fsp = fs.promises;
 const JSXParser = acorn.Parser.extend(jsx());
 extend(walk.base);
 
-export async function getDefaultExportIdentifier(ast: Program): Promise<string> {
+export async function getDefaultExportIdentifier(ast: Program|Node): Promise<string> {
     let identifier: string = "";
     await walk.recursive(ast, {}, {
         ExportDefaultDeclaration(node: ExportDefaultDeclaration, state, c) {
@@ -126,8 +131,21 @@ export async function getImportDeclarations(ast: Program|Node): Promise<Node[]> 
     return imports;
 }
 
-async function collectPropTypes(ast) {
-    // TODO collect the propTypes node.
+async function collectPropTypes(ast: Program): Promise<Node> {
+    const defaultExportedIdentifier: string = await getDefaultExportIdentifier(ast);
+
+    let propTypes: Node = null;
+    await walk.recursive(ast, {}, {
+        AssignmentExpression(node, state, c) {
+            if (node.left.type === "MemberExpression") {
+                if (node.left.object.name === defaultExportedIdentifier && node.left.property.name === "propTypes") {
+                    propTypes = node.right;
+                }
+            }
+        }
+    });
+
+    return propTypes;
 }
 
 async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNamespaceSpecifier|ImportSpecifier,
@@ -143,30 +161,63 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
         throw new Error("The node is not any type of Import Specifiers!");
     }
     component.name = nameNode.local.name;
-    const sourceFile = Path.join(rootPath, source);
-    await fsp.readFile(sourceFile, 'utf8').then((code)=>{
+    const sourceFile = Path.join(rootPath, `${source}.js`);
+    const propTypes: AssignmentExpression|any = await fsp.readFile(sourceFile, 'utf8').then((code)=>{
         const ast: any = JSXParser.parse(code, {
             sourceType: 'module'
         });
-        const propTypes = collectPropTypes(ast);
-        // TODO populate the component.props property from propTypes node.
+        return collectPropTypes(ast);
     });
+    for (const node of propTypes.properties) {
+        if (node.value.object.type === "MemberExpression") {
+            component.props[node.key.name] = {
+                type: node.value.object.property.name,
+                isRequired: node.value.property.name === "isRequired"
+            }
+        } else {
+            component.props[node.key.name] = {
+                type: node.value.property.name,
+                isRequired: false
+            }
+        }
+    }
     return component;
 }
 
-export async function collectAvailableComponentsInfoFromImportDeclaration(
+export async function collectAvailableComponentsInfoFromImportDeclaration (
     ast: ImportDeclaration | Node | any, rootPath, vendorPackageName: string): Promise<AvailableComponent[]> {
-    const aComponents: AvailableComponent[] = [];
-    await walk.recursive(ast, {source: ast.source}, {
-        async ImportDefaultSpecifier(node, state, c) {
-            aComponents.push(await collectComponentInfo(node, state.source.value, rootPath, vendorPackageName));
-        },
-        async ImportSpecifier(node, state, c) {
-            aComponents.push(await collectComponentInfo(node, state.source.value, rootPath, vendorPackageName));
-        },
-        async ImportNamespaceSpecifier(node, state, c) {
-            aComponents.push(await collectComponentInfo(node, state.source.value, rootPath, vendorPackageName));
+
+    async function getImports() {
+        const imports: any = [];
+        await walk.recursive(ast, {source: ast.source}, {
+            ImportDefaultSpecifier(node, state, c) {
+                imports.push({
+                    node,
+                    value: state.source.value
+                });
+            },
+            ImportSpecifier(node, state, c) {
+                imports.push({
+                    node,
+                    value: state.source.value
+                });
+            },
+            ImportNamespaceSpecifier(node, state, c) {
+                imports.push({
+                    node,
+                    value: state.source.value
+                });
+            }
+        });
+        return imports;
+    }
+
+    return await getImports().then(async imports => {
+        const availableComponents: AvailableComponent[] = [];
+        for (const imp of imports) {
+            const ac = await collectComponentInfo(imp.node, imp.value, rootPath, vendorPackageName);
+            availableComponents.push(ac);
         }
+        return availableComponents;
     });
-    return aComponents;
 }
