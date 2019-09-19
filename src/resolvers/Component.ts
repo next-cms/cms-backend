@@ -5,12 +5,12 @@ import {debuglog} from "util";
 import {addNewElement} from "../generators/JSXElementModifiers";
 const debug = debuglog("pi-cms.resolvers.Component");
 
-const FooterResolver: IResolvers = {
+const ComponentResolver: IResolvers = {
     Query: {
-        getAllAvailableComponents: async (parent, { projectId, limit, skip }, context) => {
+        allAvailableComponents: async (parent, { projectId, limit, skip }, context) => {
             return await getAvailableComponents(projectId);
         },
-        getAvailableComponentById: async (parent, { limit, skip }, context) => {
+        availableComponentById: async (parent, { limit, skip }, context) => {
             // return await Footer.getAllFooter(limit, skip);
         }
     },
@@ -21,4 +21,4 @@ const FooterResolver: IResolvers = {
     }
 };
 
-export default FooterResolver;
+export default ComponentResolver;

@@ -27,6 +27,8 @@ export class Component {
 // }
 
 export class PageDetails {
+    title: string;
+    slug: string;
     children: Component[] = [];
     hooks: [] = [];
     effects: [] = [];
