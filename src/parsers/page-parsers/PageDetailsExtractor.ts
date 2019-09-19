@@ -2,14 +2,11 @@ import {Node} from "acorn";
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
 import {Component, PageDetails} from "../../api-models/PageDetails";
-import {getDefaultExportIdentifier} from "../core/InfoExtractor";
 
 extend(walk.base);
 
-export async function extractPageDetails(ast: Node, page: string) {
+export async function extractPageDetails(ast: Node) {
     const pageDetails: PageDetails = new PageDetails();
-    pageDetails.title = await getDefaultExportIdentifier(ast);
-    pageDetails.slug = page;
     await walk.recursive(ast, {prevState: null, details: pageDetails}, {
         Literal(node, state, c) {
             state.details.value = node.value;

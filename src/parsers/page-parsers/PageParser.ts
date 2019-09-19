@@ -42,7 +42,7 @@ export async function getProjectPageDetails(projectId, page): Promise<PageDetail
             const ast: Node = JSXParser.parse(srcCode, {
                 sourceType: 'module'
             });
-            const pageDetails = extractPageDetails(ast, page);
+            const pageDetails = extractPageDetails(ast);
             console.log(pageDetails);
             return pageDetails;
         })
