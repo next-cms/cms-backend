@@ -3,9 +3,13 @@ import { ForbiddenError, IResolvers, UserInputError } from 'apollo-server-expres
 
 import Project from "../models/Project";
 import { isAdmin, isAuthenticated, isAuthorized } from "./Authorization";
+import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
 import { executeCommand } from '../project-initialize';
 
+
+const fs = require("fs-extra");
+let path = "";
 
 const ProjectResolver: IResolvers = {
     Query: {
@@ -88,9 +92,15 @@ const ProjectResolver: IResolvers = {
             isAuthenticated,
             async (parent, { id }, { user }) => {
                 const project = await Project.findById(id);
+                console.log("project is: ",project);
+                path = `${PROJECT_ROOT}/${project.id}`;
 
                 if (project && project.ownerId === user.id) {
                     await project.remove();
+                    //deleting project folder
+                    fs.remove(path,err =>{
+                        console.error(err);
+                    })
                     return true;
                 } else {
                     return new ForbiddenError('Not authorized.');

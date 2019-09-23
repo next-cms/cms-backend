@@ -1,4 +1,4 @@
 [submodule "cms-components"]
 	path = _components/_default/pi-cms-components
-	url = git@github.com:pi-cms/cms-components.git
+	url = https://github.com/pi-cms/cms-components.git
 	branch = master
