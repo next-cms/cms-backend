@@ -151,6 +151,7 @@ async function collectPropTypes(ast: Program): Promise<Node> {
 async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNamespaceSpecifier|ImportSpecifier,
                                     source, rootPath, vendorPackageName): Promise<AvailableComponent> {
     const component = new AvailableComponent();
+    component.vendor = vendorPackageName;
     if (nameNode.type === "ImportDefaultSpecifier") {
         component.id = `import ${nameNode.local.name} from "${vendorPackageName}";`;
     } else if (nameNode.type === "ImportNamespaceSpecifier") {

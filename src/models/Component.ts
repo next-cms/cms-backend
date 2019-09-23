@@ -1,27 +1,22 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-const ImportSignatureSchema: any = new Schema({
-    signature: String,
-    from: String
-});
-
 export const ComponentSchema: any = new Schema({
-    title: {
+    id: {
         type: String,
         required: false
     },
-    import: {                                   // or Maybe {
-        type: ImportSignatureSchema,            //   type: Map,
-        required: false                         //   of: String
-    },                                          // }
     name: {
         type: String,
         required: true
     },
-    props: [{
-        type: Schema.Types.Mixed,
+    vendor: {
+        type: String,
+        required: true
+    },
+    props: {
+        type: Schema.Types.Map,
         required: false
-    }],
+    },
     createdAt: {
         type: Date,
         default: Date.now
