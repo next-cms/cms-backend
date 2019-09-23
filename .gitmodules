@@ -1,3 +1,4 @@
-[submodule "_components/_default/cms-components"]
-	path = _components/_default/cms-components
-	url = git@github.com:next-cms/cms-components.git
+[submodule "cms-components"]
+	path = _components/_default/pi-cms-components
+	url = git@github.com:pi-cms/cms-components.git
+	branch = master

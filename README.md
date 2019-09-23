@@ -1,5 +1,13 @@
 # Core PI-CMS backend
 
+## Development
+* Clone the repo.
+* The repo has a submodule pi-cms-components. pull that one too with
+    
+        git submodule update --recursive --remote
+        
+* Run the mongodb server using the docker-compose.yml file.
+
 ##Tech-stack:
 * **MongoDB**: Main persistent database
 * **GraphQL**: CRUD service provider
