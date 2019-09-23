@@ -1,30 +1,28 @@
-import { combineResolvers } from 'graphql-resolvers';
-import { ForbiddenError, IResolvers, UserInputError } from 'apollo-server-express';
+import {combineResolvers} from 'graphql-resolvers';
+import {ForbiddenError, IResolvers, UserInputError} from 'apollo-server-express';
 
 import Project from "../models/Project";
-import { isAdmin, isAuthenticated, isAuthorized } from "./Authorization";
+import {isAdmin, isAuthenticated} from "./Authorization";
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
-import { executeCommand } from '../project-initialize';
-
+import {initializeNewProject} from '../project-initialize';
 
 const fs = require("fs-extra");
-let path = "";
 
 const ProjectResolver: IResolvers = {
     Query: {
         allProjects: combineResolvers(
-            isAdmin, async (parent, { limit, skip }, context) => {
+            isAdmin, async (parent, {limit, skip}, context) => {
                 return await Project.getAllProjects(limit, skip);
             }
         ),
         projects: combineResolvers(
-            isAuthenticated, async (parent, { limit, skip }, { user }) => {
+            isAuthenticated, async (parent, {limit, skip}, {user}) => {
                 return await Project.getAllProjectsByOwnerId(user.id, limit, skip);
             }
         ),
         project: combineResolvers(
-            isAuthenticated, async (parent, { id }, { user }) => {
+            isAuthenticated, async (parent, {id}, {user}) => {
                 const project = await Project.findById(id);
                 if (project && project.ownerId === user.id) {
                     return project;
@@ -33,9 +31,9 @@ const ProjectResolver: IResolvers = {
             }
         ),
         _projectsMeta: combineResolvers(isAuthenticated,
-            async (parent, args, { user }) => {
+            async (parent, args, {user}) => {
                 return {
-                    count: await Project.countDocuments({ ownerId: user.id })
+                    count: await Project.countDocuments({ownerId: user.id})
                     // count: await Project.estimatedDocumentCount({})
                 };
             }
@@ -45,30 +43,29 @@ const ProjectResolver: IResolvers = {
     Mutation: {
         createProject: combineResolvers(
             isAuthenticated, async (parent,
-                { title, description, websiteUrl },
-                { user },
-        ) => {
-            try {
-                let project = new Project({ title, description, websiteUrl, ownerId: user.id });
-                return project.save().then(res => {
-                    console.log(res);
-                    executeCommand(res._id);
-                    return res;
-                }).catch(err => {
-                    console.log(err);
-                    return err;
-                })
-            } catch (e) {
-                return e.message;
+                                    {title, description, websiteUrl},
+                                    {user},
+            ) => {
+                try {
+                    let project = new Project({title, description, websiteUrl, ownerId: user.id});
+                    return project.save().then(res => {
+                        console.log(res);
+                        initializeNewProject(res._id);
+                        return res;
+                    }).catch(err => {
+                        console.log(err);
+                        return err;
+                    })
+                } catch (e) {
+                    return e.message;
+                }
             }
-        }
         ),
-
         updateProject: combineResolvers(
             isAuthenticated,
             async (parent,
-                { id, title, description, websiteUrl, brand, siteMeta },
-                { user },
+                   {id, title, description, websiteUrl, brand, siteMeta},
+                   {user},
             ) => {
                 const project = await Project.findById(id);
                 if (!project) {
@@ -90,17 +87,17 @@ const ProjectResolver: IResolvers = {
         ),
         deleteProject: combineResolvers(
             isAuthenticated,
-            async (parent, { id }, { user }) => {
+            async (parent, {id}, {user}) => {
                 const project = await Project.findById(id);
-                console.log("project is: ",project);
-                path = `${PROJECT_ROOT}/${project.id}`;
+                console.log("project is: ", project);
+                const path = `${PROJECT_ROOT}/${project.id}`;
 
                 if (project && project.ownerId === user.id) {
                     await project.remove();
                     //deleting project folder
-                    fs.remove(path,err =>{
+                    await fs.remove(path, err => {
                         console.error(err);
-                    })
+                    });
                     return true;
                 } else {
                     return new ForbiddenError('Not authorized.');
