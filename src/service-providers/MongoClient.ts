@@ -3,7 +3,12 @@
 ============================== */
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
+import {debuglog} from "util";
+import utils from "../utils";
 dotenv.config();
+
+const log = debuglog("pi-cms.service-providers.MongoClient");
+
 /* ===========================
         Setup Config
 ============================== */
@@ -41,13 +46,15 @@ const mongoClient = (function connectWithMongoDB() {
     };
 
     mongoose.connect(mongoDB, options).then(
-        () => {
-            console.log("MongoDB Connected! Ready to use MongoDB.")
+        async () => {
+            log("MongoDB Connected! Ready to use MongoDB.");
             // User.collection.drop();
+            await utils.syncDefaultComponentsPool();
+            log("Imported available components");
         },
         err => {
-            console.log("Failed to connect with MongoDB!");
-            console.log(err);
+            log("Failed to connect with MongoDB!");
+            log(err);
         });
 
     return mongoose;

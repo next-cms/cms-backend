@@ -1,10 +1,13 @@
 export class AvailableComponentInfo {
     id: string = "";
+    name?: string = "";
+    vendor?: string = "";
 }
 
 export class AvailableComponent extends AvailableComponentInfo{
     id: string = "";
     name: string = "";
+    vendor: string = "";
     props: PropsType = {};
 }
 

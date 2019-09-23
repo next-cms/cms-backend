@@ -54,7 +54,7 @@ async function collectComponents(componentsRootPath): Promise<AvailableComponent
                     sourceType: 'module'
                 });
                 const imports: Node[] = await getImportDeclarations(ast);
-                console.log();
+                // console.log();
                 for(const importNode of imports) {
                     const components = await collectAvailableComponentsInfoFromImportDeclaration(importNode,
                         path.join(componentsRootPath, vendor, 'src/lib'), vendorPackageName);
@@ -62,7 +62,7 @@ async function collectComponents(componentsRootPath): Promise<AvailableComponent
                 }
             });
         }
-        console.log("returning from collectComponents", availableComponents);
+        console.log("returning from collectComponents");
         return availableComponents;
     }).catch((err)=>{
         console.log('Unable to scan directory: ' + err);
@@ -70,12 +70,12 @@ async function collectComponents(componentsRootPath): Promise<AvailableComponent
     });
 }
 
-async function collectDefaultComponents() {
+export async function collectDefaultComponents() {
     const defaultComponentsDir = path.join(DEFAULT_AVAILABLE_COMPONENTS_ROOT);
     return await collectComponents(defaultComponentsDir);
 }
 
-async function collectCustomComponents(projectId) {
+export async function collectCustomComponents(projectId) {
     const customComponentsDir = path.join(AVAILABLE_COMPONENTS_ROOT, projectId);
     return await collectComponents(customComponentsDir);
 }
