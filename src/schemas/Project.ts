@@ -46,6 +46,6 @@ export default gql`
       siteMeta: String
       brand: BrandInput
     ): Project!
-    deleteProject(id: ID!): Boolean!
+    deleteProject(id: ID!): Boolean
   }
 `;
