@@ -11,7 +11,7 @@ export async function syncDefaultComponentsPool() {
     const vendors = {};
     for (const component of components) {
         try {
-            let componentModel = await Component.findById(component.id);
+            let componentModel = await Component.findByImportSignature(component.importSignature);
             if (!componentModel) {
                 componentModel = new Component(component);
                 await componentModel.save().then(res => {
@@ -25,6 +25,7 @@ export async function syncDefaultComponentsPool() {
                 log(`Skipping already imported component: ${component.name}`);
             }
         } catch (e) {
+            log(e.message, e);
             return e.message;
         }
     }

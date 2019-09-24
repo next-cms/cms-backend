@@ -13,9 +13,11 @@ const debug = debuglog("pi-cms.resolvers.Component");
 const ComponentResolver: IResolvers = {
     Query: {
         allAvailableComponents: combineResolvers(
-            isAuthenticated, async (projectId, limit, skip, context) => {
-                return [...await Component.getAllComponent(limit, skip),
-                    ...await collectCustomComponents(projectId)];
+            isAuthenticated, async (parent, {projectId, limit, skip}, context) => {
+                return [
+                    ...await Component.getAllComponent(limit, skip),
+                    ...await collectCustomComponents(projectId)
+                ];
             }
         ),
         availableComponentById: async (parent, { limit, skip }, context) => {
@@ -24,7 +26,7 @@ const ComponentResolver: IResolvers = {
     },
     Mutation: {
         addComponent: async (parentMutation, {componentId, parent, projectId, page}, context) => {
-            return addNewElement(projectId, page, {id: componentId}, parent);
+            return addNewElement(projectId, page, {importSignature: componentId}, parent);
         }
     }
 };
