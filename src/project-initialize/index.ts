@@ -3,7 +3,7 @@ import fs from 'fs';
 import { PROJECT_ROOT, PROJECT_FRONTEND } from '../constants/DirectoryStructureConstants';
 
 
-export const executeCommand = (projectDirName: string) => {
+export const initializeNewProject = (projectDirName: string) => {
 
     if (!fs.existsSync(PROJECT_ROOT)) {
         console.log(`${PROJECT_ROOT} folder not exist!`);
