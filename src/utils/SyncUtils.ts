@@ -8,14 +8,16 @@ const log = debuglog("pi-cms.utils.SyncUtils");
 export async function syncDefaultComponentsPool() {
     log('Syncing the available component pool...');
     const components: AvailableComponent[] = await collectDefaultComponents();
+    console.log("Components: ", components)
     const vendors = {};
     for (const component of components) {
         try {
             let componentModel = await Component.findById(component.id);
             if (!componentModel) {
                 componentModel = new Component(component);
+                log(`Importing new component: ${component.name}`);
                 await componentModel.save().then(res => {
-                    log(`Importing new component: ${component.name}`);
+                    log(`Imported new component: ${component.name}`);
                     return res;
                 }).catch(err => {
                     log(JSON.stringify(err));
@@ -25,6 +27,7 @@ export async function syncDefaultComponentsPool() {
                 log(`Skipping already imported component: ${component.name}`);
             }
         } catch (e) {
+            console.log("Error :",e)
             return e.message;
         }
     }
