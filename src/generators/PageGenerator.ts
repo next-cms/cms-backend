@@ -27,7 +27,7 @@ async function getFileName(dirPath) {
 }
 
 export async function addNewPage(projectId): Promise<Page> {
-    const templateFilePath = path.join(__dirname, '../../page-templates', 'BlankPage.js.template');
+    const templateFilePath = path.join(__dirname, 'BlankPage.js.template');
     return await fsp.readFile(templateFilePath, 'utf8')
         .then(async (templateFile) => {
             const fileNameID = await getFileName(path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages'));

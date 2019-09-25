@@ -44,6 +44,15 @@ export async function extractPageDetails(ast: Node, page: string) {
             node.attributes.forEach((attr) => c(attr, newState));
         },
         JSXAttribute(node, state, c) {
+            if (!node.value) {
+                state.details.attributes.push({
+                    name: node.name.name,
+                    value: true,
+                    start: node.name.end,
+                    end: node.name.end,
+                });
+                return;
+            }
             switch (node.value.type) {
                 case "JSXExpressionContainer":
                     const attr = {

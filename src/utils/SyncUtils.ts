@@ -8,14 +8,16 @@ const log = debuglog("pi-cms.utils.SyncUtils");
 export async function syncDefaultComponentsPool() {
     log('Syncing the available component pool...');
     const components: AvailableComponent[] = await collectDefaultComponents();
+    console.log("Components: ", JSON.stringify(components));
     const vendors = {};
-    for (const component of components) {
+    components.map( async component => {
         try {
             let componentModel = await Component.findByImportSignature(component.importSignature);
             if (!componentModel) {
                 componentModel = new Component(component);
+                log(`Importing new component: ${component.name}`);
                 await componentModel.save().then(res => {
-                    log(`Importing new component: ${component.name}`);
+                    log(`Imported new component: ${component.name}`);
                     return res;
                 }).catch(err => {
                     log(JSON.stringify(err));
@@ -28,7 +30,7 @@ export async function syncDefaultComponentsPool() {
             log(e.message, e);
             return e.message;
         }
-    }
+    })
 }
 
 export async function reimportDefaultComponentsPool() {
