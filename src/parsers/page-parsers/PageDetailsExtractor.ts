@@ -10,7 +10,6 @@ export async function extractPageDetails(ast: Node, page: string) {
     const pageDetails: PageDetails = new PageDetails();
     pageDetails.title = await getDefaultExportIdentifier(ast);
     pageDetails.slug = page;
-    console.log("Page: ", page);
     await walk.recursive(ast, {prevState: null, details: pageDetails}, {
         Literal(node, state, c) {
             state.details.value = node.value;
