@@ -19,7 +19,7 @@ export default gql`
     }
 
     type PageDetails {
-        title: String!,
+        title: String,
         slug: String!,
         children: [JSONObject]
         hooks: [String]

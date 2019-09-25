@@ -1,19 +1,19 @@
 export class AvailableComponentInfo {
-    id: string = "";
+    importSignature: string = "";
     name?: string = "";
     vendor?: string = "";
 }
 
 export class AvailableComponent extends AvailableComponentInfo{
-    id: string = "";
+    importSignature: string = "";
     name: string = "";
-    vendor: string = "";
+    vendor?: string = "";
     props: PropsType = {};
 }
 
 export class PropsType {
     [x: string]: {
-        type: string,
+        type: any,
         isRequired: boolean
     }
 }

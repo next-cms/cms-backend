@@ -10,6 +10,7 @@ export async function extractPageDetails(ast: Node, page: string) {
     const pageDetails: PageDetails = new PageDetails();
     pageDetails.title = await getDefaultExportIdentifier(ast);
     pageDetails.slug = page;
+    console.log("Page: ", page);
     await walk.recursive(ast, {prevState: null, details: pageDetails}, {
         Literal(node, state, c) {
             state.details.value = node.value;
@@ -44,6 +45,15 @@ export async function extractPageDetails(ast: Node, page: string) {
             node.attributes.forEach((attr) => c(attr, newState));
         },
         JSXAttribute(node, state, c) {
+            if (!node.value) {
+                state.details.attributes.push({
+                    name: node.name.name,
+                    value: true,
+                    start: node.name.end,
+                    end: node.name.end,
+                });
+                return;
+            }
             switch (node.value.type) {
                 case "JSXExpressionContainer":
                     const attr = {

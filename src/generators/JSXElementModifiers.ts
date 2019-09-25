@@ -41,10 +41,11 @@ function wrapWithFragment(node: Node): any {
     }
 }
 
-function getAvailableComponent(componentInfo: AvailableComponentInfo): any {
-    return { // TODO
-        id: componentInfo.id,
-        name: componentInfo.id,
+function getAvailableComponentFromImportSignature(importSignature: string): AvailableComponent {
+    return { //TODO
+        importSignature: importSignature,
+        name: "div",
+        props: {}
     }
 }
 
@@ -81,16 +82,16 @@ async function addNewElementInSourceCode(sourceCode: string, component: Availabl
 
     if (!parent) {
         if (await isFragment(jsxElement)) {
-            addNewChildElement(jsxElement, getAvailableComponent(component));
+            addNewChildElement(jsxElement, getAvailableComponentFromImportSignature(component.importSignature));
             newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(jsxElement) + sourceCode.substr(jsxElement.end);
         } else {
             const newJsxElement = wrapWithFragment(jsxElement);
-            addNewChildElement(newJsxElement, getAvailableComponent(component));
+            addNewChildElement(newJsxElement, getAvailableComponentFromImportSignature(component.importSignature));
             newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(newJsxElement) + sourceCode.substr(jsxElement.end);
         }
     } else {
         const parentElement = getJSXElementFromInfo(jsxElement, parent);
-        addNewChildElement(parentElement, getAvailableComponent(component));
+        addNewChildElement(parentElement, getAvailableComponentFromImportSignature(component.importSignature));
         newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(parentElement) + sourceCode.substr(jsxElement.end);
     }
     return newSrcCode;

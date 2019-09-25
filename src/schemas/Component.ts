@@ -2,7 +2,7 @@ import {gql} from 'apollo-server-express';
 
 export default gql`
     type AvailableComponent {
-        id: String!
+        importSignature: String!
         name: String!
         props: JSONObject!
     }

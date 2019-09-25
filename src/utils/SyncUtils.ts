@@ -12,8 +12,7 @@ export async function syncDefaultComponentsPool() {
     const vendors = {};
     components.map( async component => {
         try {
-            let componentModel = await Component.findById(component.id);
-            console.log("Id of the component is :", component.name);
+            let componentModel = await Component.findByImportSignature(component.importSignature);
             if (!componentModel) {
                 componentModel = new Component(component);
                 log(`Importing new component: ${component.name}`);
@@ -28,7 +27,7 @@ export async function syncDefaultComponentsPool() {
                 log(`Skipping already imported component: ${component.name}`);
             }
         } catch (e) {
-            console.log("Error :",e)
+            log(e.message, e);
             return e.message;
         }
     })

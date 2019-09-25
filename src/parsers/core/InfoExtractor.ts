@@ -153,11 +153,11 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
     const component = new AvailableComponent();
     component.vendor = vendorPackageName;
     if (nameNode.type === "ImportDefaultSpecifier") {
-        component.id = `import ${nameNode.local.name} from "${vendorPackageName}";`;
+        component.importSignature = `import ${nameNode.local.name} from "${vendorPackageName}";`;
     } else if (nameNode.type === "ImportNamespaceSpecifier") {
-        component.id = `import * as ${nameNode.local.name} from "${vendorPackageName}";`;
+        component.importSignature = `import * as ${nameNode.local.name} from "${vendorPackageName}";`;
     } else if (nameNode.type === "ImportSpecifier") {
-        component.id = `import {${nameNode.local.name}} from "${vendorPackageName}";`;
+        component.importSignature = `import {${nameNode.local.name}} from "${vendorPackageName}";`;
     } else {
         throw new Error("The node is not any type of Import Specifiers!");
     }

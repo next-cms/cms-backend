@@ -1,9 +1,10 @@
 import mongoose, { Model, Schema } from "mongoose";
 
 export const ComponentSchema: any = new Schema({
-    id: {
+    importSignature: {
         type: String,
-        required: false
+        required: true,
+        unique: true
     },
     name: {
         type: String,
@@ -14,7 +15,7 @@ export const ComponentSchema: any = new Schema({
         required: true
     },
     props: {
-        type: Schema.Types.Map,
+        type: Schema.Types.Mixed,
         required: false
     },
     createdAt: {
@@ -29,6 +30,12 @@ export const ComponentSchema: any = new Schema({
 
 ComponentSchema.statics.getAllComponent = async function (limit, skip) {
     return await this.find().sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+};
+
+ComponentSchema.statics.findByImportSignature = async function (importSignature) {
+    return await this.findOne({
+        importSignature: importSignature,
+    });
 };
 
 const Component: Model<any, any> | any = mongoose.model("Component", ComponentSchema);
