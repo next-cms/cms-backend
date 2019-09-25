@@ -2,6 +2,7 @@ import path from "path";
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
 import {Component} from "../api-models/PageDetails";
+import ComponentModel from "../models/Component";
 import {AvailableComponent, AvailableComponentInfo} from "../api-models/AvailableComponent";
 import {debuglog} from "util";
 const debug = debuglog("pi-cms.generators.ComponentGenerator");
@@ -11,7 +12,7 @@ import jsx from "acorn-jsx";
 import {
     getDefaultExportedComponent,
     getJSXElement,
-    isFragment, getJSXElementFromInfo
+    isFragment, getJSXElementFromInfo, getImportDeclarations, hasImportDeclaration
 } from "../parsers/core/InfoExtractor";
 import {Node} from "acorn";
 import {generateJsx} from "./JSXGenerator";
@@ -41,12 +42,8 @@ function wrapWithFragment(node: Node): any {
     }
 }
 
-function getAvailableComponentFromImportSignature(importSignature: string): AvailableComponent {
-    return { //TODO
-        importSignature: importSignature,
-        name: "div",
-        props: {}
-    }
+async function getAvailableComponentFromImportSignature(id: string): Promise<AvailableComponent> {
+    return await ComponentModel.findById(id);
 }
 
 function addNewChildElement(sourceNode: any, component: AvailableComponent): void {
@@ -72,27 +69,36 @@ function addNewChildElement(sourceNode: any, component: AvailableComponent): voi
     });
 }
 
+function addImportDeclaration(sourceCode: string, component: AvailableComponent) {
+    return `${component.importSignature}\n${sourceCode}`;
+}
+
 async function addNewElementInSourceCode(sourceCode: string, component: AvailableComponentInfo, parent: Component): Promise<string> {
     const ast: any = JSXParser.parse(sourceCode, {
         sourceType: 'module'
     });
     const defaultExportedComponent = await getDefaultExportedComponent(ast);
+    const imports = await getImportDeclarations(ast);
     const jsxElement = await getJSXElement(defaultExportedComponent);
+    const componentModel = await getAvailableComponentFromImportSignature(component.id);
     let newSrcCode = sourceCode;
 
     if (!parent) {
         if (await isFragment(jsxElement)) {
-            addNewChildElement(jsxElement, getAvailableComponentFromImportSignature(component.importSignature));
+            addNewChildElement(jsxElement, componentModel);
             newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(jsxElement) + sourceCode.substr(jsxElement.end);
         } else {
             const newJsxElement = wrapWithFragment(jsxElement);
-            addNewChildElement(newJsxElement, getAvailableComponentFromImportSignature(component.importSignature));
+            addNewChildElement(newJsxElement, componentModel);
             newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(newJsxElement) + sourceCode.substr(jsxElement.end);
         }
     } else {
         const parentElement = getJSXElementFromInfo(jsxElement, parent);
-        addNewChildElement(parentElement, getAvailableComponentFromImportSignature(component.importSignature));
+        addNewChildElement(parentElement, componentModel);
         newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(parentElement) + sourceCode.substr(jsxElement.end);
+    }
+    if (!await hasImportDeclaration(imports, componentModel)) {
+        newSrcCode = addImportDeclaration(newSrcCode, componentModel);
     }
     return newSrcCode;
 }

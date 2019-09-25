@@ -121,11 +121,58 @@ export async function getVendorPackageName(vendorRootDir: string) {
     });
 }
 
+export async function hasImportDeclaration(imports: Node[], componentModel): Promise<boolean> {
+    for (const imp of imports) {
+        const nameNodes = await getImportsNameNodes(imp);
+        for (const nameNode of nameNodes) {
+            if (nameNode.node.type === "ImportDefaultSpecifier") {
+                if (componentModel.importSignature === `import ${nameNode.node.local.name} from "${nameNode.source}";`){
+                    return true;
+                }
+            } else if (nameNode.node.type === "ImportNamespaceSpecifier") {
+                if (componentModel.importSignature === `import * as ${nameNode.node.local.name} from "${nameNode.source}";`){
+                    return true;
+                }
+            } else if (nameNode.node.type === "ImportSpecifier") {
+                if (componentModel.importSignature === `import {${nameNode.node.local.name}} from "${nameNode.source}";`){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
 export async function getImportDeclarations(ast: Program|Node): Promise<Node[]> {
     let imports: Node[] = [];
     await walk.recursive(ast, {}, {
         ImportDeclaration(node, state, c) {
             imports.push(node);
+        }
+    });
+    return imports;
+}
+
+export async function getImportsNameNodes(ast: ImportDeclaration | Node | any): Promise<{node, source}[]> {
+    const imports: any = [];
+    await walk.recursive(ast, {source: ast.source}, {
+        ImportDefaultSpecifier(node, state, c) {
+            imports.push({
+                node,
+                source: state.source.value
+            });
+        },
+        ImportSpecifier(node, state, c) {
+            imports.push({
+                node,
+                source: state.source.value
+            });
+        },
+        ImportNamespaceSpecifier(node, state, c) {
+            imports.push({
+                node,
+                source: state.source.value
+            });
         }
     });
     return imports;
@@ -152,15 +199,10 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
                                     source, rootPath, vendorPackageName): Promise<AvailableComponent> {
     const component = new AvailableComponent();
     component.vendor = vendorPackageName;
-    if (nameNode.type === "ImportDefaultSpecifier") {
-        component.importSignature = `import ${nameNode.local.name} from "${vendorPackageName}";`;
-    } else if (nameNode.type === "ImportNamespaceSpecifier") {
-        component.importSignature = `import * as ${nameNode.local.name} from "${vendorPackageName}";`;
-    } else if (nameNode.type === "ImportSpecifier") {
-        component.importSignature = `import {${nameNode.local.name}} from "${vendorPackageName}";`;
-    } else {
-        throw new Error("The node is not any type of Import Specifiers!");
-    }
+
+    // Library Components Import Signature must have to be like this
+    component.importSignature = `import {${nameNode.local.name}} from "${vendorPackageName}";`;
+
     component.name = nameNode.local.name;
     const sourceFile = Path.join(rootPath, `${source}.js`);
     const propTypes: AssignmentExpression|any = await fsp.readFile(sourceFile, 'utf8').then((code)=>{
@@ -188,35 +230,10 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
 export async function collectAvailableComponentsInfoFromImportDeclaration (
     ast: ImportDeclaration | Node | any, rootPath, vendorPackageName: string): Promise<AvailableComponent[]> {
 
-    async function getImports() {
-        const imports: any = [];
-        await walk.recursive(ast, {source: ast.source}, {
-            ImportDefaultSpecifier(node, state, c) {
-                imports.push({
-                    node,
-                    value: state.source.value
-                });
-            },
-            ImportSpecifier(node, state, c) {
-                imports.push({
-                    node,
-                    value: state.source.value
-                });
-            },
-            ImportNamespaceSpecifier(node, state, c) {
-                imports.push({
-                    node,
-                    value: state.source.value
-                });
-            }
-        });
-        return imports;
-    }
-
-    return await getImports().then(async imports => {
+    return await getImportsNameNodes(ast).then(async imports => {
         const availableComponents: AvailableComponent[] = [];
         for (const imp of imports) {
-            const ac = await collectComponentInfo(imp.node, imp.value, rootPath, vendorPackageName);
+            const ac = await collectComponentInfo(imp.node, imp.source, rootPath, vendorPackageName);
             availableComponents.push(ac);
         }
         return availableComponents;

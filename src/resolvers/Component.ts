@@ -26,7 +26,13 @@ const ComponentResolver: IResolvers = {
     },
     Mutation: {
         addComponent: async (parentMutation, {componentId, parent, projectId, page}, context) => {
-            return addNewElement(projectId, page, {importSignature: componentId}, parent);
+            return await addNewElement(projectId, page, {id: componentId}, parent);
+        },
+        addComponents: async (parentMutation, {componentIds, parent, projectId, page}, context) => {
+            for (const componentId of componentIds) {
+                await addNewElement(projectId, page, {id: componentId}, parent);
+            }
+            return true;
         }
     }
 };
