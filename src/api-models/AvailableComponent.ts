@@ -1,10 +1,11 @@
 export class AvailableComponentInfo {
-    importSignature: string = "";
+    id: string;
     name?: string = "";
     vendor?: string = "";
 }
 
 export class AvailableComponent extends AvailableComponentInfo{
+    id: string;
     importSignature: string = "";
     name: string = "";
     vendor?: string = "";
