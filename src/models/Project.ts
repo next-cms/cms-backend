@@ -50,8 +50,16 @@ ProjectSchema.statics.getAllProjects = async function (limit, skip) {
 };
 
 ProjectSchema.statics.getAllProjectsByOwnerId = async function (ownerId, limit, skip) {
-    return await this.find({ ownerId }).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+    return await this.find({ownerId}).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
+
+ProjectSchema.statics.getAllFilteredProjectsByOwnerId = async function (ownerId, title, limit, skip) {
+    let titleLower = title;
+    let regex = new RegExp(titleLower, "i");
+    return await this.find({ownerId, title: regex }).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+    //return await this.aggregate()
+};
+
 
 const Project: Model<any, any> | any = mongoose.model("Project", ProjectSchema);
 // Export Project Model/Schema
