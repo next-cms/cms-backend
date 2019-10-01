@@ -42,9 +42,7 @@ export async function getProjectPageDetails(projectId, page): Promise<PageDetail
             const ast: Node = JSXParser.parse(srcCode, {
                 sourceType: 'module'
             });
-            const pageDetails = extractPageDetails(ast, page);
-            console.log(pageDetails);
-            return pageDetails;
+            return extractPageDetails(ast, page);
         })
         .catch((err) => {
             console.log("File read failed:", err);

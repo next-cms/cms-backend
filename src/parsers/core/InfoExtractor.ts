@@ -14,16 +14,22 @@ import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
 import * as acorn from "acorn";
 import {Node} from "acorn";
-import {Component} from "../../api-models/PageDetails";
-import {AvailableComponent} from "../../api-models/AvailableComponent";
+import {Component, Value} from "../../api-models/PageDetails";
+import {AvailableComponent, PropsType} from "../../api-models/AvailableComponent";
 import fs from "fs";
 import * as Path from "path";
 import jsx from "acorn-jsx";
+import {VendorModel} from "models/Vendor";
+import {generateJsx} from "../../generators/JSXGenerator";
 
 const fsp = fs.promises;
 const JSXParser = acorn.Parser.extend(jsx());
 extend(walk.base);
 
+/**
+ * Gets the identifier of the default exported member from the Program
+ * @param ast
+ */
 export async function getDefaultExportIdentifier(ast: Program|Node): Promise<string> {
     let identifier: string = "";
     await walk.recursive(ast, {}, {
@@ -40,6 +46,10 @@ export async function getDefaultExportIdentifier(ast: Program|Node): Promise<str
     return identifier;
 }
 
+/**
+ * Gets the default exported React Component from the Program
+ * @param ast
+ */
 export async function getDefaultExportedComponent(ast: Program): Promise<Node> {
     const defaultExportedIdentifier = await getDefaultExportIdentifier(ast);
     let defaultExportedComponent: any = ast;
@@ -63,6 +73,10 @@ export async function getDefaultExportedComponent(ast: Program): Promise<Node> {
     return defaultExportedComponent;
 }
 
+/**
+ * Checks if the given JSXElement is a React.Fragment
+ * @param jsxElement
+ */
 export async function isFragment(jsxElement: Node): Promise<boolean> {
     if (jsxElement.type === "JSXFragment") return true;
 
@@ -94,6 +108,11 @@ export async function getJSXElement(ast: Program|Node): Promise<Node> {
     return jsxElement;
 }
 
+/**
+ * Returns the JSXElementNode from the Program|Node which given as the componentInfo: Component
+ * @param ast
+ * @param componentInfo
+ */
 export async function getJSXElementFromInfo(ast: Program|Node, componentInfo: Component): Promise<Node> {
     let jsxElement: any = null;
     await walk.recursive(ast, {}, {
@@ -115,12 +134,23 @@ export async function getJSXElementFromInfo(ast: Program|Node, componentInfo: Co
     return jsxElement;
 }
 
+/**
+ * Reads the package.json file of the vendor root directory and parses the package name
+ * @param vendorRootDir
+ * @return package name
+ */
 export async function getVendorPackageName(vendorRootDir: string) {
     return await fsp.readFile(Path.join(vendorRootDir, 'package.json'), 'utf8').then(async (packageJson)=>{
         return JSON.parse(packageJson).name;
     });
 }
 
+/**
+ * Checks if the given componentModel is imported in the given imports nodes.
+ * @param imports
+ * @param componentModel
+ * @return true if exists in the imports array otherwise false
+ */
 export async function hasImportDeclaration(imports: Node[], componentModel): Promise<boolean> {
     for (const imp of imports) {
         const nameNodes = await getImportsNameNodes(imp);
@@ -143,6 +173,11 @@ export async function hasImportDeclaration(imports: Node[], componentModel): Pro
     return false;
 }
 
+/**
+ * Extracts the import statements
+ * @param ast
+ * @return the array of acorn.ImportDeclaration nodes
+ */
 export async function getImportDeclarations(ast: Program|Node): Promise<Node[]> {
     let imports: Node[] = [];
     await walk.recursive(ast, {}, {
@@ -153,6 +188,12 @@ export async function getImportDeclarations(ast: Program|Node): Promise<Node[]> 
     return imports;
 }
 
+/**
+ * Extracts the import name node and the source from import declaration nodes
+ * @param ast: ImportDeclaration
+ * @return the array of {acorn.ImportDefaultSpecifier, source} or {acorn.ImportSpecifier, source}
+ * or {acorn.ImportNamespaceSpecifier, source}
+ */
 export async function getImportsNameNodes(ast: ImportDeclaration | Node | any): Promise<{node, source}[]> {
     const imports: any = [];
     await walk.recursive(ast, {source: ast.source}, {
@@ -178,6 +219,57 @@ export async function getImportsNameNodes(ast: ImportDeclaration | Node | any): 
     return imports;
 }
 
+/**
+ * Find whether the given source denotes any of the vendors list
+ * @param vendors
+ * @param source
+ */
+function isVendorsIncludesSource(vendors: VendorModel[], source: string) {
+    return vendors.findIndex((vendor: VendorModel)=>vendor.name===source) > -1;
+}
+
+/**
+ * Extracts the import name node from import declaration nodes of given vendors
+ * @param ast: ImportDeclaration
+ * @param vendors
+ * @return the array of {acorn.ImportDefaultSpecifier, source} or {acorn.ImportSpecifier, source}
+ * or {acorn.ImportNamespaceSpecifier, source}
+ */
+export async function getImportsNameNodesOfGivenVendors(ast: ImportDeclaration | Node | any, vendors: VendorModel[]):
+    Promise<{node: ImportSpecifier|ImportNamespaceSpecifier|ImportDefaultSpecifier, vendor:string}[]> {
+    const imports: {node:ImportSpecifier|ImportNamespaceSpecifier|ImportDefaultSpecifier, vendor:string}[] = [];
+    await walk.recursive(ast, {source: ast.source}, {
+        ImportDefaultSpecifier(node, state, c) {
+            if (!isVendorsIncludesSource(vendors, state.source.value)) return;
+            imports.push({node, vendor: state.source.value});
+        },
+        ImportSpecifier(node, state, c) {
+            if (!isVendorsIncludesSource(vendors, state.source.value)) return;
+            imports.push({node, vendor: state.source.value});
+        },
+        ImportNamespaceSpecifier(node, state, c) {
+            if (!isVendorsIncludesSource(vendors, state.source.value)) return;
+            imports.push({node, vendor: state.source.value});
+        }
+    });
+    return imports;
+}
+
+/**
+ * Creates the import signature from the Import Specifier node and the vendor name
+ * @param nameNode
+ * @param vendorName
+ */
+export function getImportSignatureOfVendorComponentFromImportSpecifierNode(
+    nameNode: ImportSpecifier|ImportNamespaceSpecifier|ImportDefaultSpecifier, vendorName: string): string {
+    return `import {${nameNode.local.name}} from "${vendorName}";`;
+}
+
+/**
+ * Collects the propTypes of a default exported component
+ * @param ast
+ * @return The Object that is the propTypes of the default exported member of the program
+ */
 async function collectPropTypes(ast: Program): Promise<Node> {
     const defaultExportedIdentifier: string = await getDefaultExportIdentifier(ast);
 
@@ -195,6 +287,14 @@ async function collectPropTypes(ast: Program): Promise<Node> {
     return propTypes;
 }
 
+/**
+ * Prepare the AvailableComponent from the source of the component library
+ * @param nameNode
+ * @param source
+ * @param rootPath
+ * @param vendorPackageName
+ * @returns AvailableComponent
+ */
 async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNamespaceSpecifier|ImportSpecifier,
                                     source, rootPath, vendorPackageName): Promise<AvailableComponent> {
     const component = new AvailableComponent();
@@ -227,6 +327,14 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
     return component;
 }
 
+/**
+ * Collects the imported components which are exported from the index.js file of the lib folder of the vendor components
+ * library.
+ * @param ast
+ * @param rootPath
+ * @param vendorPackageName
+ * @return Array of AvailableComponent
+ */
 export async function collectAvailableComponentsInfoFromImportDeclaration (
     ast: ImportDeclaration | Node | any, rootPath, vendorPackageName: string): Promise<AvailableComponent[]> {
 
@@ -238,4 +346,46 @@ export async function collectAvailableComponentsInfoFromImportDeclaration (
         }
         return availableComponents;
     });
+}
+
+export async function getPropsValues(ast: Node, vendorComponent: AvailableComponent): Promise<any> {
+    const props: PropsType = copyObject(vendorComponent.props);
+    await walk.recursive(ast, {}, {
+        JSXAttribute(node, state, c) {
+            if (node.value && node.value.type === "JSXExpressionContainer") {
+                if (node.value.expression.type === "ObjectExpression") {
+                    props[node.name.name].value = {
+                        value: generateJsx(node.value.expression.value, 'utf8'),
+                        start: node.value.start,
+                        end: node.value.end
+                    }
+                } else if (node.value.expression.type === "JSXElement") {
+                    props[node.name.name].value = { // TODO may be better approach and better representation
+                        value: generateJsx(node.value.expression, 'utf8'),
+                        start: node.value.start,
+                        end: node.value.end
+                    }
+                } else {
+                    props[node.name.name].value = {
+                        value: node.value.expression.value,
+                        start: node.value.start,
+                        end: node.value.end
+                    }
+                }
+            } else {
+                props[node.name.name].value = node.value ? {
+                    value: node.value.value,
+                    start: node.value.start,
+                    end: node.value.end
+                } : {
+                    value: false
+                }
+            }
+        }
+    });
+    return props;
+}
+
+function copyObject(object) {
+    return JSON.parse(JSON.stringify(object));
 }

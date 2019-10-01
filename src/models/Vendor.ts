@@ -1,5 +1,9 @@
 import mongoose, { Model, Schema } from "mongoose";
 
+export type VendorModel = {
+    name: string;
+};
+
 export const VendorSchema: any = new Schema({
     name: {
         type: String,

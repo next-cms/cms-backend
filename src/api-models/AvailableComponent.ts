@@ -1,3 +1,5 @@
+import {Value} from "./PageDetails";
+
 export class AvailableComponentInfo {
     id: string;
     name?: string = "";
@@ -15,6 +17,7 @@ export class AvailableComponent extends AvailableComponentInfo{
 export class PropsType {
     [x: string]: {
         type: any,
-        isRequired: boolean
+        isRequired: boolean,
+        value?: Value
     }
 }
