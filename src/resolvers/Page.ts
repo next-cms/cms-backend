@@ -3,7 +3,7 @@ import {IResolvers} from 'apollo-server-express';
 import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
-import {getProjectPages, getProjectPageDetails} from "../parsers/page-parsers/PageParser";
+import {getProjectPages, getProjectPageDetails, getProjectPageSourceCode} from "../parsers/page-parsers/PageParser";
 import {addNewPage} from "../generators/PageGenerator";
 
 const PageResolver: IResolvers = {
@@ -18,6 +18,11 @@ const PageResolver: IResolvers = {
         page: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {page}, {project}) => {
                 return await getProjectPageDetails(project.id, page);
+            }
+        ),
+        pageSourceCode: combineResolvers(isAuthenticated, isAuthorized,
+            async (parent, {page}, {project}) => {
+                return await getProjectPageSourceCode(project.id, page);
             }
         )
     },

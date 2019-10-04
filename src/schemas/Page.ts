@@ -28,6 +28,7 @@ export default gql`
     extend type Query {
         allPages: [Page!]
         page(id: String!, page: String!): PageDetails
+        pageSourceCode(id: String!, page: String!): String
     }
     extend type Mutation {
         addPage: Page!

@@ -49,3 +49,14 @@ export async function getProjectPageDetails(projectId, page): Promise<PageDetail
             return new PageDetails();
         });
 }
+
+export async function getProjectPageSourceCode(projectId, page): Promise<string> {
+    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
+    // console.log("filePath", filePath);
+    return await fsp.readFile(filePath, 'utf8')
+        .then((srcCode) => srcCode)
+        .catch((err) => {
+            console.log("File read failed:", err);
+            return "";
+        });
+}

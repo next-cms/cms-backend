@@ -93,9 +93,10 @@ async function addNewElementInSourceCode(sourceCode: string, component: Availabl
             newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(newJsxElement) + sourceCode.substr(jsxElement.end);
         }
     } else {
-        const parentElement = getJSXElementFromInfo(jsxElement, parent);
+        const parentElement = await getJSXElementFromInfo(jsxElement, parent);
+        console.log("parentElement", parentElement);
         addNewChildElement(parentElement, componentModel);
-        newSrcCode = sourceCode.substr(0, jsxElement.start) + generateJsx(parentElement) + sourceCode.substr(jsxElement.end);
+        newSrcCode = sourceCode.substr(0, parentElement.start) + generateJsx(parentElement) + sourceCode.substr(parentElement.end);
     }
     if (!await hasImportDeclaration(imports, componentModel)) {
         newSrcCode = addImportDeclaration(newSrcCode, componentModel);
