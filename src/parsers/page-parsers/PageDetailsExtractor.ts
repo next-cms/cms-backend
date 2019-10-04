@@ -13,6 +13,7 @@ import ComponentModel from "../../models/Component";
 import {debuglog} from "util";
 import {AvailableComponent} from "../../api-models/AvailableComponent";
 import {ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier} from "estree";
+import {wait} from "next/dist/build/output/log";
 
 const log = debuglog("pi-cms.page-parsers.PageDetailsExtractor");
 extend(walk.base);
@@ -22,10 +23,8 @@ export async function extractPageDetails(ast: Node, page: string) {
     pageDetails.title = await getDefaultExportIdentifier(ast);
     pageDetails.slug = page;
 
-    // await addDetailPageInfoAtGranularLevel(ast, pageDetails);
     await addDetailPageInfoAtCMSComponentLevel(ast, pageDetails);
 
-    console.log(pageDetails);
     return pageDetails;
 }
 
@@ -38,62 +37,75 @@ async function addDetailPageInfoAtCMSComponentLevel(ast: Node, pageDetails: Page
     for (const importsNode of imports) {
         vendorComponentsImportsNameNodesInPage.push(...await getImportsNameNodesOfGivenVendors(importsNode, vendors));
     }
-    console.log("vendorComponentsImportsNameNodesInPage: ", vendorComponentsImportsNameNodesInPage);
 
     const vendorComponents: AvailableComponent[] = [];
     for (const nameNodes of vendorComponentsImportsNameNodesInPage) {
         vendorComponents.push(await ComponentModel.findByImportSignature(
             getImportSignatureOfVendorComponentFromImportSpecifierNode(nameNodes.node, nameNodes.vendor)))
     }
-    console.log("vendorComponents: ", vendorComponents);
 
-    const vendorComponentsInPage: Component[] = await findVendorComponentsInPage(ast, vendorComponents);
-    console.log("vendorComponentsInPage: ", vendorComponentsInPage);
-    pageDetails.children = vendorComponentsInPage;
+    pageDetails.children = await findVendorChildComponents(ast, vendorComponents);
+    console.log("addDetailPageInfoAtCMSComponentLevel", pageDetails);
 }
 
 function getCorrespondingVendorComponent(jsxIdentifier: string, components: AvailableComponent[]) {
-    console.log("getCorrespondingVendorComponent", jsxIdentifier, components);
     const idx = components.findIndex((component: AvailableComponent) => component.name === jsxIdentifier);
-    console.log("idx", idx);
     if (idx > -1) return components[idx];
     return null;
 }
 
-async function findVendorComponentsInPage(ast: Node, vendorComponents: AvailableComponent[]): Promise<Component[]> {
-    const vendorComponentsInPage: Component[] = [];
-
-    await walk.recursive(ast, {}, {
-        JSXElement(node, state, c) {
-            switch (node.openingElement.name.type) {
-                case "JSXIdentifier": {
-                    const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.name, vendorComponents);
-                    console.log("vendorComponent", vendorComponent);
-                    if (vendorComponent) {
-                        Component.createFromNodeAndVendorComponent(node, vendorComponent).then((component) => {
-                            vendorComponentsInPage.push(component);
-                            console.log("vendorComponentsInPage", vendorComponentsInPage);
-                        });
-                    }
-                    break;
-                }
-                case "JSXMemberExpression": {
-                    const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.object.name, vendorComponents);
-                    if (vendorComponent) {
-                        Component.createFromNodeAndVendorComponent(node, vendorComponent).then((component) => {
-                            vendorComponentsInPage.push(component);
-                        });
-                    }
-                    break;
-                }
+async function getChildVendorComponentInPage(node, vendorComponents) {
+    switch (node.openingElement.name.type) {
+        case "JSXIdentifier": {
+            const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.name, vendorComponents);
+            console.log("vendorComponent", vendorComponent);
+            if (vendorComponent) {
+                return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
             }
-            for(const child of node.children) {
-                c(child, state);
-            }
+            break;
         }
-    });
+        case "JSXMemberExpression": {
+            const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.object.name, vendorComponents);
+            if (vendorComponent) {
+                return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
+            }
+            break;
+        }
+    }
+    return false;
+}
 
-    return vendorComponentsInPage;
+export async function findVendorChildComponents(parent: Node|any, vendorComponents: AvailableComponent[]): Promise<Component[]> {
+    if (parent.type==="JSXText") return [];
+
+    if (parent.type==="JSXElement") {
+        const vendorComponentsInPage: Component[] = [];
+        const component = await getChildVendorComponentInPage(parent, vendorComponents);
+        if (!component) {
+            for (const child of parent.children) {
+                vendorComponentsInPage.push(...await findVendorChildComponents(child, vendorComponents));
+            }
+        } else {
+            vendorComponentsInPage.push(component);
+        }
+        return vendorComponentsInPage;
+    } else {
+        const vendorComponentsInPage: Component[] = [];
+        walk.recursive(parent, {}, {
+            JSXElement(node, state, c) {
+                return getChildVendorComponentInPage(node, vendorComponents).then((component) => {
+                    if (component) {
+                        vendorComponentsInPage.push(component);
+                        return;
+                    }
+                    for(const child of node.children) {
+                        c(child, state);
+                    }
+                });
+            }
+        });
+        return vendorComponentsInPage;
+    }
 }
 
 async function addDetailPageInfoAtGranularLevel(ast: Node, pageDetails: PageDetails) {

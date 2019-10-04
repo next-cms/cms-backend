@@ -1,6 +1,6 @@
 import {AvailableComponent, PropsType} from "./AvailableComponent";
-import {Node} from "acorn";
 import {getPropsValues} from "../parsers/core/InfoExtractor";
+import {findVendorChildComponents} from "../parsers/page-parsers/PageDetailsExtractor";
 
 export class Value {
     name?: string;
@@ -17,7 +17,8 @@ export class Component {
     attributes?: Value[] = [];
     props: PropsType = {};
     children: Component[] = [];
-    constructor(name?: string, start?: number, end?: number, attributes: Value[] = [], children: Component[] = []){
+
+    constructor(name?: string, start?: number, end?: number, attributes: Value[] = [], children: Component[] = []) {
         this.name = name;
         this.start = start;
         this.end = end;
@@ -25,25 +26,47 @@ export class Component {
         this.children = children;
     }
 
-    public static async createFromNodeAndVendorComponent(node: any, vendorComponent: AvailableComponent) {
-        switch(node.openingElement.name.type){
-            case "JSXIdentifier":
-                return {
-                    name: node.openingElement.name.name,
-                    start: node.start,
-                    end: node.end,
-                    props: await getPropsValues(node, vendorComponent),
-                    children: []  // TODO Find children
-                };
-            case "JSXMemberExpression":
-                return {
-                    name: `${node.openingElement.name.object.name}.${node.openingElement.name.property.name}`,
-                    start: node.start,
-                    end: node.end,
-                    props: await getPropsValues(node, vendorComponent),
-                    children: []    // TODO Find children
-                };
-        }
+    public static createFromNodeAndVendorComponent(node: any, vendorComponent: AvailableComponent, vendorComponentsList: AvailableComponent[]): Promise<Component> {
+        return getPropsValues(node.openingElement, vendorComponent).then((pTypes: PropsType)=>{
+            let component: Component;
+            switch (node.openingElement.name.type) {
+                case "JSXIdentifier": {
+                    component = {
+                        name: node.openingElement.name.name,
+                        start: node.start,
+                        end: node.end,
+                        props: pTypes,
+                        children: []
+                    };
+                    break;
+                }
+                case "JSXMemberExpression": {
+                    component = {
+                        name: `${node.openingElement.name.object.name}.${node.openingElement.name.property.name}`,
+                        start: node.start,
+                        end: node.end,
+                        props: pTypes,
+                        children: []
+                    };
+                    break;
+                }
+                default: return null;
+            }
+            const promises = node.children.map((child) => {
+                return findVendorChildComponents(child, vendorComponentsList);
+            });
+            Promise.all(promises).then((resolves: any[])=>{
+                if (resolves && resolves.length) {
+                    console.log(resolves);
+                    for (const c of resolves) {
+                        if (c && c.length) {
+                            component.children.push(...c);
+                        }
+                    }
+                }
+            });
+            return component;
+        });
     }
 }
 
