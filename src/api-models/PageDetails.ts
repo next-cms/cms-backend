@@ -57,7 +57,6 @@ export class Component {
             });
             Promise.all(promises).then((resolves: any[])=>{
                 if (resolves && resolves.length) {
-                    console.log(resolves);
                     for (const c of resolves) {
                         if (c && c.length) {
                             component.children.push(...c);

@@ -4,7 +4,7 @@ import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
 import {getProjectPages, getProjectPageDetails, getProjectPageSourceCode} from "../parsers/page-parsers/PageParser";
-import {addNewPage} from "../generators/PageGenerator";
+import {addNewPage, saveProjectPageSourceCode} from "../generators/PageGenerator";
 
 const PageResolver: IResolvers = {
     Query: {
@@ -34,7 +34,7 @@ const PageResolver: IResolvers = {
                     return addNewPage(project.id).then(res => {
                         return res;
                     }).catch(err => {
-                        console.log(err);
+                        console.error(err);
                         return err;
                     })
                 } catch (e) {
@@ -48,7 +48,7 @@ const PageResolver: IResolvers = {
                     return Page.findByIdAndUpdate(id, {title, modifiedAt: Date.now()}, {new: true}).then(res => {
                         return res;
                     }).catch(err => {
-                        console.log(err);
+                        console.error(err);
                         return err;
                     })
                 } catch (e) {
@@ -68,6 +68,11 @@ const PageResolver: IResolvers = {
                 }
             }
         ),
+        savePageSourceCode: combineResolvers(isAuthenticated, isAuthorized,
+            async (parent, {sourceCode, page}, {project}) => {
+                return await saveProjectPageSourceCode(sourceCode, project.id, page);
+            }
+        )
     }
 };
 

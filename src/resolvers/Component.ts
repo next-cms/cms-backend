@@ -5,7 +5,7 @@ import {
     getAvailableComponents
 } from "../parsers/component-parsers/AvailableComponentsCollector";
 import {debuglog} from "util";
-import {addNewElement} from "../generators/JSXElementModifiers";
+import {addNewElement, saveElement} from "../generators/JSXElementModifiers";
 import {isAuthenticated} from "./Authorization";
 import Component from "../models/Component";
 const debug = debuglog("pi-cms.resolvers.Component");
@@ -27,6 +27,9 @@ const ComponentResolver: IResolvers = {
     Mutation: {
         addComponent: async (parentMutation, {componentId, parent, projectId, page}, context) => {
             return await addNewElement(projectId, page, {id: componentId}, parent);
+        },
+        saveComponent: async (parentMutation, {component, projectId, page}, context) => {
+            return await saveElement(projectId, page, component);
         },
         addComponents: async (parentMutation, {componentIds, parent, projectId, page}, context) => {
             for (const componentId of componentIds) {

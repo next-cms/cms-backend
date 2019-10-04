@@ -60,8 +60,8 @@
         "js-cookie": "^2.2.1",
         "jsonwebtoken": "^8.5.1",
         "merge-graphql-schemas": "^1.7.0",
-        "mongoose": "^5.7.1",
         "mongodb": "^3.3.2",
+        "mongoose": "^5.7.1",
         "multer": "^1.4.2",
         "next": "^9.0.6",
         "next-compose-plugins": "^2.2.0",
@@ -70,6 +70,7 @@
         "pm2": "^3.5.1",
         "react": "^16.9.0",
         "react-dom": "^16.9.0",
+        "saslprep": "^1.0.3",
         "validator": "^11.1.0",
         "xtend": "^4.0.2"
     },

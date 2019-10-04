@@ -45,7 +45,6 @@ async function addDetailPageInfoAtCMSComponentLevel(ast: Node, pageDetails: Page
     }
 
     pageDetails.children = await findVendorChildComponents(ast, vendorComponents);
-    console.log("addDetailPageInfoAtCMSComponentLevel", pageDetails);
 }
 
 function getCorrespondingVendorComponent(jsxIdentifier: string, components: AvailableComponent[]) {
@@ -55,22 +54,17 @@ function getCorrespondingVendorComponent(jsxIdentifier: string, components: Avai
 }
 
 async function getChildVendorComponentInPage(node, vendorComponents) {
+    let vendorComponent;
     switch (node.openingElement.name.type) {
-        case "JSXIdentifier": {
-            const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.name, vendorComponents);
-            console.log("vendorComponent", vendorComponent);
-            if (vendorComponent) {
-                return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
-            }
+        case "JSXIdentifier":
+            vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.name, vendorComponents);
             break;
-        }
-        case "JSXMemberExpression": {
-            const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.object.name, vendorComponents);
-            if (vendorComponent) {
-                return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
-            }
+        case "JSXMemberExpression":
+            vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.object.name, vendorComponents);
             break;
-        }
+    }
+    if (vendorComponent) {
+        return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
     }
     return false;
 }

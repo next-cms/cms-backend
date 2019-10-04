@@ -10,6 +10,15 @@ export default gql`
         pathParam: String!
     }
 
+    input PageInput {
+        slug: String!
+        key: String!
+        title: String!
+        path: String!
+        pathAs: String!
+        pathParam: String!
+    }
+
     type Component {
         name: String
         start: Int
@@ -27,12 +36,13 @@ export default gql`
     }
     extend type Query {
         allPages: [Page!]
-        page(id: String!, page: String!): PageDetails
-        pageSourceCode(id: String!, page: String!): String
+        page(projectId: String!, page: String!): PageDetails
+        pageSourceCode(projectId: String!, page: String!): String
     }
     extend type Mutation {
         addPage: Page!
-        updatePage(id: String!, title: String): Page!
-        deletePage(id: String!): Boolean!
+        updatePage(projectId: String!, page: PageInput!): Page!
+        deletePage(projectId: String!, pageId: String!): Boolean!
+        savePageSourceCode(sourceCode: String!, projectId: String!, page: String!): Boolean!
     }
 `;

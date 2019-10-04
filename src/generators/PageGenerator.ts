@@ -3,6 +3,7 @@ import path from "path";
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
 import {debuglog} from "util";
+
 const fsp = fs.promises;
 
 const debug = debuglog("pi-cms.generators.PageGenerator");
@@ -44,5 +45,16 @@ export async function addNewPage(projectId): Promise<Page> {
                     pathParam: slug
                 });
             });
+        });
+}
+
+export async function saveProjectPageSourceCode(sourceCode, projectId, page):Promise<boolean> {
+    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
+    // console.log("filePath", filePath);
+    return await fsp.writeFile(filePath, sourceCode, 'utf8')
+        .then(() => true)
+        .catch((err) => {
+            console.log("File write failed:", err);
+            return false;
         });
 }
