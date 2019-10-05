@@ -121,12 +121,27 @@ async function saveElementInSourceCode(sourceCode: string, component: Component)
     const defaultExportedJSXElement = await getJSXElement(defaultExportedComponent);
     const jsxElement = await getJSXElementFromInfo(defaultExportedJSXElement, component);
 
-    console.log("current jsxElement: ", util.inspect(jsxElement, false, null, true /* enable colors */));
-    console.log("component: ", util.inspect(component, false, null, true /* enable colors */));
+    // console.log("current jsxElement: ", util.inspect(jsxElement, false, null, true /* enable colors */));
+    // console.log("component: ", util.inspect(component, false, null, true /* enable colors */));
     const updatedJSXElement = await updateJSXElement(jsxElement, component);
-    console.log("updatedJSXElement: ", util.inspect(updatedJSXElement, false, null, true /* enable colors */));
+    // console.log("updatedJSXElement: ", util.inspect(updatedJSXElement, false, null, true /* enable colors */));
 
     return sourceCode.substr(0, jsxElement.start) + generateJsx(updatedJSXElement) + sourceCode.substr(jsxElement.end);
+    // console.log(sourceCode.substr(0, jsxElement.start) + generateJsx(updatedJSXElement) + sourceCode.substr(jsxElement.end));
+    // return sourceCode;
+}
+
+async function deleteElementFromSourceCode(sourceCode: string, component: Component): Promise<string> {
+    const ast: any = JSXParser.parse(sourceCode, {
+        sourceType: 'module'
+    });
+    const defaultExportedComponent = await getDefaultExportedComponent(ast);
+    const defaultExportedJSXElement = await getJSXElement(defaultExportedComponent);
+    const jsxElement = await getJSXElementFromInfo(defaultExportedJSXElement, component);
+
+    console.log("current jsxElement: ", util.inspect(jsxElement, false, null, true /* enable colors */));
+
+    return sourceCode.substr(0, jsxElement.start) + sourceCode.substr(jsxElement.end);
     // console.log(sourceCode.substr(0, jsxElement.start) + generateJsx(updatedJSXElement) + sourceCode.substr(jsxElement.end));
     // return sourceCode;
 }
@@ -175,6 +190,15 @@ export async function saveElement(projectId: string, page: string, component: Co
     const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await saveElementInSourceCode(sourceCode, component);
+    return await fsp.writeFile(filePath, generateJsx(JSXParser.parse(newSourceCode, {sourceType: 'module'})), 'utf8').then(() => {
+        return true;
+    });
+}
+
+export async function deleteElement(projectId: string, page: string, component: Component): Promise<boolean> {
+    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
+    const sourceCode = await readSourceCodeFile(filePath);
+    const newSourceCode = await deleteElementFromSourceCode(sourceCode, component);
     return await fsp.writeFile(filePath, generateJsx(JSXParser.parse(newSourceCode, {sourceType: 'module'})), 'utf8').then(() => {
         return true;
     });

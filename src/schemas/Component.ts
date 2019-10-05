@@ -14,6 +14,7 @@ export default gql`
     extend type Mutation {
         addComponent(componentId: String!, parent: JSONObject, projectId: String!, page: String!): Boolean
         saveComponent(component: JSONObject!, projectId: String!, page: String!): Boolean
+        deleteComponent(component: JSONObject, projectId: String!, page: String!): Boolean
         addComponents(componentIds: [String!], parent: JSONObject, projectId: String!, page: String!): Boolean
     }
 `;
