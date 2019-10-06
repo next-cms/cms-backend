@@ -378,7 +378,7 @@ export async function getPropsValues(ast: Node, vendorComponent: AvailableCompon
                     start: node.value.start,
                     end: node.value.end
                 } : {
-                    value: false
+                    value: true
                 }
             }
         }

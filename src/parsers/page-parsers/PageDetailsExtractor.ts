@@ -13,7 +13,6 @@ import ComponentModel from "../../models/Component";
 import {debuglog} from "util";
 import {AvailableComponent} from "../../api-models/AvailableComponent";
 import {ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier} from "estree";
-import {wait} from "next/dist/build/output/log";
 
 const log = debuglog("pi-cms.page-parsers.PageDetailsExtractor");
 extend(walk.base);

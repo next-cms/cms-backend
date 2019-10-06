@@ -2,9 +2,9 @@ import React from "react";
 
 function BlankPage(props) {
     return (
-        <div>
+        <React.Fragment>
 
-        </div>
+        </React.Fragment>
     );
 }
 

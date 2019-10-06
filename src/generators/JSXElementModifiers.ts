@@ -1,9 +1,9 @@
 import path from "path";
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
-import {Component} from "../api-models/PageDetails";
+import {Component, Value} from "../api-models/PageDetails";
 import ComponentModel from "../models/Component";
-import {AvailableComponent, AvailableComponentInfo} from "../api-models/AvailableComponent";
+import {AvailableComponent, AvailableComponentInfo, PropsType} from "../api-models/AvailableComponent";
 import {debuglog} from "util";
 import {generate} from 'astring';
 import * as acorn from "acorn";
@@ -96,17 +96,73 @@ function addNewChildElement(sourceNode: any, component: AvailableComponent): voi
                 type: "JSXIdentifier",
                 name: component.name
             },
-            selfClosing: false
+            selfClosing: true
         },
-        closingElement: {
+        children: []
+    });
+}
+
+function getJSXAttributesFromProps(props: PropsType) {
+    const attr = [];
+
+    function getPropValue(prop: { type: any, isRequired: boolean, value?: Value }) {
+        switch (prop.type) {
+            case "string":
+            case "number":
+            case "boolean":
+                return {
+                    "type": "Literal",
+                    "value": prop.value ? prop.value.value : true
+                };
+            default:
+                return {
+                    "type": "JSXExpressionContainer",
+                    "expression": {
+                        "type": "Literal",
+                        "raw": prop.value ? prop.value.value : "true"
+                    }
+                }
+        }
+    }
+
+    Object.keys(props).forEach((key) => {
+        attr.push({
+            "type": "JSXAttribute",
+            "name": {
+                "type": "JSXIdentifier",
+                "name": key
+            },
+            "value": getPropValue(props[key])
+        });
+    });
+    return attr;
+}
+
+function addAsChildElement(sourceNode: any, component: Component): void {
+    const childNode =  {
+        type: "JSXElement",
+        openingElement: {
+            type: "JSXOpeningElement",
+            attributes: getJSXAttributesFromProps(component.props),
+            name: {
+                type: "JSXIdentifier",
+                name: component.name
+            },
+            selfClosing: !component.children || !component.children.length
+        },
+        closingElement: component.children && component.children.length ? {
             type: "JSXClosingElement",
             name: {
                 type: "JSXIdentifier",
                 name: component.name
             }
-        },
+        } : undefined,
         children: []
+    };
+    component.children.forEach((child) => {
+        addAsChildElement(childNode, child);
     });
+    sourceNode.children.push(childNode);
 }
 
 function addImportDeclaration(sourceCode: string, component: AvailableComponent) {
@@ -143,6 +199,23 @@ async function deleteElementFromSourceCode(sourceCode: string, component: Compon
 
     return sourceCode.substr(0, jsxElement.start) + sourceCode.substr(jsxElement.end);
     // console.log(sourceCode.substr(0, jsxElement.start) + generateJsx(updatedJSXElement) + sourceCode.substr(jsxElement.end));
+    // return sourceCode;
+}
+
+async function updateComponentPlacementInSourceCode(sourceCode: string, components: Component[]): Promise<string> {
+    const ast: any = JSXParser.parse(sourceCode, {
+        sourceType: 'module'
+    });
+    const defaultExportedComponent = await getDefaultExportedComponent(ast);
+    const defaultExportedJSXElement: any = await getJSXElement(defaultExportedComponent);
+
+    defaultExportedJSXElement.children = [];
+    components.forEach((component) => {
+        addAsChildElement(defaultExportedJSXElement, component);
+    });
+
+    return sourceCode.substr(0, defaultExportedJSXElement.start) + generateJsx(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end);
+    // console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + generateJsx(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
     // return sourceCode;
 }
 
@@ -199,6 +272,15 @@ export async function deleteElement(projectId: string, page: string, component: 
     const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await deleteElementFromSourceCode(sourceCode, component);
+    return await fsp.writeFile(filePath, generateJsx(JSXParser.parse(newSourceCode, {sourceType: 'module'})), 'utf8').then(() => {
+        return true;
+    });
+}
+
+export async function updateComponentPlacement(components: Component[], projectId: string, page: string): Promise<boolean> {
+    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
+    const sourceCode = await readSourceCodeFile(filePath);
+    const newSourceCode = await updateComponentPlacementInSourceCode(sourceCode, components);
     return await fsp.writeFile(filePath, generateJsx(JSXParser.parse(newSourceCode, {sourceType: 'module'})), 'utf8').then(() => {
         return true;
     });
