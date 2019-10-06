@@ -4,12 +4,12 @@ import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
 import {getProjectPages, getProjectPageDetails, getProjectPageSourceCode} from "../parsers/page-parsers/PageParser";
-import {addNewPage, saveProjectPageSourceCode} from "../generators/PageGenerator";
+import {addNewPage, deletePage, saveProjectPageSourceCode} from "../generators/PageGenerator";
 
 const PageResolver: IResolvers = {
     Query: {
         allPages: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {}, {project}) => {
+            async (parent, {projectId}, {project}) => {
 
                 // console.debug(pages);
                 return await getProjectPages(project.id);
@@ -29,7 +29,7 @@ const PageResolver: IResolvers = {
 
     Mutation: {
         addPage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {}, {user, project}) => {
+            async (parent, {projectId}, {user, project}) => {
                 try {
                     return addNewPage(project.id).then(res => {
                         return res;
@@ -57,15 +57,13 @@ const PageResolver: IResolvers = {
             }
         ),
         deletePage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {projectId, id}, {user}) => {
-                const page = await Page.findById(id);
-
-                if (page) {
-                    await page.remove();
-                    return true;
-                } else {
-                    return false;
-                }
+            async (parent, {projectId, page}, {user}) => {
+                return deletePage(projectId, page).then(res => {
+                    return res;
+                }).catch(err => {
+                    console.error(err);
+                    return err;
+                })
             }
         ),
         savePageSourceCode: combineResolvers(isAuthenticated, isAuthorized,

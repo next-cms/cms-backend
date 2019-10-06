@@ -2,6 +2,7 @@ import {Page} from "../api-models/Page";
 import path from "path";
 import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
+const fse = require("fs-extra");
 import {debuglog} from "util";
 
 const fsp = fs.promises;
@@ -46,6 +47,16 @@ export async function addNewPage(projectId): Promise<Page> {
                 });
             });
         });
+}
+
+export async function deletePage(projectId, page): Promise<boolean> {
+    const fileName = `${page}.js`;
+    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', fileName);
+    const res =  await fse.remove(filePath).then(() => {
+        return true;
+    });
+    console.log(res);
+    return res;
 }
 
 export async function saveProjectPageSourceCode(sourceCode, projectId, page):Promise<boolean> {

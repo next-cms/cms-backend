@@ -35,14 +35,14 @@ export default gql`
         effects: [String]
     }
     extend type Query {
-        allPages: [Page!]
+        allPages(projectId: String!): [Page!]
         page(projectId: String!, page: String!): PageDetails
         pageSourceCode(projectId: String!, page: String!): String
     }
     extend type Mutation {
-        addPage: Page!
+        addPage(projectId: String!): Page!
         updatePage(projectId: String!, page: PageInput!): Page!
-        deletePage(projectId: String!, pageId: String!): Boolean!
+        deletePage(projectId: String!, page: String!): Boolean!
         savePageSourceCode(sourceCode: String!, projectId: String!, page: String!): Boolean!
     }
 `;
