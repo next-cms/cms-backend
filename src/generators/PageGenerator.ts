@@ -1,6 +1,6 @@
 import {Page} from "../api-models/Page";
 import path from "path";
-import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
+import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
 const fse = require("fs-extra");
 import {debuglog} from "util";
@@ -32,10 +32,10 @@ export async function addNewPage(projectId): Promise<Page> {
     const templateFilePath = path.join(__dirname, '../templates', 'BlankPage.js.template');
     return await fsp.readFile(templateFilePath, 'utf8')
         .then(async (templateFile) => {
-            const fileNameID = await getFileName(path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages'));
+            const fileNameID = await getFileName(path.join(PROJECT_ROOT, projectId, 'pages'));
             const slug = `blank${fileNameID}`;
             const fileName = `${slug}.js`;
-            const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', fileName);
+            const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
             return await fsp.writeFile(filePath, templateFile, 'utf8').then(() => {
                 return new Page({
                     slug: slug,
@@ -51,7 +51,7 @@ export async function addNewPage(projectId): Promise<Page> {
 
 export async function deletePage(projectId, page): Promise<boolean> {
     const fileName = `${page}.js`;
-    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', fileName);
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
     const res =  await fse.remove(filePath).then(() => {
         return true;
     });
@@ -60,7 +60,7 @@ export async function deletePage(projectId, page): Promise<boolean> {
 }
 
 export async function saveProjectPageSourceCode(sourceCode, projectId, page):Promise<boolean> {
-    const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', `${page}.js`);
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', `${page}.js`);
     // console.log("filePath", filePath);
     return await fsp.writeFile(filePath, sourceCode, 'utf8')
         .then(() => true)

@@ -1,21 +1,19 @@
 import {Node} from "acorn";
-import * as walk from "acorn-walk";
-import {extend} from "acorn-jsx-walk";
 import {Component, PageDetails} from "../../api-models/PageDetails";
 import {
     getDefaultExportIdentifier,
     getImportDeclarations,
     getImportSignatureOfVendorComponentFromImportSpecifierNode,
     getImportsNameNodesOfGivenVendors
-} from "../core/InfoExtractor";
+} from "../../core/InfoExtractor";
 import Vendor from "../../models/Vendor";
 import ComponentModel from "../../models/Component";
 import {debuglog} from "util";
 import {AvailableComponent} from "../../api-models/AvailableComponent";
 import {ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier} from "estree";
+import AcornWalker from "../../core/AcornWalker";
 
 const log = debuglog("pi-cms.page-parsers.PageDetailsExtractor");
-extend(walk.base);
 
 export async function extractPageDetails(ast: Node, page: string) {
     const pageDetails: PageDetails = new PageDetails();
@@ -84,7 +82,7 @@ export async function findVendorChildComponents(parent: Node|any, vendorComponen
         return vendorComponentsInPage;
     } else {
         const vendorComponentsInPage: Component[] = [];
-        walk.recursive(parent, {}, {
+        AcornWalker.walk.recursive(parent, {}, {
             JSXElement(node, state, c) {
                 return getChildVendorComponentInPage(node, vendorComponents).then((component) => {
                     if (component) {
@@ -102,7 +100,7 @@ export async function findVendorChildComponents(parent: Node|any, vendorComponen
 }
 
 async function addDetailPageInfoAtGranularLevel(ast: Node, pageDetails: PageDetails) {
-    await walk.recursive(ast, {prevState: null, details: pageDetails}, {
+    await AcornWalker.walk.recursive(ast, {prevState: null, details: pageDetails}, {
         Literal(node, state, c) {
             state.details.value = node.value;
             state.details.start = node.start;

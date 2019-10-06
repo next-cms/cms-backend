@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import fs from 'fs';
-import { PROJECT_ROOT, PROJECT_FRONTEND } from '../constants/DirectoryStructureConstants';
+import { PROJECT_ROOT } from '../constants/DirectoryStructureConstants';
 
 
 export const initializeNewProject = (projectDirName: string) => {
@@ -23,14 +23,14 @@ export const initializeNewProject = (projectDirName: string) => {
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
 
-        exec(`mv ${PROJECT_ROOT}/${projectDirName}/with-ant-design ${PROJECT_ROOT}/${projectDirName}/${PROJECT_FRONTEND}`, (err, stdout, stderr) => {
+        exec(`mv ${PROJECT_ROOT}/${projectDirName}/with-ant-design ${PROJECT_ROOT}/${projectDirName}`, (err, stdout, stderr) => {
             if (err) {
                 console.log(`stdout: ${stdout}`);
                 console.log(`stderr: ${stderr}`);
                 return;
             }
 
-            exec('npm install --save', { cwd: `${PROJECT_ROOT}/${projectDirName}/${PROJECT_FRONTEND}` }, (err, stdout, stderr) => {
+            exec('npm install --save', { cwd: `${PROJECT_ROOT}/${projectDirName}` }, (err, stdout, stderr) => {
                 if (err) {
                     console.log(`stdout: ${stdout}`);
                     console.log(`stderr: ${stderr}`);

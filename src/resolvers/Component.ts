@@ -1,8 +1,7 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { IResolvers } from 'apollo-server-express';
 import {
-    collectCustomComponents,
-    getAvailableComponents
+    collectCustomComponents
 } from "../parsers/component-parsers/AvailableComponentsCollector";
 import {debuglog} from "util";
 import {addNewElement, deleteElement, saveElement, updateComponentPlacement} from "../generators/JSXElementModifiers";

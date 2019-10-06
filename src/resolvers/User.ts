@@ -1,5 +1,5 @@
 import { combineResolvers } from 'graphql-resolvers';
-import { AuthenticationError, IResolverObject, IResolvers, UserInputError } from 'apollo-server-express';
+import { AuthenticationError, IResolvers, UserInputError } from 'apollo-server-express';
 
 import { isAdmin, isAuthenticated } from './Authorization';
 import User from "../models/User";

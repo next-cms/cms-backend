@@ -1,5 +1,5 @@
 import {AvailableComponent, PropsType} from "./AvailableComponent";
-import {getPropsValues} from "../parsers/core/InfoExtractor";
+import {getPropsValues} from "../core/InfoExtractor";
 import {findVendorChildComponents} from "../parsers/page-parsers/PageDetailsExtractor";
 
 export class Value {

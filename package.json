@@ -29,6 +29,8 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
+        "@babel/generator": "^7.6.2",
+        "@babel/parser": "^7.6.2",
         "@zeit/next-css": "^1.0.1",
         "@zeit/next-sass": "^1.0.1",
         "acorn": "^7.1.0",
@@ -71,8 +73,7 @@
         "react": "^16.10.2",
         "react-dom": "^16.10.2",
         "saslprep": "^1.0.3",
-        "validator": "^11.1.0",
-        "xtend": "^4.0.2"
+        "validator": "^11.1.0"
     },
     "devDependencies": {
         "@types/acorn": "^4.0.5",

@@ -12,18 +12,16 @@ import {
 } from "estree";
 import * as walk from "acorn-walk";
 import {extend} from "acorn-jsx-walk";
-import * as acorn from "acorn";
 import {Node} from "acorn";
-import {Component, Value} from "../../api-models/PageDetails";
-import {AvailableComponent, PropsType} from "../../api-models/AvailableComponent";
+import {Component} from "../api-models/PageDetails";
+import {AvailableComponent, PropsType} from "../api-models/AvailableComponent";
 import fs from "fs";
 import * as Path from "path";
-import jsx from "acorn-jsx";
 import {VendorModel} from "models/Vendor";
-import {generateJsx} from "../../generators/JSXGenerator";
+import AcornParser from "./AcornParser";
+import AstringGenerator from "./AstringGenerator";
 
 const fsp = fs.promises;
-const JSXParser = acorn.Parser.extend(jsx());
 extend(walk.base);
 
 /**
@@ -306,9 +304,7 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
     component.name = nameNode.local.name;
     const sourceFile = Path.join(rootPath, `${source}.js`);
     const propTypes: AssignmentExpression|any = await fsp.readFile(sourceFile, 'utf8').then((code)=>{
-        const ast: any = JSXParser.parse(code, {
-            sourceType: 'module'
-        });
+        const ast: any = AcornParser.parse(code);
         return collectPropTypes(ast);
     });
     for (const node of propTypes.properties) {
@@ -355,13 +351,13 @@ export async function getPropsValues(ast: Node, vendorComponent: AvailableCompon
             if (node.value && node.value.type === "JSXExpressionContainer") {
                 if (node.value.expression.type === "ObjectExpression") {
                     props[node.name.name].value = {
-                        value: generateJsx(node.value.expression.value, 'utf8'),
+                        value: AstringGenerator.generate(node.value.expression.value, 'utf8'),
                         start: node.value.start,
                         end: node.value.end
                     }
                 } else if (node.value.expression.type === "JSXElement") {
                     props[node.name.name].value = { // TODO may be better approach and better representation
-                        value: generateJsx(node.value.expression, 'utf8'),
+                        value: AstringGenerator.generate(node.value.expression, 'utf8'),
                         start: node.value.start,
                         end: node.value.end
                     }

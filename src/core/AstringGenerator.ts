@@ -3,7 +3,7 @@ import extend from 'xtend';
 // Make sure the astring module is imported and that `Object.assign` is defined
 
 // Create a custom generator that inherits from Astring's base generator
-const generator = Object.assign({}, astring.baseGenerator,{
+const generator = Object.assign({}, astring.baseGenerator, {
     // <div></div>
     'JSXElement': function JSXElement(node, state) {
         // const output = state.output;
@@ -88,9 +88,11 @@ const generator = Object.assign({}, astring.baseGenerator,{
     }
 });
 
-export function generateJsx (ast, options = null) {
-    this.generator = generator;
-    return astring.generate(ast, extend({
-        generator: generator
-    }, options));
-}
+export default {
+    generate: function generateJsx(ast, options = null) {
+        this.generator = generator;
+        return astring.generate(ast, extend({
+            generator: generator
+        }, options));
+    }
+};
