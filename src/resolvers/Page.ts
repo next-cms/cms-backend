@@ -1,10 +1,9 @@
 import {combineResolvers} from 'graphql-resolvers';
 import {IResolvers} from 'apollo-server-express';
-import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
 import {getProjectPages, getProjectPageDetails, getProjectPageSourceCode} from "../parsers/page-parsers/PageParser";
-import {addNewPage, deletePage, saveProjectPageSourceCode} from "../generators/PageGenerator";
+import {addNewPage, deletePage, saveProjectPageSourceCode, updatePage} from "../generators/PageGenerator";
 
 const PageResolver: IResolvers = {
     Query: {
@@ -43,9 +42,9 @@ const PageResolver: IResolvers = {
             }
         ),
         updatePage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {projectId, id, title}, {user}) => {
+            async (parent, {pageDetails, projectId, page}, {user}) => {
                 try {
-                    return Page.findByIdAndUpdate(id, {title, modifiedAt: Date.now()}, {new: true}).then(res => {
+                    return updatePage(pageDetails, projectId, page).then(res => {
                         return res;
                     }).catch(err => {
                         console.error(err);

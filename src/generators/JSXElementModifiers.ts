@@ -1,7 +1,7 @@
 import path from "path";
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
-import {Component, Value} from "../api-models/PageDetails";
+import {Component, PageDetails, Value} from "../api-models/PageDetails";
 import ComponentModel from "../models/Component";
 import {AvailableComponent, AvailableComponentInfo, PropsType} from "../api-models/AvailableComponent";
 import {debuglog} from "util";
@@ -19,6 +19,7 @@ import * as util from "util";
 import AcornParser from "../core/AcornParser";
 import AstringGenerator from "../core/AstringGenerator";
 import AcornWalker from "../core/AcornWalker";
+import {CallExpression, ExportDefaultDeclaration, Identifier, Program} from "estree";
 
 const debug = debuglog("pi-cms.generators.ComponentGenerator");
 
@@ -205,11 +206,7 @@ async function deleteElementFromSourceCode(sourceCode: string, component: Compon
     const defaultExportedJSXElement = await getJSXElement(defaultExportedComponent);
     const jsxElement = await getJSXElementFromInfo(defaultExportedJSXElement, component);
 
-    console.log("current jsxElement: ", util.inspect(jsxElement, false, null, true /* enable colors */));
-
     return sourceCode.substr(0, jsxElement.start) + sourceCode.substr(jsxElement.end);
-    // console.log(sourceCode.substr(0, jsxElement.start) + generateJsx(updatedJSXElement) + sourceCode.substr(jsxElement.end));
-    // return sourceCode;
 }
 
 async function updateComponentPlacementInSourceCode(sourceCode: string, components: Component[]): Promise<string> {
@@ -222,13 +219,28 @@ async function updateComponentPlacementInSourceCode(sourceCode: string, componen
         addAsChildElement(defaultExportedJSXElement, component);
     });
 
-    console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
-
     return sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end);
-    // console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
-    // console.log("__________________________________________________________________________________________")
-    // console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
-    // return sourceCode;
+}
+
+async function updatePageComponentNameInSourceCode(sourceCode: string, pageDetails: PageDetails): Promise<string> {
+    const ast: any = AcornParser.parse(sourceCode);
+    const defaultExportedComponent: any = await getDefaultExportedComponent(ast);
+
+    defaultExportedComponent.id.name = pageDetails.name;
+
+    await AcornWalker.walk.recursive(ast, {}, {
+        ExportDefaultDeclaration(node: ExportDefaultDeclaration, state, c) {
+            c(node.declaration, "ExportDefaultDeclaration");
+        },
+        Identifier(node: Identifier, state, c) {
+            node.name = pageDetails.name;
+        },
+        CallExpression(node: CallExpression, state, c) {
+            c(node.arguments[0], "CallExpression");
+        }
+    });
+
+    return AstringGenerator.generate(ast);
 }
 
 async function addNewElementInSourceCode(sourceCode: string, component: AvailableComponentInfo, parent: Component): Promise<string> {
@@ -291,6 +303,14 @@ export async function updateComponentPlacement(components: Component[], projectI
     const filePath = path.join(PROJECT_ROOT, projectId, 'pages', `${page}.js`);
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await updateComponentPlacementInSourceCode(sourceCode, components);
+    return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
+        return true;
+    });
+}
+
+export async function updatePageComponentName(filePath: string, pageDetails: PageDetails): Promise<boolean> {
+    const sourceCode = await readSourceCodeFile(filePath);
+    const newSourceCode = await updatePageComponentNameInSourceCode(sourceCode, pageDetails);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
         return true;
     });

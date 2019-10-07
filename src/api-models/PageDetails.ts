@@ -76,7 +76,8 @@ export class Component {
 // }
 
 export class PageDetails {
-    title: string;
+    key: string;
+    name: string;
     slug: string;
     children: Component[] = [];
     hooks: [] = [];

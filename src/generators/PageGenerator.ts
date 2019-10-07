@@ -4,6 +4,7 @@ import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
 const fse = require("fs-extra");
 import {debuglog} from "util";
+import {updatePageComponentName} from "./JSXElementModifiers";
 
 const fsp = fs.promises;
 
@@ -47,6 +48,29 @@ export async function addNewPage(projectId): Promise<Page> {
                 });
             });
         });
+}
+
+export async function updatePage(pageDetails, projectId, page): Promise<Page> {
+    const fileName = `${page}.js`;
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
+    try {
+        const newFilePath = path.join(PROJECT_ROOT, projectId, 'pages', `${pageDetails.slug}.js`);
+
+        await updatePageComponentName(filePath, pageDetails);
+
+        await fse.rename(filePath, newFilePath);
+        return new Page({
+            slug: pageDetails.slug,
+            title: pageDetails.name,
+            key: pageDetails.slug,
+            path: `/project/pages?id=${projectId}&pageName=${pageDetails.slug}`,
+            pathAs: `/project/pages?id=${projectId}&pageName=${pageDetails.slug}`,
+            pathParam: pageDetails.slug
+        });
+    } catch (e) {
+        debug("error: ", e);
+        throw e;
+    }
 }
 
 export async function deletePage(projectId, page): Promise<boolean> {

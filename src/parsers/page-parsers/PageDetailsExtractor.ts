@@ -17,8 +17,9 @@ const log = debuglog("pi-cms.page-parsers.PageDetailsExtractor");
 
 export async function extractPageDetails(ast: Node, page: string) {
     const pageDetails: PageDetails = new PageDetails();
-    pageDetails.title = await getDefaultExportIdentifier(ast);
+    pageDetails.name = await getDefaultExportIdentifier(ast);
     pageDetails.slug = page;
+    pageDetails.key = page;
 
     await addDetailPageInfoAtCMSComponentLevel(ast, pageDetails);
 
