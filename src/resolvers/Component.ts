@@ -5,43 +5,43 @@ import {
 } from "../parsers/component-parsers/AvailableComponentsCollector";
 import {debuglog} from "util";
 import {addNewElement, deleteElement, saveElement, updateComponentPlacement} from "../generators/JSXElementModifiers";
-import {isAuthenticated} from "./Authorization";
+import {isAuthenticated, isAuthorized} from "./Authorization";
 import Component from "../models/Component";
 const debug = debuglog("pi-cms.resolvers.Component");
 
 const ComponentResolver: IResolvers = {
     Query: {
         allAvailableComponents: combineResolvers(
-            isAuthenticated, async (parent, {projectId, limit, skip}, context) => {
+            isAuthenticated, isAuthorized, async (parent, {projectId, limit, skip}, context) => {
                 return [
                     ...await Component.getAllComponent(limit, skip),
                     ...await collectCustomComponents(projectId)
                 ];
             }
         ),
-        availableComponentById: async (parent, { limit, skip }, context) => {
+        availableComponentById: combineResolvers(isAuthenticated, isAuthorized, async (parent, { limit, skip }, context) => {
             // return await Footer.getAllFooter(limit, skip);
-        }
+        })
     },
     Mutation: {
-        addComponent: async (parentMutation, {componentId, parent, projectId, page}, context) => {
+        addComponent: combineResolvers(isAuthenticated, isAuthorized,async (parentMutation, {componentId, parent, projectId, page}, context) => {
             return await addNewElement(projectId, page, {id: componentId}, parent);
-        },
-        saveComponent: async (parentMutation, {component, projectId, page}, context) => {
+        }),
+        saveComponent: combineResolvers(isAuthenticated, isAuthorized,async (parentMutation, {component, projectId, page}, context) => {
             return await saveElement(projectId, page, component);
-        },
-        deleteComponent: async (parentMutation, {component, projectId, page}, context) => {
+        }),
+        deleteComponent: combineResolvers(isAuthenticated, isAuthorized,async (parentMutation, {component, projectId, page}, context) => {
             return await deleteElement(projectId, page, component);
-        },
-        updateComponentPlacement: async (parentMutation, {components, projectId, page}, context) => {
+        }),
+        updateComponentPlacement: combineResolvers(isAuthenticated, isAuthorized,async (parentMutation, {components, projectId, page}, context) => {
             return await updateComponentPlacement(components, projectId, page);
-        },
-        addComponents: async (parentMutation, {componentIds, parent, projectId, page}, context) => {
+        }),
+        addComponents: combineResolvers(isAuthenticated, isAuthorized,async (parentMutation, {componentIds, parent, projectId, page}, context) => {
             for (const componentId of componentIds) {
                 await addNewElement(projectId, page, {id: componentId}, parent);
             }
             return true;
-        }
+        })
     }
 };
 

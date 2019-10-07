@@ -66,6 +66,7 @@
         "mongoose": "^5.7.3",
         "multer": "^1.4.2",
         "next": "^9.0.8",
+        "next-babel": "",
         "next-compose-plugins": "^2.2.0",
         "node-sass": "^4.12.0",
         "null-loader": "^3.0.0",

@@ -82,6 +82,14 @@ async function getAvailableComponentFromImportSignature(id: string): Promise<Ava
 }
 
 function addNewChildElement(sourceNode: any, component: AvailableComponent): void {
+    sourceNode.openingElement.selfClosing = false;
+    sourceNode.closingElement = {
+        type: "JSXClosingElement",
+        name: {
+            type: "JSXIdentifier",
+            name: sourceNode.openingElement.name.name
+        }
+    };
     sourceNode.children.push({
         type: "JSXElement",
         openingElement: {
@@ -98,17 +106,17 @@ function addNewChildElement(sourceNode: any, component: AvailableComponent): voi
 }
 
 function getJSXAttributesFromProps(props: PropsType) {
-    const attr = [];
+    const attributes = [];
 
     function getPropValue(prop: { type: any, isRequired: boolean, value?: Value }) {
         switch (prop.type) {
             case "string":
             case "number":
             case "boolean":
-                return {
+                return prop.value && prop.value.value ? {
                     "type": "Literal",
-                    "value": prop.value ? prop.value.value : true
-                };
+                    "value": prop.value.value
+                } : undefined;
             default:
                 return {
                     "type": "JSXExpressionContainer",
@@ -121,16 +129,19 @@ function getJSXAttributesFromProps(props: PropsType) {
     }
 
     Object.keys(props).forEach((key) => {
-        attr.push({
+        const attrValue = getPropValue(props[key]);
+        if (!attrValue) return;
+        const attr = {
             "type": "JSXAttribute",
             "name": {
                 "type": "JSXIdentifier",
                 "name": key
             },
-            "value": getPropValue(props[key])
-        });
+            "value": attrValue
+        };
+        attributes.push(attr);
     });
-    return attr;
+    return attributes;
 }
 
 function addAsChildElement(sourceNode: any, component: Component): void {
@@ -157,6 +168,14 @@ function addAsChildElement(sourceNode: any, component: Component): void {
     component.children.forEach((child) => {
         addAsChildElement(childNode, child);
     });
+    sourceNode.openingElement.selfClosing = false;
+    sourceNode.closingElement = {
+        type: "JSXClosingElement",
+        name: {
+            type: "JSXIdentifier",
+            name: sourceNode.openingElement.name.name
+        }
+    };
     sourceNode.children.push(childNode);
 }
 
@@ -203,8 +222,12 @@ async function updateComponentPlacementInSourceCode(sourceCode: string, componen
         addAsChildElement(defaultExportedJSXElement, component);
     });
 
+    console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
+
     return sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end);
-    // console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + generateJsx(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
+    // console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
+    // console.log("__________________________________________________________________________________________")
+    // console.log(sourceCode.substr(0, defaultExportedJSXElement.start) + AstringGenerator.generate(defaultExportedJSXElement) + sourceCode.substr(defaultExportedJSXElement.end));
     // return sourceCode;
 }
 
