@@ -15,11 +15,11 @@ import {
     isFragment
 } from "../core/InfoExtractor";
 import {cloneDeep} from "apollo-utilities";
-import * as util from "util";
 import AcornParser from "../core/AcornParser";
 import AstringGenerator from "../core/AstringGenerator";
 import AcornWalker from "../core/AcornWalker";
 import {CallExpression, ExportDefaultDeclaration, Identifier, Program} from "estree";
+import {commitCode} from "../project-scm";
 
 const debug = debuglog("pi-cms.generators.ComponentGenerator");
 
@@ -277,7 +277,7 @@ export async function addNewElement(projectId: string, page: string, component: 
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await addNewElementInSourceCode(sourceCode, component, parent);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return true;
+        return commitCode(projectId, `Add new element ${component.name} in page ${page}.js`).then(()=>true);
     });
 }
 
@@ -286,7 +286,7 @@ export async function saveElement(projectId: string, page: string, component: Co
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await saveElementInSourceCode(sourceCode, component);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return true;
+        return commitCode(projectId, `Updated element ${component.name} in page ${page}.js`).then(()=>true);
     });
 }
 
@@ -295,7 +295,7 @@ export async function deleteElement(projectId: string, page: string, component: 
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await deleteElementFromSourceCode(sourceCode, component);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return true;
+        return commitCode(projectId, `Removed element ${component.name} from page ${page}.js`).then(()=>true);
     });
 }
 
@@ -304,14 +304,15 @@ export async function updateComponentPlacement(components: Component[], projectI
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await updateComponentPlacementInSourceCode(sourceCode, components);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return true;
+        return commitCode(projectId, `Reorder elements in page ${page}.js`).then(()=>true);
     });
 }
 
-export async function updatePageComponentName(filePath: string, pageDetails: PageDetails): Promise<boolean> {
+export async function updatePageComponentName(projectId: string, fileName: string, pageDetails: PageDetails): Promise<boolean> {
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await updatePageComponentNameInSourceCode(sourceCode, pageDetails);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return true;
+        return commitCode(projectId, `Update page name and route of page ${fileName}`).then(()=>true);
     });
 }

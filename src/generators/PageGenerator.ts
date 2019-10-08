@@ -5,6 +5,7 @@ import fs from "fs";
 const fse = require("fs-extra");
 import {debuglog} from "util";
 import {updatePageComponentName} from "./JSXElementModifiers";
+import {commitCode} from "../project-scm";
 
 const fsp = fs.promises;
 
@@ -37,7 +38,7 @@ export async function addNewPage(projectId): Promise<Page> {
             const slug = `blank${fileNameID}`;
             const fileName = `${slug}.js`;
             const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
-            return await fsp.writeFile(filePath, templateFile, 'utf8').then(() => {
+            const page = await fsp.writeFile(filePath, templateFile, 'utf8').then(() => {
                 return new Page({
                     slug: slug,
                     title: slug,
@@ -47,6 +48,8 @@ export async function addNewPage(projectId): Promise<Page> {
                     pathParam: slug
                 });
             });
+            await commitCode(projectId, `Add new page ${fileName}`);
+            return page;
         });
 }
 
@@ -56,10 +59,10 @@ export async function updatePage(pageDetails, projectId, page): Promise<Page> {
     try {
         const newFilePath = path.join(PROJECT_ROOT, projectId, 'pages', `${pageDetails.slug}.js`);
 
-        await updatePageComponentName(filePath, pageDetails);
+        await updatePageComponentName(projectId, fileName, pageDetails);
 
         await fse.rename(filePath, newFilePath);
-        return new Page({
+        const page = new Page({
             slug: pageDetails.slug,
             title: pageDetails.name,
             key: pageDetails.slug,
@@ -67,6 +70,10 @@ export async function updatePage(pageDetails, projectId, page): Promise<Page> {
             pathAs: `/project/pages?id=${projectId}&pageName=${pageDetails.slug}`,
             pathParam: pageDetails.slug
         });
+        const commitMessage = filePath != newFilePath ?
+            `Update and Rename page ${fileName} to ${pageDetails.slug}.js` : `Update page ${fileName}`;
+        await commitCode(projectId, commitMessage);
+        return page;
     } catch (e) {
         debug("error: ", e);
         throw e;
@@ -80,16 +87,19 @@ export async function deletePage(projectId, page): Promise<boolean> {
         return true;
     });
     console.log(res);
+    await commitCode(projectId, `Delete page ${fileName}`);
     return res;
 }
 
 export async function saveProjectPageSourceCode(sourceCode, projectId, page):Promise<boolean> {
     const filePath = path.join(PROJECT_ROOT, projectId, 'pages', `${page}.js`);
     // console.log("filePath", filePath);
-    return await fsp.writeFile(filePath, sourceCode, 'utf8')
+    const res = await fsp.writeFile(filePath, sourceCode, 'utf8')
         .then(() => true)
         .catch((err) => {
             console.log("File write failed:", err);
             return false;
         });
+    await commitCode(projectId, `commit new source code from editor in ${page}.js`);
+    return res;
 }
