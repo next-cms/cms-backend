@@ -44,8 +44,7 @@ async function collectComponents(componentsRootPath): Promise<AvailableComponent
 }
 
 export async function collectDefaultComponents() {
-    const defaultComponentsDir = path.join(DEFAULT_AVAILABLE_COMPONENTS_ROOT);
-    return await collectComponents(defaultComponentsDir);
+    return await collectComponents(DEFAULT_AVAILABLE_COMPONENTS_ROOT);
 }
 
 export async function collectCustomComponents(projectId) {

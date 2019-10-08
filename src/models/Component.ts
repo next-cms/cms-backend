@@ -31,10 +31,15 @@ export const ComponentSchema: any = new Schema({
 ComponentSchema.statics.getAllComponent = async function (limit, skip) {
     return await this.find().sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
-
 ComponentSchema.statics.findByImportSignature = async function (importSignature) {
-    return await this.findOne({
+    return await this.find({
         importSignature: importSignature,
+    });
+};
+ComponentSchema.statics.findByImportSignatureAndName = async function (importSignature, name) {
+    return await this.findOne({
+        importSignature,
+        name
     });
 };
 
