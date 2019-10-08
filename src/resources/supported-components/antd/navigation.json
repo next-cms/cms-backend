@@ -2,7 +2,7 @@
     {
         "name": "Affix",
         "vendor": "antd",
-        "importSignature": "import {Affix} from 'antd';",
+        "importSignature": "import {Affix} from \"antd\";",
         "props": {
             "offsetBottom": {
                 "type": "number",
@@ -34,7 +34,7 @@
     {
         "name": "Breadcrumb",
         "vendor": "antd",
-        "importSignature": "import {Breadcrumb} from 'antd';",
+        "importSignature": "import {Breadcrumb} from \"antd\";",
         "props": {
             "itemRender": {
                 "type": "function",
@@ -51,7 +51,7 @@
     {
         "name": "Breadcrumb.Item",
         "vendor": "antd",
-        "importSignature": "import {Breadcrumb} from 'antd';",
+        "importSignature": "import {Breadcrumb} from \"antd\";",
         "props": {
             "children": {
                 "type": "string",
@@ -68,7 +68,7 @@
     {
         "name": "Breadcrumb.Separator",
         "vendor": "antd",
-        "importSignature": "import {Breadcrumb} from 'antd';",
+        "importSignature": "import {Breadcrumb} from \"antd\";",
         "props": {
             "children": {
                 "type": "string",
@@ -80,7 +80,7 @@
     {
         "name": "Dropdown",
         "vendor": "antd",
-        "importSignature": "import {Dropdown} from 'antd';",
+        "importSignature": "import {Dropdown} from \"antd\";",
         "props": {
             "disabled": {
                 "type": "boolean",
@@ -133,7 +133,7 @@
     {
         "name": "Dropdown.Button",
         "vendor": "antd",
-        "importSignature": "import {Dropdown} from 'antd';",
+        "importSignature": "import {Dropdown} from \"antd\";",
         "props": {
             "disabled": {
                 "type": "boolean",
@@ -193,7 +193,7 @@
     {
         "name": "Menu",
         "vendor": "antd",
-        "importSignature": "import {Menu} from 'antd';",
+        "importSignature": "import {Menu} from \"antd\";",
         "props": {
             "defaultOpenKeys": {
                 "type": "string[]",
@@ -297,7 +297,7 @@
     {
         "name": "Menu.Item",
         "vendor": "antd",
-        "importSignature": "import {Menu} from 'antd';",
+        "importSignature": "import {Menu} from \"antd\";",
         "props": {
             "disabled": {
                 "type": "boolean",
@@ -319,7 +319,7 @@
     {
         "name": "Menu.SubMenu",
         "vendor": "antd",
-        "importSignature": "import {Menu} from 'antd';",
+        "importSignature": "import {Menu} from \"antd\";",
         "props": {
             "popupClassName": {
                 "type": "string",
@@ -351,7 +351,7 @@
     {
         "name": "Menu.ItemGroup",
         "vendor": "antd",
-        "importSignature": "import {Menu} from 'antd';",
+        "importSignature": "import {Menu} from \"antd\";",
         "props": {
             "title": {
                 "type": "string|element",
@@ -363,13 +363,13 @@
     {
         "name": "Menu.Divider",
         "vendor": "antd",
-        "importSignature": "import {Menu} from 'antd';",
+        "importSignature": "import {Menu} from \"antd\";",
         "props": {}
     },
     {
         "name": "Pagination",
         "vendor": "antd",
-        "importSignature": "import {Pagination} from 'antd';",
+        "importSignature": "import {Pagination} from \"antd\";",
         "props": {
             "current": {
                 "type": "number",
@@ -466,7 +466,7 @@
     {
         "name": "Title",
         "vendor": "antd",
-        "importSignature": "import {Title} from 'antd';",
+        "importSignature": "import {Title} from \"antd\";",
         "props": {
             "title": {
                 "type": "string|element",
@@ -518,7 +518,7 @@
     {
         "name": "Steps",
         "vendor": "antd",
-        "importSignature": "import {Steps} from 'antd';",
+        "importSignature": "import {Steps} from \"antd\";",
         "props": {
             "className": {
                 "type": "string",

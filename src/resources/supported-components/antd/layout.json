@@ -2,7 +2,7 @@
     {
         "name": "Layout",
         "vendor": "antd",
-        "importSignature": "import {Layout} from 'antd';",
+        "importSignature": "import {Layout} from \"antd\";",
         "props": {
             "hasSider": {
                 "type": "boolean",
@@ -25,7 +25,7 @@
     {
         "name": "Layout.Content",
         "vendor": "antd",
-        "importSignature": "import {Layout} from 'antd';",
+        "importSignature": "import {Layout} from \"antd\";",
         "props": {
             "hasSider": {
                 "type": "boolean",
@@ -48,7 +48,7 @@
     {
         "name": "Layout.Header",
         "vendor": "antd",
-        "importSignature": "import {Layout} from 'antd';",
+        "importSignature": "import {Layout} from \"antd\";",
         "props": {
             "hasSider": {
                 "type": "boolean",
@@ -71,7 +71,7 @@
     {
         "name": "Layout.Footer",
         "vendor": "antd",
-        "importSignature": "import {Layout} from 'antd';",
+        "importSignature": "import {Layout} from \"antd\";",
         "props": {
             "hasSider": {
                 "type": "boolean",
@@ -94,7 +94,7 @@
     {
         "name": "Layout.Sider",
         "vendor": "antd",
-        "importSignature": "import {Layout} from 'antd';",
+        "importSignature": "import {Layout} from \"antd\";",
         "props": {
             "breakpoint": {
                 "type": "select",

@@ -7,20 +7,39 @@ import {debuglog} from "util";
 import {addNewElement, deleteElement, saveElement, updateComponentPlacement} from "../generators/JSXElementModifiers";
 import {isAuthenticated, isAuthorized} from "./Authorization";
 import Component from "../models/Component";
+import Project from "../models/Project";
 const debug = debuglog("pi-cms.resolvers.Component");
 
 const ComponentResolver: IResolvers = {
     Query: {
         allAvailableComponents: combineResolvers(
-            isAuthenticated, isAuthorized, async (parent, {projectId, limit, skip}, context) => {
+            isAuthenticated, async (parent, {limit, skip}, context) => {
                 return [
-                    ...await Component.getAllComponent(limit, skip),
+                    ...await Component.getAllComponent(limit, skip)
+                ];
+            }
+        ),
+        allProjectAvailableComponents: combineResolvers(
+            isAuthenticated, async (parent, {projectId, limit, skip}, context) => {
+                return [
                     ...await collectCustomComponents(projectId)
                 ];
             }
         ),
         availableComponentById: combineResolvers(isAuthenticated, isAuthorized, async (parent, { limit, skip }, context) => {
             // return await Footer.getAllFooter(limit, skip);
+        }),
+        _allAvailableComponentsMeta: combineResolvers(isAuthenticated, async (parent, { limit, skip }, context) => {
+            return {
+                count: await Component.countDocuments()
+                // count: await Project.estimatedDocumentCount({})
+            };
+        }),
+        _allProjectAvailableComponentsMeta: combineResolvers(isAuthenticated, isAuthorized, async (parent, { projectId, limit, skip }, context) => {
+            return {
+                count: await Component.countDocuments({projectId})
+                // count: await Project.estimatedDocumentCount({})
+            };
         })
     },
     Mutation: {

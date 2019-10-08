@@ -2,7 +2,7 @@
     {
         "name": "Row",
         "vendor": "antd",
-        "importSignature": "import {Row} from 'antd';",
+        "importSignature": "import {Row} from \"antd\";",
         "props": {
             "align": {
                 "type": "string",
@@ -37,7 +37,7 @@
     {
         "name": "Col",
         "vendor": "antd",
-        "importSignature": "import {Col} from 'antd';",
+        "importSignature": "import {Col} from \"antd\";",
         "props": {
             "offset": {
                 "type": "number",

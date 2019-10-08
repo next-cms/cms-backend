@@ -38,10 +38,12 @@ async function addDetailPageInfoAtCMSComponentLevel(ast: Node, pageDetails: Page
 
     const vendorComponents: AvailableComponent[] = [];
     for (const nameNodes of vendorComponentsImportsNameNodesInPage) {
-        vendorComponents.push(await ComponentModel.findByImportSignature(
-            getImportSignatureOfVendorComponentFromImportSpecifierNode(nameNodes.node, nameNodes.vendor)))
+        const c = await ComponentModel.findByImportSignatureAndName(
+            getImportSignatureOfVendorComponentFromImportSpecifierNode(nameNodes.node, nameNodes.vendor), nameNodes.node.local.name);
+        if (c) vendorComponents.push(c);
     }
 
+    console.log(vendorComponents);
     pageDetails.children = await findVendorChildComponents(ast, vendorComponents);
 }
 
