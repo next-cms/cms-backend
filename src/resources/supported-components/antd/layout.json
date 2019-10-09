@@ -1,0 +1,175 @@
+[
+    {
+        "name": "Layout",
+        "vendor": "antd",
+        "importSignature": "import {Layout} from \"antd\";",
+        "props": {
+            "hasSider": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether contain Sider in children, don't have to assign it normally. Useful in ssr avoid style flickering"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "container className"
+            }
+        }
+    },
+    {
+        "name": "Layout.Content",
+        "vendor": "antd",
+        "importSignature": "import {Layout} from \"antd\";",
+        "props": {
+            "hasSider": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether contain Sider in children, don't have to assign it normally. Useful in ssr avoid style flickering"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "container className"
+            }
+        }
+    },
+    {
+        "name": "Layout.Header",
+        "vendor": "antd",
+        "importSignature": "import {Layout} from \"antd\";",
+        "props": {
+            "hasSider": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether contain Sider in children, don't have to assign it normally. Useful in ssr avoid style flickering"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "container className"
+            }
+        }
+    },
+    {
+        "name": "Layout.Footer",
+        "vendor": "antd",
+        "importSignature": "import {Layout} from \"antd\";",
+        "props": {
+            "hasSider": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether contain Sider in children, don't have to assign it normally. Useful in ssr avoid style flickering"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "container className"
+            }
+        }
+    },
+    {
+        "name": "Layout.Sider",
+        "vendor": "antd",
+        "importSignature": "import {Layout} from \"antd\";",
+        "props": {
+            "breakpoint": {
+                "type": "select",
+                "options": [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                    "xxl"
+                ],
+                "isRequired": false,
+                "description": "<a href=\"/components/grid/#api\">breakpoints</a> of the responsive layout"
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "container className"
+            },
+            "collapsed": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "to set the current status"
+            },
+            "collapsedWidth": {
+                "type": "number",
+                "isRequired": false,
+                "description": "width of the collapsed sidebar, by setting to 0 a special trigger will appear"
+            },
+            "collapsible": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether can be collapsed"
+            },
+            "defaultCollapsed": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "to set the initial status"
+            },
+            "reverseArrow": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "reverse direction of arrow, for a sider that expands from the right"
+            },
+            "theme": {
+                "type": "select",
+                "options": ["light", "dark"],
+                "isRequired": false,
+                "description": "color theme of the sidebar"
+            },
+            "trigger": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "specify the customized trigger, set to null to hide the trigger"
+            },
+            "width": {
+                "type": "string",
+                "isRequired": false,
+                "description": "width of the sidebar"
+            },
+            "onCollapse": {
+                "type": "function",
+                "isRequired": false,
+                "description": "the callback function, executed by clicking the trigger or activating the responsive layout. (collapsed, type) => {}"
+            },
+            "onBreakpoint": {
+                "type": "function",
+                "isRequired": false,
+                "description": "the callback function, executed when <a href=\"/components/grid/#api\">breakpoints</a> changed. (broken) => {}"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+            }
+        }
+    }
+]

@@ -1,0 +1,580 @@
+[
+    {
+        "name": "Affix",
+        "vendor": "antd",
+        "importSignature": "import {Affix} from \"antd\";",
+        "props": {
+            "offsetBottom": {
+                "type": "number",
+                "isRequired": false,
+                "description": "Pixels to offset from bottom when calculating position of scroll"
+            },
+            "offsetTop": {
+                "type": "number",
+                "isRequired": false,
+                "description": "Pixels to offset from top when calculating position of scroll"
+            },
+            "target": {
+                "type": "function",
+                "isRequired": false,
+                "description": "specifies the scrollable area dom node. () => HTMLElement. default value is () => window"
+            },
+            "onChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "Callback for when affix state is changed. Function(affixed)"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+            }
+        }
+    },
+    {
+        "name": "Breadcrumb",
+        "vendor": "antd",
+        "importSignature": "import {Breadcrumb} from \"antd\";",
+        "props": {
+            "itemRender": {
+                "type": "function",
+                "isRequired": false,
+                "description": "Custom item renderer. (route, params, routes, paths) => ReactNode"
+            },
+            "separator": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "Custom separator. Default is /"
+            }
+        }
+    },
+    {
+        "name": "Breadcrumb.Item",
+        "vendor": "antd",
+        "importSignature": "import {Breadcrumb} from \"antd\";",
+        "props": {
+            "children": {
+                "type": "string",
+                "isRequired": true,
+                "description": "Text to display as breadcrumb item"
+            },
+            "href": {
+                "type": "string",
+                "isRequired": false,
+                "description": "Link to route"
+            }
+        }
+    },
+    {
+        "name": "Breadcrumb.Separator",
+        "vendor": "antd",
+        "importSignature": "import {Breadcrumb} from \"antd\";",
+        "props": {
+            "children": {
+                "type": "string",
+                "isRequired": true,
+                "description": "Text to display as breadcrumb separator"
+            }
+        }
+    },
+    {
+        "name": "Dropdown",
+        "vendor": "antd",
+        "importSignature": "import {Dropdown} from \"antd\";",
+        "props": {
+            "disabled": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether the dropdown menu is disabled"
+            },
+            "getPopupContainer": {
+                "type": "function",
+                "isRequired": false,
+                "description": "to set the container of the dropdown menu. The default is to create a <code>div</code> element in <code>body</code>, you can reset it to the scrolling area and make a relative reposition. <a href=\"https://codepen.io/afc163/pen/zEjNOy?editors=0010\">example</a>. It's signature is <code>Function(triggerNode)</code>. Default is <code>() => document.body</code>"
+            },
+            "overlay": {
+                "type": "function|element",
+                "isRequired": true,
+                "description": "the dropdown menu"
+            },
+            "overlayClassName": {
+                "type": "string",
+                "isRequired": false,
+                "description": "Class name of the dropdown root element"
+            },
+            "overlayStyle": {
+                "type": "object",
+                "isRequired": false,
+                "description": "Style of the dropdown root element"
+            },
+            "placement": {
+                "type": "string",
+                "isRequired": false,
+                "description": "placement of pop menu: <code>bottomLeft</code> <code>bottomCenter</code> <code>bottomRight</code> <code>topLeft</code> <code>topCenter</code> <code>topRight</code>"
+            },
+            "trigger": {
+                "type": "multiSelect",
+                "options": ["click", "hover", "contextMenu"],
+                "isRequired": false,
+                "description": "the trigger mode which executes the drop-down action, hover doesn't work on mobile device"
+            },
+            "visible": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether the dropdown menu is visible"
+            },
+            "onVisibleChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "A callback function takes an argument: <code>visible</code>, is executed when the visible state is changed. <code>Function(visible)</code>"
+            }
+        }
+    },
+    {
+        "name": "Dropdown.Button",
+        "vendor": "antd",
+        "importSignature": "import {Dropdown} from \"antd\";",
+        "props": {
+            "disabled": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether the dropdown menu is disabled"
+            },
+            "icon": {
+                "type": "element",
+                "isRequired": false,
+                "description": "icon of right"
+            },
+            "overlay": {
+                "type": "function|element",
+                "isRequired": true,
+                "description": "the dropdown menu"
+            },
+            "placement": {
+                "type": "string",
+                "isRequired": false,
+                "description": "placement of pop menu: <code>bottomLeft</code> <code>bottomCenter</code> <code>bottomRight</code> <code>topLeft</code> <code>topCenter</code> <code>topRight</code>"
+            },
+            "size": {
+                "type": "select",
+                "options": ["small", "large", "default"],
+                "isRequired": false,
+                "description": "size of the button, the same as <a href=\"/components/button/\">Button</a>"
+            },
+            "type": {
+                "type": "select",
+                "options": ["primary", "ghost", "dashed", "danger", "link", "default"],
+                "isRequired": false,
+                "description": "size of the button, the same as <a href=\"/components/button/\">Button</a>"
+            },
+            "trigger": {
+                "type": "multiSelect",
+                "options": ["click", "hover", "contextMenu"],
+                "isRequired": false,
+                "description": "the trigger mode which executes the drop-down action, hover doesn't work on mobile device"
+            },
+            "visible": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether the dropdown menu is visible"
+            },
+            "onClick": {
+                "type": "function",
+                "isRequired": false,
+                "description": "A callback function, the same as <a href=\"/components/button/\">Button</a>, which will be executed when you click the button on the left. (event)=>{}"
+            },
+            "onVisibleChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "A callback function takes an argument: <code>visible</code>, is executed when the visible state is changed. <code>Function(visible)</code>"
+            }
+        }
+    },
+    {
+        "name": "Menu",
+        "vendor": "antd",
+        "importSignature": "import {Menu} from \"antd\";",
+        "props": {
+            "defaultOpenKeys": {
+                "type": "string[]",
+                "isRequired": false,
+                "description": "array with the keys of default opened sub menus"
+            },
+            "defaultSelectedKeys": {
+                "type": "string[]",
+                "isRequired": false,
+                "description": "array with the keys of default selected menu items"
+            },
+            "forceSubMenuRender": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "render submenu into DOM before it shows"
+            },
+            "inlineCollapsed": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "specifies the collapsed status when menu is inline mode"
+            },
+            "inlineIndent": {
+                "type": "number",
+                "isRequired": false,
+                "description": "indent px of inline menu item on each level"
+            },
+            "mode": {
+                "type": "select",
+                "options": ["vertical", "horizontal", "inline"],
+                "isRequired": false,
+                "description": "type of the menu; <code>vertical</code>, <code>horizontal</code>, and <code>inline</code> modes are supported"
+            },
+            "multiple": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "Allow selection of multiple items"
+            },
+            "openKeys": {
+                "type": "string[]",
+                "isRequired": false,
+                "description": "array with the keys of currently opened sub menus"
+            },
+            "selectable": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "allow selecting menu items"
+            },
+            "selectedKeys": {
+                "type": "string[]",
+                "isRequired": false,
+                "description": "array with the keys of currently selected menu items"
+            },
+            "subMenuCloseDelay": {
+                "type": "number",
+                "isRequired": false,
+                "description": "delay time to hide submenu when mouse leave, unit: second"
+            },
+            "subMenuOpenDelay": {
+                "type": "number",
+                "isRequired": false,
+                "description": "delay time to show submenu when mouse enter, unit: second"
+            },
+            "theme": {
+                "type": "select",
+                "options": ["light", "dark"],
+                "isRequired": false,
+                "description": "color theme of the menu"
+            },
+            "onClick": {
+                "type": "function",
+                "isRequired": false,
+                "description": "callback executed when a menu item is clicked. <code>function({ item, key, keyPath, domEvent })</code>"
+            },
+            "onDeselect": {
+                "type": "function",
+                "isRequired": false,
+                "description": "callback executed when a menu item is deselected, only supported for multiple mode. <code>function({ item, key, keyPath, selectedKeys, domEvent })</code>"
+            },
+            "onOpenChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "called when open/close sub menu. <code>function(openKeys: string[])</code>"
+            },
+            "onSelect": {
+                "type": "function",
+                "isRequired": false,
+                "description": "callback executed when a menu item is selected. <code>function({ item, key, keyPath, selectedKeys, domEvent })</code>"
+            },
+            "overflowedIndicator": {
+                "type": "element",
+                "isRequired": false,
+                "description": "Customized icon when menu collapsed"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "style of the root node"
+            }
+        }
+    },
+    {
+        "name": "Menu.Item",
+        "vendor": "antd",
+        "importSignature": "import {Menu} from \"antd\";",
+        "props": {
+            "disabled": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether menu item is disabled or not"
+            },
+            "key": {
+                "type": "string",
+                "isRequired": true,
+                "description": "unique id of the menu item"
+            },
+            "title": {
+                "type": "string",
+                "isRequired": false,
+                "description": "set display title for collapsed item"
+            }
+        }
+    },
+    {
+        "name": "Menu.SubMenu",
+        "vendor": "antd",
+        "importSignature": "import {Menu} from \"antd\";",
+        "props": {
+            "popupClassName": {
+                "type": "string",
+                "isRequired": false,
+                "description": "sub menu class name"
+            },
+            "disabled": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether sub menu is disabled or not"
+            },
+            "key": {
+                "type": "string",
+                "isRequired": false,
+                "description": "unique id of the sub menu"
+            },
+            "title": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "title of the sub menu"
+            },
+            "onTitleClick": {
+                "type": "function",
+                "isRequired": false,
+                "description": "callback executed when the sub menu title is clicked. function({ key, domEvent })"
+            }
+        }
+    },
+    {
+        "name": "Menu.ItemGroup",
+        "vendor": "antd",
+        "importSignature": "import {Menu} from \"antd\";",
+        "props": {
+            "title": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "title of the group"
+            }
+        }
+    },
+    {
+        "name": "Menu.Divider",
+        "vendor": "antd",
+        "importSignature": "import {Menu} from \"antd\";",
+        "props": {}
+    },
+    {
+        "name": "Pagination",
+        "vendor": "antd",
+        "importSignature": "import {Pagination} from \"antd\";",
+        "props": {
+            "current": {
+                "type": "number",
+                "isRequired": false,
+                "description": "current page number"
+            },
+            "defaultCurrent": {
+                "type": "number",
+                "isRequired": false,
+                "description": "default initial page number"
+            },
+            "defaultPageSize": {
+                "type": "number",
+                "isRequired": false,
+                "description": "default number of data items per page"
+            },
+            "disabled": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "disable pagination"
+            },
+            "hideOnSinglePage": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "Whether to hide pager on single page"
+            },
+            "itemRender": {
+                "type": "function",
+                "isRequired": false,
+                "description": "to customize item innerHTML. (page, type: 'page' | 'prev' | 'next', originalElement) => React.ReactNode"
+            },
+            "pageSize": {
+                "type": "number",
+                "isRequired": false,
+                "description": "number of data items per page"
+            },
+            "pageSizeOptions": {
+                "type": "number[]",
+                "isRequired": false,
+                "description": "specify the sizeChanger options. ['10', '20', '30', '40']"
+            },
+            "showLessItems": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "show less page items"
+            },
+            "showQuickJumper": {
+                "type": "boolean|element",
+                "isRequired": false,
+                "description": "determine whether you can jump to pages directly. boolean | { goButton: ReactNode }"
+            },
+            "showSizeChanger": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "determine whether pageSize can be changed"
+            },
+            "showTitle": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "show page items title"
+            },
+            "showTotal": {
+                "type": "function",
+                "isRequired": false,
+                "description": "to display the total number and range. Function(total, range)"
+            },
+            "simple": {
+                "type": "boolean",
+                "isRequired": false,
+                "description": "whether to use simple mode"
+            },
+            "size": {
+                "type": "string",
+                "isRequired": false,
+                "description": "specify the size of <code>Pagination</code>, can be set to <code>small</code>"
+            },
+            "total": {
+                "type": "number",
+                "isRequired": false,
+                "description": "total number of data items"
+            },
+            "onChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "a callback function, executed when the page number is changed, and it takes the resulting page number and pageSize as its arguments. <code>Function(page, pageSize)</code>"
+            },
+            "onShowSizeChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "a callback function, executed when <code>pageSize</code> is changed. <code>Function(current, size)</code>"
+            }
+        }
+    },
+    {
+        "name": "Title",
+        "vendor": "antd",
+        "importSignature": "import {Title} from \"antd\";",
+        "props": {
+            "title": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "custom title text"
+            },
+            "subTitle": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "custom subTitle text"
+            },
+            "avatar": {
+                "type": "object",
+                "isRequired": false,
+                "description": "Avatar next to the title bar. <a href=\"/components/avatar/\">avatar props</a>"
+            },
+            "backIcon": {
+                "type": "element",
+                "isRequired": false,
+                "description": "custom back icon, if false the back icon will not be displayed"
+            },
+            "tags": {
+                "type": "element",
+                "isRequired": false,
+                "description": "Tag list next to title.<a href=\"https://ant.design/components/tag-cn/\">Tag</a>[] | <a href=\"https://ant.design/components/tag-cn/\">Tag</a>"
+            },
+            "extra": {
+                "type": "element",
+                "isRequired": false,
+                "description": "Operating area, at the end of the line of the title line."
+            },
+            "breadcrumb": {
+                "type": "element",
+                "isRequired": false,
+                "description": "breadcrumb config. <a href=\"https://ant.design/components/breadcrumb-cn/\">breadcrumb</a>"
+            },
+            "footer": {
+                "type": "element",
+                "isRequired": false,
+                "description": "PageHeader's footer, generally used to render TabBar"
+            },
+            "onBack": {
+                "type": "function",
+                "isRequired": false,
+                "description": "back icon click event. <code>()=>void</code>. Default is <code>()=>history.back()</code>"
+            }
+        }
+    },
+    {
+        "name": "Steps",
+        "vendor": "antd",
+        "importSignature": "import {Steps} from \"antd\";",
+        "props": {
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "additional class to Steps"
+            },
+            "type": {
+                "type": "select",
+                "options": ["default", "navigation"],
+                "isRequired": false,
+                "description": "type of steps, can be set to one of the following values: <code>default</code>, <code>navigation</code>"
+            },
+            "current": {
+                "type": "number",
+                "isRequired": false,
+                "description": "to set the current step, counting from 0. You can overwrite this state by using <code>status</code> of <code>Step</code>"
+            },
+            "direction": {
+                "type": "select",
+                "options": ["horizontal", "vertical"],
+                "isRequired": false,
+                "description": "to specify the direction of the step bar, <code>horizontal</code> or <code>vertical</code>"
+            },
+            "labelPlacement": {
+                "type": "select",
+                "options": ["horizontal", "vertical"],
+                "isRequired": false,
+                "description": "place title and description with <code>horizontal</code> or <code>vertical</code> direction"
+            },
+            "progressDot": {
+                "type": "boolean|function",
+                "isRequired": false,
+                "description": "Steps with progress dot style, customize the progress dot by setting it to a function. labelPlacement will be <code>vertical</code>. <code>Boolean or (iconDot, {index, status, title, description}) => ReactNode</code>"
+            },
+            "size": {
+                "type": "select",
+                "options": ["default", "small"],
+                "isRequired": false,
+                "description": "to specify the size of the step bar, <code>default</code> and <code>small</code> are currently supported"
+            },
+            "status": {
+                "type": "select",
+                "options": ["wait", "process", "finish", "error"],
+                "isRequired": false,
+                "description": "<td>to specify the status of current step, can be set to one of the following values: <code>wait</code> <code>process</code> <code>finish</code> <code>error</code></td>"
+            },
+            "initial": {
+                "type": "number",
+                "isRequired": false,
+                "description": "set the initial step, counting from 0"
+            },
+            "onChange": {
+                "type": "function",
+                "isRequired": false,
+                "description": "Trigger when Step click to change. <code>(current) => void</code>"
+            }
+        }
+    }
+]

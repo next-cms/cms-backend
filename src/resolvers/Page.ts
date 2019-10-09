@@ -1,15 +1,14 @@
 import {combineResolvers} from 'graphql-resolvers';
 import {IResolvers} from 'apollo-server-express';
-import Page from '../models/Page';
 
 import {isAuthenticated, isAuthorized} from "./Authorization";
 import {getProjectPages, getProjectPageDetails, getProjectPageSourceCode} from "../parsers/page-parsers/PageParser";
-import {addNewPage} from "../generators/PageGenerator";
+import {addNewPage, deletePage, saveProjectPageSourceCode, updatePage} from "../generators/PageGenerator";
 
 const PageResolver: IResolvers = {
     Query: {
         allPages: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {}, {project}) => {
+            async (parent, {projectId}, {project}) => {
 
                 // console.debug(pages);
                 return await getProjectPages(project.id);
@@ -29,12 +28,12 @@ const PageResolver: IResolvers = {
 
     Mutation: {
         addPage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {}, {user, project}) => {
+            async (parent, {projectId}, {user, project}) => {
                 try {
                     return addNewPage(project.id).then(res => {
                         return res;
                     }).catch(err => {
-                        console.log(err);
+                        console.error(err);
                         return err;
                     })
                 } catch (e) {
@@ -43,12 +42,12 @@ const PageResolver: IResolvers = {
             }
         ),
         updatePage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {projectId, id, title}, {user}) => {
+            async (parent, {pageDetails, projectId, page}, {user}) => {
                 try {
-                    return Page.findByIdAndUpdate(id, {title, modifiedAt: Date.now()}, {new: true}).then(res => {
+                    return updatePage(pageDetails, projectId, page).then(res => {
                         return res;
                     }).catch(err => {
-                        console.log(err);
+                        console.error(err);
                         return err;
                     })
                 } catch (e) {
@@ -57,17 +56,20 @@ const PageResolver: IResolvers = {
             }
         ),
         deletePage: combineResolvers(isAuthenticated, isAuthorized,
-            async (parent, {projectId, id}, {user}) => {
-                const page = await Page.findById(id);
-
-                if (page) {
-                    await page.remove();
-                    return true;
-                } else {
-                    return false;
-                }
+            async (parent, {projectId, page}, {user}) => {
+                return deletePage(projectId, page).then(res => {
+                    return res;
+                }).catch(err => {
+                    console.error(err);
+                    return err;
+                })
             }
         ),
+        savePageSourceCode: combineResolvers(isAuthenticated, isAuthorized,
+            async (parent, {sourceCode, page}, {project}) => {
+                return await saveProjectPageSourceCode(sourceCode, project.id, page);
+            }
+        )
     }
 };
 

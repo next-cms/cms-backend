@@ -10,21 +10,17 @@ import {
     Program,
     VariableDeclarator
 } from "estree";
-import * as walk from "acorn-walk";
-import {extend} from "acorn-jsx-walk";
-import * as acorn from "acorn";
 import {Node} from "acorn";
-import {Component, Value} from "../../api-models/PageDetails";
-import {AvailableComponent, PropsType} from "../../api-models/AvailableComponent";
+import {Component} from "../api-models/PageDetails";
+import {AvailableComponent, PropsType} from "../api-models/AvailableComponent";
 import fs from "fs";
 import * as Path from "path";
-import jsx from "acorn-jsx";
 import {VendorModel} from "models/Vendor";
-import {generateJsx} from "../../generators/JSXGenerator";
+import AcornParser from "./AcornParser";
+import AstringGenerator from "./AstringGenerator";
+import AcornWalker from "./AcornWalker";
 
 const fsp = fs.promises;
-const JSXParser = acorn.Parser.extend(jsx());
-extend(walk.base);
 
 /**
  * Gets the identifier of the default exported member from the Program
@@ -32,7 +28,7 @@ extend(walk.base);
  */
 export async function getDefaultExportIdentifier(ast: Program|Node): Promise<string> {
     let identifier: string = "";
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         ExportDefaultDeclaration(node: ExportDefaultDeclaration, state, c) {
             c(node.declaration, "ExportDefaultDeclaration");
         },
@@ -53,7 +49,7 @@ export async function getDefaultExportIdentifier(ast: Program|Node): Promise<str
 export async function getDefaultExportedComponent(ast: Program): Promise<Node> {
     const defaultExportedIdentifier = await getDefaultExportIdentifier(ast);
     let defaultExportedComponent: any = ast;
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         FunctionDeclaration(node, state, c) {
             if ((node.id as Identifier).name === defaultExportedIdentifier) {
                 defaultExportedComponent = node;
@@ -81,7 +77,7 @@ export async function isFragment(jsxElement: Node): Promise<boolean> {
     if (jsxElement.type === "JSXFragment") return true;
 
     let fragment = true;
-    await walk.recursive(jsxElement, {}, {
+    await AcornWalker.walk.recursive(jsxElement, {}, {
         JSXOpeningElement(node, state, c) {
             c(node.name);
         },
@@ -97,7 +93,7 @@ export async function isFragment(jsxElement: Node): Promise<boolean> {
 
 export async function getJSXElement(ast: Program|Node): Promise<Node> {
     let jsxElement: any = null;
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         JSXElement(node, state, c) {
             jsxElement = node;
         },
@@ -115,7 +111,7 @@ export async function getJSXElement(ast: Program|Node): Promise<Node> {
  */
 export async function getJSXElementFromInfo(ast: Program|Node, componentInfo: Component): Promise<Node> {
     let jsxElement: any = null;
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         JSXElement(node, state, c) {
             if (componentInfo.start === node.start && componentInfo.end === node.end) {
                 jsxElement = node;
@@ -180,7 +176,7 @@ export async function hasImportDeclaration(imports: Node[], componentModel): Pro
  */
 export async function getImportDeclarations(ast: Program|Node): Promise<Node[]> {
     let imports: Node[] = [];
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         ImportDeclaration(node, state, c) {
             imports.push(node);
         }
@@ -196,7 +192,7 @@ export async function getImportDeclarations(ast: Program|Node): Promise<Node[]> 
  */
 export async function getImportsNameNodes(ast: ImportDeclaration | Node | any): Promise<{node, source}[]> {
     const imports: any = [];
-    await walk.recursive(ast, {source: ast.source}, {
+    await AcornWalker.walk.recursive(ast, {source: ast.source}, {
         ImportDefaultSpecifier(node, state, c) {
             imports.push({
                 node,
@@ -238,7 +234,7 @@ function isVendorsIncludesSource(vendors: VendorModel[], source: string) {
 export async function getImportsNameNodesOfGivenVendors(ast: ImportDeclaration | Node | any, vendors: VendorModel[]):
     Promise<{node: ImportSpecifier|ImportNamespaceSpecifier|ImportDefaultSpecifier, vendor:string}[]> {
     const imports: {node:ImportSpecifier|ImportNamespaceSpecifier|ImportDefaultSpecifier, vendor:string}[] = [];
-    await walk.recursive(ast, {source: ast.source}, {
+    await AcornWalker.walk.recursive(ast, {source: ast.source}, {
         ImportDefaultSpecifier(node, state, c) {
             if (!isVendorsIncludesSource(vendors, state.source.value)) return;
             imports.push({node, vendor: state.source.value});
@@ -274,7 +270,7 @@ async function collectPropTypes(ast: Program): Promise<Node> {
     const defaultExportedIdentifier: string = await getDefaultExportIdentifier(ast);
 
     let propTypes: Node = null;
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         AssignmentExpression(node, state, c) {
             if (node.left.type === "MemberExpression") {
                 if (node.left.object.name === defaultExportedIdentifier && node.left.property.name === "propTypes") {
@@ -306,9 +302,7 @@ async function collectComponentInfo(nameNode: ImportDefaultSpecifier|ImportNames
     component.name = nameNode.local.name;
     const sourceFile = Path.join(rootPath, `${source}.js`);
     const propTypes: AssignmentExpression|any = await fsp.readFile(sourceFile, 'utf8').then((code)=>{
-        const ast: any = JSXParser.parse(code, {
-            sourceType: 'module'
-        });
+        const ast: any = AcornParser.parse(code);
         return collectPropTypes(ast);
     });
     for (const node of propTypes.properties) {
@@ -350,18 +344,18 @@ export async function collectAvailableComponentsInfoFromImportDeclaration (
 
 export async function getPropsValues(ast: Node, vendorComponent: AvailableComponent): Promise<any> {
     const props: PropsType = copyObject(vendorComponent.props);
-    await walk.recursive(ast, {}, {
+    await AcornWalker.walk.recursive(ast, {}, {
         JSXAttribute(node, state, c) {
             if (node.value && node.value.type === "JSXExpressionContainer") {
                 if (node.value.expression.type === "ObjectExpression") {
                     props[node.name.name].value = {
-                        value: generateJsx(node.value.expression.value, 'utf8'),
+                        value: AstringGenerator.generate(node.value.expression.value, 'utf8'),
                         start: node.value.start,
                         end: node.value.end
                     }
                 } else if (node.value.expression.type === "JSXElement") {
                     props[node.name.name].value = { // TODO may be better approach and better representation
-                        value: generateJsx(node.value.expression, 'utf8'),
+                        value: AstringGenerator.generate(node.value.expression, 'utf8'),
                         start: node.value.start,
                         end: node.value.end
                     }
@@ -378,7 +372,7 @@ export async function getPropsValues(ast: Node, vendorComponent: AvailableCompon
                     start: node.value.start,
                     end: node.value.end
                 } : {
-                    value: false
+                    value: true
                 }
             }
         }

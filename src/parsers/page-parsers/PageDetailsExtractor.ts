@@ -1,27 +1,25 @@
 import {Node} from "acorn";
-import * as walk from "acorn-walk";
-import {extend} from "acorn-jsx-walk";
 import {Component, PageDetails} from "../../api-models/PageDetails";
 import {
     getDefaultExportIdentifier,
     getImportDeclarations,
     getImportSignatureOfVendorComponentFromImportSpecifierNode,
     getImportsNameNodesOfGivenVendors
-} from "../core/InfoExtractor";
+} from "../../core/InfoExtractor";
 import Vendor from "../../models/Vendor";
 import ComponentModel from "../../models/Component";
 import {debuglog} from "util";
 import {AvailableComponent} from "../../api-models/AvailableComponent";
 import {ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier} from "estree";
-import {wait} from "next/dist/build/output/log";
+import AcornWalker from "../../core/AcornWalker";
 
 const log = debuglog("pi-cms.page-parsers.PageDetailsExtractor");
-extend(walk.base);
 
 export async function extractPageDetails(ast: Node, page: string) {
     const pageDetails: PageDetails = new PageDetails();
-    pageDetails.title = await getDefaultExportIdentifier(ast);
+    pageDetails.name = await getDefaultExportIdentifier(ast);
     pageDetails.slug = page;
+    pageDetails.key = page;
 
     await addDetailPageInfoAtCMSComponentLevel(ast, pageDetails);
 
@@ -40,12 +38,13 @@ async function addDetailPageInfoAtCMSComponentLevel(ast: Node, pageDetails: Page
 
     const vendorComponents: AvailableComponent[] = [];
     for (const nameNodes of vendorComponentsImportsNameNodesInPage) {
-        vendorComponents.push(await ComponentModel.findByImportSignature(
-            getImportSignatureOfVendorComponentFromImportSpecifierNode(nameNodes.node, nameNodes.vendor)))
+        const c = await ComponentModel.findByImportSignatureAndName(
+            getImportSignatureOfVendorComponentFromImportSpecifierNode(nameNodes.node, nameNodes.vendor), nameNodes.node.local.name);
+        if (c) vendorComponents.push(c);
     }
 
+    console.log(vendorComponents);
     pageDetails.children = await findVendorChildComponents(ast, vendorComponents);
-    console.log("addDetailPageInfoAtCMSComponentLevel", pageDetails);
 }
 
 function getCorrespondingVendorComponent(jsxIdentifier: string, components: AvailableComponent[]) {
@@ -55,22 +54,17 @@ function getCorrespondingVendorComponent(jsxIdentifier: string, components: Avai
 }
 
 async function getChildVendorComponentInPage(node, vendorComponents) {
+    let vendorComponent;
     switch (node.openingElement.name.type) {
-        case "JSXIdentifier": {
-            const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.name, vendorComponents);
-            console.log("vendorComponent", vendorComponent);
-            if (vendorComponent) {
-                return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
-            }
+        case "JSXIdentifier":
+            vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.name, vendorComponents);
             break;
-        }
-        case "JSXMemberExpression": {
-            const vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.object.name, vendorComponents);
-            if (vendorComponent) {
-                return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
-            }
+        case "JSXMemberExpression":
+            vendorComponent = getCorrespondingVendorComponent(node.openingElement.name.object.name, vendorComponents);
             break;
-        }
+    }
+    if (vendorComponent) {
+        return await Component.createFromNodeAndVendorComponent(node, vendorComponent, vendorComponents);
     }
     return false;
 }
@@ -91,7 +85,7 @@ export async function findVendorChildComponents(parent: Node|any, vendorComponen
         return vendorComponentsInPage;
     } else {
         const vendorComponentsInPage: Component[] = [];
-        walk.recursive(parent, {}, {
+        AcornWalker.walk.recursive(parent, {}, {
             JSXElement(node, state, c) {
                 return getChildVendorComponentInPage(node, vendorComponents).then((component) => {
                     if (component) {
@@ -109,7 +103,7 @@ export async function findVendorChildComponents(parent: Node|any, vendorComponen
 }
 
 async function addDetailPageInfoAtGranularLevel(ast: Node, pageDetails: PageDetails) {
-    await walk.recursive(ast, {prevState: null, details: pageDetails}, {
+    await AcornWalker.walk.recursive(ast, {prevState: null, details: pageDetails}, {
         Literal(node, state, c) {
             state.details.value = node.value;
             state.details.start = node.start;

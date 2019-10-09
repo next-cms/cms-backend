@@ -1,5 +1,5 @@
 import {AvailableComponent, PropsType} from "./AvailableComponent";
-import {getPropsValues} from "../parsers/core/InfoExtractor";
+import {getPropsValues} from "../core/InfoExtractor";
 import {findVendorChildComponents} from "../parsers/page-parsers/PageDetailsExtractor";
 
 export class Value {
@@ -57,7 +57,6 @@ export class Component {
             });
             Promise.all(promises).then((resolves: any[])=>{
                 if (resolves && resolves.length) {
-                    console.log(resolves);
                     for (const c of resolves) {
                         if (c && c.length) {
                             component.children.push(...c);
@@ -77,7 +76,8 @@ export class Component {
 // }
 
 export class PageDetails {
-    title: string;
+    key: string;
+    name: string;
     slug: string;
     children: Component[] = [];
     hooks: [] = [];

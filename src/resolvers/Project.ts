@@ -5,7 +5,7 @@ import Project from "../models/Project";
 import {isAdmin, isAuthenticated} from "./Authorization";
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
-import {initializeNewProject} from '../project-initialize';
+import {initializeNewProject} from '../project-scm';
 
 const fs = require("fs-extra");
 

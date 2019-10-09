@@ -2,9 +2,8 @@
         Import All
 ============================== */
 import mongoose from 'mongoose';
-import dotenv from "dotenv";
 import {debuglog} from "util";
-import utils from "../utils";
+import dotenv from "dotenv";
 dotenv.config();
 
 const log = debuglog("pi-cms.service-providers.MongoClient");
@@ -34,6 +33,7 @@ const mongoClient = (function connectWithMongoDB() {
     const options = {
         useNewUrlParser: true,
         useCreateIndex: true,
+        useUnifiedTopology: true,
         useFindAndModify: true,
         autoIndex: false, // Don't build indexes
         reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
@@ -49,8 +49,8 @@ const mongoClient = (function connectWithMongoDB() {
         async () => {
             log("MongoDB Connected! Ready to use MongoDB.");
             // User.collection.drop();
-            await utils.syncDefaultComponentsPool();
-            log("Imported available components");
+            // await utils.importDefaultComponentsPool();
+            // log("Imported available components");
         },
         err => {
             log("Failed to connect with MongoDB!");

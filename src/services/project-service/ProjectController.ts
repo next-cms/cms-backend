@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import path from "path";
-import {PROJECT_FRONTEND, PROJECT_ROOT} from "../../constants/DirectoryStructureConstants";
+import {PROJECT_ROOT} from "../../constants/DirectoryStructureConstants";
 import next from "next";
 import {URL} from "url";
 import {getNextServerConfig} from "./NextConfig";
@@ -12,7 +12,7 @@ class ProjectController {
         try {
             const projectId = req.query.projectId;
             if (!projectId) return res.send({error: true, message: "projectId is undefined"});
-            const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND);
+            const projectDir = path.join(PROJECT_ROOT, projectId);
 
             const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
 
@@ -40,7 +40,7 @@ class ProjectController {
             const projectId = req.query.projectId;
             if (!projectId) return res.send({error: true, message: "projectId is undefined"});
             const page = req.params.page;
-            const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND);
+            const projectDir = path.join(PROJECT_ROOT, projectId);
 
             const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
 
@@ -53,7 +53,7 @@ class ProjectController {
         try {
             const projectId = (req.header('Referer') ? new URL(req.header('Referer')).searchParams.get('projectId') : null) || req.query.projectId;
             if (!projectId) return res.send({error: true, message: "projectId is undefined"});
-            const projectDir = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND);
+            const projectDir = path.join(PROJECT_ROOT, projectId);
 
             const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
             if (!cached) {

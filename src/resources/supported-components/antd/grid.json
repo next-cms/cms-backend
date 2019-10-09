@@ -1,0 +1,107 @@
+[
+    {
+        "name": "Row",
+        "vendor": "antd",
+        "importSignature": "import {Row} from \"antd\";",
+        "props": {
+            "align": {
+                "type": "string",
+                "isRequired": false,
+                "description": "the vertical alignment of the flex layout: <code>top</code> <code>middle</code> <code>bottom</code>"
+            },
+            "gutter": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "spacing between grids, could be a number or a object like <code>{ xs: 8, sm: 16, md: 24}</code>"
+            },
+            "justify": {
+                "type": "string",
+                "isRequired": false,
+                "description": "horizontal arrangement of the flex layout: <code>start</code> <code>end</code> <code>center</code> <code>space-around</code> <code>space-between</code>"
+            },
+            "type": {
+                "type": "string",
+                "isRequired": false,
+                "description": "layout mode, optional <code>flex</code>, <a href=\"http://caniuse.com/#search=flex\">browser support</a>"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false
+            }
+        }
+    },
+    {
+        "name": "Col",
+        "vendor": "antd",
+        "importSignature": "import {Col} from \"antd\";",
+        "props": {
+            "offset": {
+                "type": "number",
+                "isRequired": false,
+                "description": "the number of cells to offset Col from the left"
+            },
+            "order": {
+                "type": "number",
+                "isRequired": false,
+                "description": "raster order, used in <code>flex</code> layout mode"
+            },
+            "pull": {
+                "type": "number",
+                "isRequired": false,
+                "description": "the number of cells that raster is moved to the left"
+            },
+            "push": {
+                "type": "number",
+                "isRequired": false,
+                "description": "the number of cells that raster is moved to the right"
+            },
+            "span": {
+                "type": "number",
+                "isRequired": false,
+                "description": "raster number of cells to occupy, 0 corresponds to <code>display: none</code>"
+            },
+            "xs": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "<code>&lt;576px</code> and also default setting, could be a <code>span</code> value or an object containing above props"
+            },
+            "sm": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "<code>≥576px</code>, could be a <code>span</code> value or an object containing above props"
+            },
+            "md": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "<code>≥768px</code>, could be a <code>span</code> value or an object containing above props"
+            },
+            "lg": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "<code>≥992px</code>, could be a <code>span</code> value or an object containing above props"
+            },
+            "xl": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "<code>≥1200px</code>, could be a <code>span</code> value or an object containing above props"
+            },
+            "xxl": {
+                "type": "number|object",
+                "isRequired": false,
+                "description": "<code>≥1600px</code>, could be a <code>span</code> value or an object containing above props"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false
+            }
+        }
+    }
+]

@@ -19,20 +19,32 @@ export default gql`
     }
 
     type PageDetails {
-        title: String,
+        key: String,
+        name: String,
         slug: String!,
         children: [JSONObject]
         hooks: [String]
         effects: [String]
     }
+
+    input PageDetailsInput {
+        key: String,
+        name: String,
+        slug: String!,
+        children: [JSONObject]
+        hooks: [String]
+        effects: [String]
+    }
+    
     extend type Query {
-        allPages: [Page!]
-        page(id: String!, page: String!): PageDetails
-        pageSourceCode(id: String!, page: String!): String
+        allPages(projectId: String!): [Page!]
+        page(projectId: String!, page: String!): PageDetails
+        pageSourceCode(projectId: String!, page: String!): String
     }
     extend type Mutation {
-        addPage: Page!
-        updatePage(id: String!, title: String): Page!
-        deletePage(id: String!): Boolean!
+        addPage(projectId: String!): Page!
+        updatePage(pageDetails: PageDetailsInput, projectId: String!, page: String!): Page!
+        deletePage(projectId: String!, page: String!): Boolean!
+        savePageSourceCode(sourceCode: String!, projectId: String!, page: String!): Boolean!
     }
 `;

@@ -1,8 +1,12 @@
 import {Page} from "../api-models/Page";
 import path from "path";
-import {PROJECT_FRONTEND, PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
+import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 import fs from "fs";
+const fse = require("fs-extra");
 import {debuglog} from "util";
+import {updatePageComponentName} from "./JSXElementModifiers";
+import {commitCode} from "../project-scm";
+
 const fsp = fs.promises;
 
 const debug = debuglog("pi-cms.generators.PageGenerator");
@@ -30,11 +34,11 @@ export async function addNewPage(projectId): Promise<Page> {
     const templateFilePath = path.join(__dirname, '../templates', 'BlankPage.js.template');
     return await fsp.readFile(templateFilePath, 'utf8')
         .then(async (templateFile) => {
-            const fileNameID = await getFileName(path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages'));
+            const fileNameID = await getFileName(path.join(PROJECT_ROOT, projectId, 'pages'));
             const slug = `blank${fileNameID}`;
             const fileName = `${slug}.js`;
-            const filePath = path.join(PROJECT_ROOT, projectId, PROJECT_FRONTEND, 'pages', fileName);
-            return await fsp.writeFile(filePath, templateFile, 'utf8').then(() => {
+            const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
+            const page = await fsp.writeFile(filePath, templateFile, 'utf8').then(() => {
                 return new Page({
                     slug: slug,
                     title: slug,
@@ -44,5 +48,58 @@ export async function addNewPage(projectId): Promise<Page> {
                     pathParam: slug
                 });
             });
+            await commitCode(projectId, `Add new page ${fileName}`);
+            return page;
         });
+}
+
+export async function updatePage(pageDetails, projectId, page): Promise<Page> {
+    const fileName = `${page}.js`;
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
+    try {
+        const newFilePath = path.join(PROJECT_ROOT, projectId, 'pages', `${pageDetails.slug}.js`);
+
+        await updatePageComponentName(projectId, fileName, pageDetails);
+
+        await fse.rename(filePath, newFilePath);
+        const page = new Page({
+            slug: pageDetails.slug,
+            title: pageDetails.name,
+            key: pageDetails.slug,
+            path: `/project/pages?id=${projectId}&pageName=${pageDetails.slug}`,
+            pathAs: `/project/pages?id=${projectId}&pageName=${pageDetails.slug}`,
+            pathParam: pageDetails.slug
+        });
+        const commitMessage = filePath != newFilePath ?
+            `Update and Rename page ${fileName} to ${pageDetails.slug}.js` : `Update page ${fileName}`;
+        await commitCode(projectId, commitMessage);
+        return page;
+    } catch (e) {
+        debug("error: ", e);
+        throw e;
+    }
+}
+
+export async function deletePage(projectId, page): Promise<boolean> {
+    const fileName = `${page}.js`;
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', fileName);
+    const res =  await fse.remove(filePath).then(() => {
+        return true;
+    });
+    console.log(res);
+    await commitCode(projectId, `Delete page ${fileName}`);
+    return res;
+}
+
+export async function saveProjectPageSourceCode(sourceCode, projectId, page):Promise<boolean> {
+    const filePath = path.join(PROJECT_ROOT, projectId, 'pages', `${page}.js`);
+    // console.log("filePath", filePath);
+    const res = await fsp.writeFile(filePath, sourceCode, 'utf8')
+        .then(() => true)
+        .catch((err) => {
+            console.log("File write failed:", err);
+            return false;
+        });
+    await commitCode(projectId, `commit new source code from editor in ${page}.js`);
+    return res;
 }
