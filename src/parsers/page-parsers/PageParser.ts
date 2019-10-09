@@ -14,7 +14,7 @@ export async function getProjectPages(projectId): Promise<Page[]> {
     // console.log("projectDir", projectDir);
     return await fsp.readdir(projectDir).then((files) => {
         //listing all files using forEach
-        return files.filter(file => !file.startsWith('_')).map(file => {
+        return files.filter(file => !file.startsWith('_') && file.endsWith('.js')).map(file => {
             const slug = file.replace('.js', '');
             return new Page({
                 slug: slug,
