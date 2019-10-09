@@ -4,11 +4,38 @@ services:
   mongodb:
     image: 'bitnami/mongodb:latest'
     ports:
-      - "27017:27017"
+      - "27017"
     volumes:
       - ./mongodb-data:/bitnami
+    networks:
+      - picms-net
     environment:
       - MONGODB_ROOT_PASSWORD=password123
       - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=password123
       - MONGODB_DATABASE=pi_cms
+    restart: 'no'
+
+  nginx:
+      image: pi-cms-nginx:1.0.0
+      container_name: pi-cms-nginx
+      build:
+          context: .
+          dockerfile: Dockerfile-nginx
+      networks:
+          - picms-net
+      depends_on:
+          - mongodb
+      volumes:
+          - ./nginx/conf/sites-enabled:/etc/nginx/sites-enabled
+          - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+          - ./nginx/ssl:/etc/nginx/ssl
+      ports:
+          - '80:80'
+          - '443:443'
+          - '27017:27017'
+      restart: 'no'
+
+networks:
+    picms-net:
+        driver: bridge
