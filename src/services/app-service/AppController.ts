@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import {
-    loadAllThirdPartyComponentsPool,
-    loadThirdPartyComponentsPool,
+    loadAllSupportedComponentsPool,
+    loadSupportedComponentsPool,
     importDefaultComponentsPool
 } from "../../utils/SyncUtils";
 
@@ -38,18 +38,18 @@ class AppController {
             });
         }
     }
-    static async loadThirdPartyComponents(req: Request, res: Response) {
+    static async loadSupportedComponents(req: Request, res: Response) {
         try {
             const vendor = req.params.vendor;
             let result;
             if (vendor) {
-                result = await loadThirdPartyComponentsPool(vendor);
+                result = await loadSupportedComponentsPool(vendor);
             } else {
-                result = await loadAllThirdPartyComponentsPool();
+                result = await loadAllSupportedComponentsPool();
             }
             return res.json({
                 status: "success",
-                message: "Third-Party components loaded successfully!",
+                message: "Supported components loaded successfully!",
                 data: result
             });
         } catch (e) {
@@ -60,18 +60,18 @@ class AppController {
             });
         }
     }
-    static async reloadThirdPartyComponents(req: Request, res: Response) {
+    static async reloadSupportedComponents(req: Request, res: Response) {
         try {
             const vendor = req.params.vendor;
             let result;
             if (vendor) {
-                result = await loadThirdPartyComponentsPool(vendor, true);
+                result = await loadSupportedComponentsPool(vendor, true);
             } else {
-                result = await loadAllThirdPartyComponentsPool(true);
+                result = await loadAllSupportedComponentsPool(true);
             }
             return res.json({
                 status: "success",
-                message: "Third-Party components loaded successfully!",
+                message: "Supported components reloaded successfully!",
                 data: result
             });
         } catch (e) {

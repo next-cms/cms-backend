@@ -121,27 +121,32 @@
             },
             "collapsedWidth": {
                 "type": "number",
+                "default": 80,
                 "isRequired": false,
                 "description": "width of the collapsed sidebar, by setting to 0 a special trigger will appear"
             },
             "collapsible": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "whether can be collapsed"
             },
             "defaultCollapsed": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "to set the initial status"
             },
             "reverseArrow": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "reverse direction of arrow, for a sider that expands from the right"
             },
             "theme": {
                 "type": "select",
                 "options": ["light", "dark"],
+                "default": "dark",
                 "isRequired": false,
                 "description": "color theme of the sidebar"
             },
@@ -152,18 +157,21 @@
             },
             "width": {
                 "type": "string",
+                "default": 200,
                 "isRequired": false,
                 "description": "width of the sidebar"
             },
             "onCollapse": {
                 "type": "function",
+                "syntax": "(collapsed, type) => {}",
                 "isRequired": false,
-                "description": "the callback function, executed by clicking the trigger or activating the responsive layout. (collapsed, type) => {}"
+                "description": "the callback function, executed by clicking the trigger or activating the responsive layout."
             },
             "onBreakpoint": {
                 "type": "function",
+                "syntax": "(broken) => {}",
                 "isRequired": false,
-                "description": "the callback function, executed when <a href=\"/components/grid/#api\">breakpoints</a> changed. (broken) => {}"
+                "description": "the callback function, executed when <a href=\"/components/grid/#api\">breakpoints</a> changed."
             },
             "style": {
                 "type": "object",

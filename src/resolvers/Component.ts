@@ -7,7 +7,6 @@ import {debuglog} from "util";
 import {addNewElement, deleteElement, saveElement, updateComponentPlacement} from "../generators/JSXElementModifiers";
 import {isAuthenticated, isAuthorized} from "./Authorization";
 import Component from "../models/Component";
-import Project from "../models/Project";
 const debug = debuglog("pi-cms.resolvers.Component");
 
 const ComponentResolver: IResolvers = {

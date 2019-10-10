@@ -11,16 +11,20 @@
             },
             "offsetTop": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "Pixels to offset from top when calculating position of scroll"
             },
             "target": {
                 "type": "function",
+                "syntax": "() => HTMLElement",
+                "default": "() => window",
                 "isRequired": false,
                 "description": "specifies the scrollable area dom node. () => HTMLElement. default value is () => window"
             },
             "onChange": {
                 "type": "function",
+                "syntax": "(affixed) => {}",
                 "isRequired": false,
                 "description": "Callback for when affix state is changed. Function(affixed)"
             },
@@ -38,11 +42,13 @@
         "props": {
             "itemRender": {
                 "type": "function",
+                "syntax": "(route, params, routes, paths) => ReactNode",
                 "isRequired": false,
                 "description": "Custom item renderer. (route, params, routes, paths) => ReactNode"
             },
             "separator": {
                 "type": "string|element",
+                "default": "/",
                 "isRequired": false,
                 "description": "Custom separator. Default is /"
             }
@@ -89,11 +95,14 @@
             },
             "getPopupContainer": {
                 "type": "function",
+                "syntax": "() => HTMLElement",
+                "default": "() => document.body",
                 "isRequired": false,
                 "description": "to set the container of the dropdown menu. The default is to create a <code>div</code> element in <code>body</code>, you can reset it to the scrolling area and make a relative reposition. <a href=\"https://codepen.io/afc163/pen/zEjNOy?editors=0010\">example</a>. It's signature is <code>Function(triggerNode)</code>. Default is <code>() => document.body</code>"
             },
             "overlay": {
                 "type": "function|element",
+                "syntax": "() => Menu",
                 "isRequired": true,
                 "description": "the dropdown menu"
             },
@@ -108,13 +117,16 @@
                 "description": "Style of the dropdown root element"
             },
             "placement": {
-                "type": "string",
+                "type": "select",
+                "options": ["bottomLeft", "bottomCenter", "bottomRight", "topLeft", "topCenter", "topRight"],
+                "default": "bottomLeft",
                 "isRequired": false,
                 "description": "placement of pop menu: <code>bottomLeft</code> <code>bottomCenter</code> <code>bottomRight</code> <code>topLeft</code> <code>topCenter</code> <code>topRight</code>"
             },
             "trigger": {
                 "type": "multiSelect",
                 "options": ["click", "hover", "contextMenu"],
+                "default": ["hover"],
                 "isRequired": false,
                 "description": "the trigger mode which executes the drop-down action, hover doesn't work on mobile device"
             },
@@ -125,6 +137,7 @@
             },
             "onVisibleChange": {
                 "type": "function",
+                "syntax": "(visible)=>{}",
                 "isRequired": false,
                 "description": "A callback function takes an argument: <code>visible</code>, is executed when the visible state is changed. <code>Function(visible)</code>"
             }
@@ -152,24 +165,29 @@
             },
             "placement": {
                 "type": "string",
+                "options": ["bottomLeft", "bottomCenter", "bottomRight", "topLeft", "topCenter", "topRight"],
+                "default": "bottomLeft",
                 "isRequired": false,
                 "description": "placement of pop menu: <code>bottomLeft</code> <code>bottomCenter</code> <code>bottomRight</code> <code>topLeft</code> <code>topCenter</code> <code>topRight</code>"
             },
             "size": {
                 "type": "select",
                 "options": ["small", "large", "default"],
+                "default": "default",
                 "isRequired": false,
                 "description": "size of the button, the same as <a href=\"/components/button/\">Button</a>"
             },
             "type": {
                 "type": "select",
                 "options": ["primary", "ghost", "dashed", "danger", "link", "default"],
+                "default": "default",
                 "isRequired": false,
                 "description": "size of the button, the same as <a href=\"/components/button/\">Button</a>"
             },
             "trigger": {
                 "type": "multiSelect",
                 "options": ["click", "hover", "contextMenu"],
+                "default": ["hover"],
                 "isRequired": false,
                 "description": "the trigger mode which executes the drop-down action, hover doesn't work on mobile device"
             },
@@ -180,11 +198,13 @@
             },
             "onClick": {
                 "type": "function",
+                "syntax": "(event)=>{}",
                 "isRequired": false,
                 "description": "A callback function, the same as <a href=\"/components/button/\">Button</a>, which will be executed when you click the button on the left. (event)=>{}"
             },
             "onVisibleChange": {
                 "type": "function",
+                "syntax": "(visible)=>{}",
                 "isRequired": false,
                 "description": "A callback function takes an argument: <code>visible</code>, is executed when the visible state is changed. <code>Function(visible)</code>"
             }
@@ -207,6 +227,7 @@
             },
             "forceSubMenuRender": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "render submenu into DOM before it shows"
             },
@@ -217,17 +238,20 @@
             },
             "inlineIndent": {
                 "type": "number",
+                "default": 24,
                 "isRequired": false,
                 "description": "indent px of inline menu item on each level"
             },
             "mode": {
                 "type": "select",
                 "options": ["vertical", "horizontal", "inline"],
+                "default": "vertical",
                 "isRequired": false,
                 "description": "type of the menu; <code>vertical</code>, <code>horizontal</code>, and <code>inline</code> modes are supported"
             },
             "multiple": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "Allow selection of multiple items"
             },
@@ -238,6 +262,7 @@
             },
             "selectable": {
                 "type": "boolean",
+                "default": true,
                 "isRequired": false,
                 "description": "allow selecting menu items"
             },
@@ -248,37 +273,44 @@
             },
             "subMenuCloseDelay": {
                 "type": "number",
+                "default": 0.1,
                 "isRequired": false,
                 "description": "delay time to hide submenu when mouse leave, unit: second"
             },
             "subMenuOpenDelay": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "delay time to show submenu when mouse enter, unit: second"
             },
             "theme": {
                 "type": "select",
                 "options": ["light", "dark"],
+                "default": "light",
                 "isRequired": false,
                 "description": "color theme of the menu"
             },
             "onClick": {
                 "type": "function",
+                "syntax": "({ item, key, keyPath, domEvent })=>{}",
                 "isRequired": false,
                 "description": "callback executed when a menu item is clicked. <code>function({ item, key, keyPath, domEvent })</code>"
             },
             "onDeselect": {
                 "type": "function",
+                "syntax": "({ item, key, keyPath, selectedKeys, domEvent })=>{}",
                 "isRequired": false,
                 "description": "callback executed when a menu item is deselected, only supported for multiple mode. <code>function({ item, key, keyPath, selectedKeys, domEvent })</code>"
             },
             "onOpenChange": {
                 "type": "function",
+                "syntax": "(openKeys: string[])=>{}",
                 "isRequired": false,
                 "description": "called when open/close sub menu. <code>function(openKeys: string[])</code>"
             },
             "onSelect": {
                 "type": "function",
+                "syntax": "({ item, key, keyPath, selectedKeys, domEvent })=>{}",
                 "isRequired": false,
                 "description": "callback executed when a menu item is selected. <code>function({ item, key, keyPath, selectedKeys, domEvent })</code>"
             },
@@ -301,6 +333,7 @@
         "props": {
             "disabled": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "whether menu item is disabled or not"
             },
@@ -326,8 +359,14 @@
                 "isRequired": false,
                 "description": "sub menu class name"
             },
+            "children": {
+                "type": "element",
+                "isRequired": false,
+                "description": "sub menus or sub menu items"
+            },
             "disabled": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "whether sub menu is disabled or not"
             },
@@ -343,6 +382,7 @@
             },
             "onTitleClick": {
                 "type": "function",
+                "syntax": "({ key, domEvent })=>{}",
                 "isRequired": false,
                 "description": "callback executed when the sub menu title is clicked. function({ key, domEvent })"
             }
@@ -378,11 +418,13 @@
             },
             "defaultCurrent": {
                 "type": "number",
+                "default": 1,
                 "isRequired": false,
                 "description": "default initial page number"
             },
             "defaultPageSize": {
                 "type": "number",
+                "default": 10,
                 "isRequired": false,
                 "description": "default number of data items per page"
             },
@@ -393,11 +435,13 @@
             },
             "hideOnSinglePage": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "Whether to hide pager on single page"
             },
             "itemRender": {
                 "type": "function",
+                "syntax": "(page, type: 'page' | 'prev' | 'next', originalElement) => React.ReactNode",
                 "isRequired": false,
                 "description": "to customize item innerHTML. (page, type: 'page' | 'prev' | 'next', originalElement) => React.ReactNode"
             },
@@ -408,31 +452,39 @@
             },
             "pageSizeOptions": {
                 "type": "number[]",
+                "default": [
+                    "10", "20", "30", "40"],
                 "isRequired": false,
-                "description": "specify the sizeChanger options. ['10', '20', '30', '40']"
+                "description": "specify the sizeChanger options."
             },
             "showLessItems": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "show less page items"
             },
             "showQuickJumper": {
-                "type": "boolean|element",
+                "type": "boolean|object",
+                "syntax": { "goButton": "element" },
+                "default": false,
                 "isRequired": false,
                 "description": "determine whether you can jump to pages directly. boolean | { goButton: ReactNode }"
             },
             "showSizeChanger": {
                 "type": "boolean",
+                "default": false,
                 "isRequired": false,
                 "description": "determine whether pageSize can be changed"
             },
             "showTitle": {
                 "type": "boolean",
+                "default": true,
                 "isRequired": false,
                 "description": "show page items title"
             },
             "showTotal": {
                 "type": "function",
+                "syntax": "(total, range)=>{}",
                 "isRequired": false,
                 "description": "to display the total number and range. Function(total, range)"
             },
@@ -443,21 +495,25 @@
             },
             "size": {
                 "type": "string",
+                "default": "",
                 "isRequired": false,
                 "description": "specify the size of <code>Pagination</code>, can be set to <code>small</code>"
             },
             "total": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "total number of data items"
             },
             "onChange": {
                 "type": "function",
+                "syntax": "(page, pageSize)=>{}",
                 "isRequired": false,
                 "description": "a callback function, executed when the page number is changed, and it takes the resulting page number and pageSize as its arguments. <code>Function(page, pageSize)</code>"
             },
             "onShowSizeChange": {
                 "type": "function",
+                "syntax": "(current, size)=>{}",
                 "isRequired": false,
                 "description": "a callback function, executed when <code>pageSize</code> is changed. <code>Function(current, size)</code>"
             }
@@ -485,6 +541,7 @@
             },
             "backIcon": {
                 "type": "element",
+                "default": "<Icon type=\"arrow-left\" />",
                 "isRequired": false,
                 "description": "custom back icon, if false the back icon will not be displayed"
             },
@@ -510,6 +567,8 @@
             },
             "onBack": {
                 "type": "function",
+                "syntax": "()=>{}",
+                "default": "()=>history.back()",
                 "isRequired": false,
                 "description": "back icon click event. <code>()=>void</code>. Default is <code>()=>history.back()</code>"
             }
@@ -528,52 +587,102 @@
             "type": {
                 "type": "select",
                 "options": ["default", "navigation"],
+                "default": "default",
                 "isRequired": false,
                 "description": "type of steps, can be set to one of the following values: <code>default</code>, <code>navigation</code>"
             },
             "current": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "to set the current step, counting from 0. You can overwrite this state by using <code>status</code> of <code>Step</code>"
             },
             "direction": {
                 "type": "select",
                 "options": ["horizontal", "vertical"],
+                "default": "horizontal",
                 "isRequired": false,
                 "description": "to specify the direction of the step bar, <code>horizontal</code> or <code>vertical</code>"
             },
             "labelPlacement": {
                 "type": "select",
                 "options": ["horizontal", "vertical"],
+                "default": "horizontal",
                 "isRequired": false,
                 "description": "place title and description with <code>horizontal</code> or <code>vertical</code> direction"
             },
             "progressDot": {
                 "type": "boolean|function",
+                "default": false,
+                "syntax": "(iconDot, {index, status, title, description}) => ReactNode",
                 "isRequired": false,
                 "description": "Steps with progress dot style, customize the progress dot by setting it to a function. labelPlacement will be <code>vertical</code>. <code>Boolean or (iconDot, {index, status, title, description}) => ReactNode</code>"
             },
             "size": {
                 "type": "select",
                 "options": ["default", "small"],
+                "default": "default",
                 "isRequired": false,
                 "description": "to specify the size of the step bar, <code>default</code> and <code>small</code> are currently supported"
             },
             "status": {
                 "type": "select",
                 "options": ["wait", "process", "finish", "error"],
+                "default": "process",
                 "isRequired": false,
                 "description": "<td>to specify the status of current step, can be set to one of the following values: <code>wait</code> <code>process</code> <code>finish</code> <code>error</code></td>"
             },
             "initial": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "set the initial step, counting from 0"
             },
             "onChange": {
                 "type": "function",
+                "syntax": "(current) => void",
                 "isRequired": false,
                 "description": "Trigger when Step click to change. <code>(current) => void</code>"
+            }
+        }
+    },
+    {
+        "name": "Steps.Step",
+        "vendor": "antd",
+        "importSignature": "import {Steps} from \"antd\";",
+        "props": {
+            "description": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "description of the step, optional property"
+            },
+            "icon": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "description of the step, optional property"
+            },
+            "status": {
+                "type": "select",
+                "options": ["wait", "process", "finish", "error"],
+                "default": "wait",
+                "isRequired": false,
+                "description": "<td>to specify the status of current step, can be set to one of the following values: <code>wait</code> <code>process</code> <code>finish</code> <code>error</code></td>"
+            },
+            "title": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "title of the step"
+            },
+            "subTitle": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "subTitle of the step"
+            },
+            "disabled": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "disable click"
             }
         }
     }

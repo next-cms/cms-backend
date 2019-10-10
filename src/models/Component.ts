@@ -3,7 +3,7 @@ import mongoose, { Model, Schema } from "mongoose";
 export const ComponentSchema: any = new Schema({
     importSignature: {
         type: String,
-        required: true,
+        required: false,
         unique: true
     },
     name: {
@@ -39,6 +39,12 @@ ComponentSchema.statics.findByImportSignature = async function (importSignature)
 ComponentSchema.statics.findByImportSignatureAndName = async function (importSignature, name) {
     return await this.findOne({
         importSignature,
+        name
+    });
+};
+ComponentSchema.statics.findByVendorAndName = async function (vendor, name) {
+    return await this.findOne({
+        vendor,
         name
     });
 };

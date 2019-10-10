@@ -5,17 +5,23 @@
         "importSignature": "import {Row} from \"antd\";",
         "props": {
             "align": {
-                "type": "string",
+                "type": "select",
+                "options": ["top", "middle", "bottom"],
+                "default": "top",
                 "isRequired": false,
                 "description": "the vertical alignment of the flex layout: <code>top</code> <code>middle</code> <code>bottom</code>"
             },
             "gutter": {
                 "type": "number|object",
+                "syntax": { "xs": "number", "sm": "number", "md": "number"},
+                "default": 0,
                 "isRequired": false,
                 "description": "spacing between grids, could be a number or a object like <code>{ xs: 8, sm: 16, md: 24}</code>"
             },
             "justify": {
-                "type": "string",
+                "type": "select",
+                "options": ["start", "end", "center", "space-around", "space-between"],
+                "default": "start",
                 "isRequired": false,
                 "description": "horizontal arrangement of the flex layout: <code>start</code> <code>end</code> <code>center</code> <code>space-around</code> <code>space-between</code>"
             },
@@ -41,56 +47,67 @@
         "props": {
             "offset": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "the number of cells to offset Col from the left"
             },
             "order": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "raster order, used in <code>flex</code> layout mode"
             },
             "pull": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "the number of cells that raster is moved to the left"
             },
             "push": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "the number of cells that raster is moved to the right"
             },
             "span": {
                 "type": "number",
+                "default": 0,
                 "isRequired": false,
                 "description": "raster number of cells to occupy, 0 corresponds to <code>display: none</code>"
             },
             "xs": {
                 "type": "number|object",
+                "syntax": {"offset": "number", "order": "number", "pull": "number", "push": "number", "span": "number"},
                 "isRequired": false,
                 "description": "<code>&lt;576px</code> and also default setting, could be a <code>span</code> value or an object containing above props"
             },
             "sm": {
                 "type": "number|object",
+                "syntax": {"offset": "number", "order": "number", "pull": "number", "push": "number", "span": "number"},
                 "isRequired": false,
                 "description": "<code>≥576px</code>, could be a <code>span</code> value or an object containing above props"
             },
             "md": {
                 "type": "number|object",
+                "syntax": {"offset": "number", "order": "number", "pull": "number", "push": "number", "span": "number"},
                 "isRequired": false,
                 "description": "<code>≥768px</code>, could be a <code>span</code> value or an object containing above props"
             },
             "lg": {
                 "type": "number|object",
+                "syntax": {"offset": "number", "order": "number", "pull": "number", "push": "number", "span": "number"},
                 "isRequired": false,
                 "description": "<code>≥992px</code>, could be a <code>span</code> value or an object containing above props"
             },
             "xl": {
                 "type": "number|object",
+                "syntax": {"offset": "number", "order": "number", "pull": "number", "push": "number", "span": "number"},
                 "isRequired": false,
                 "description": "<code>≥1200px</code>, could be a <code>span</code> value or an object containing above props"
             },
             "xxl": {
                 "type": "number|object",
+                "syntax": {"offset": "number", "order": "number", "pull": "number", "push": "number", "span": "number"},
                 "isRequired": false,
                 "description": "<code>≥1600px</code>, could be a <code>span</code> value or an object containing above props"
             },

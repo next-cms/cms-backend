@@ -9,11 +9,11 @@ import {THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT} from "../constants/DirectoryStruc
 
 const log = debuglog("pi-cms.utils.SyncUtils");
 
-async function saveNewComponent(component: AvailableComponent) {
+async function saveComponent(component: AvailableComponent) {
     const componentModel = new Component(component);
-    log(`Importing new component: ${component.name}`);
+    log(`Importing/Updating component: ${component.name}`);
     await componentModel.save().then(res => {
-        log(`Imported new component: ${component.name}`);
+        log(`Imported/Updated component: ${component.name}`);
         return res;
     }).catch(err => {
         log(JSON.stringify(err));
@@ -28,14 +28,15 @@ export async function importDefaultComponentsPool(reload: boolean = false) {
     const vendors: {[x:string]: boolean} = {};
     for (const component of components) {
         try {
-            let componentModel = await Component.findByImportSignatureAndName(component.importSignature, component.name);
+            let componentModel = await Component.findByVendorAndName(component.vendor, component.name);
             if (!componentModel) {
                 vendors[component.vendor] = true;
-                await saveNewComponent(component);
+                await saveComponent(component);
             } else {
                 if (reload) {
                     log(`Re-importing already imported component: ${component.name}`);
                     Object.assign(componentModel, component);
+                    componentModel.markModified('props');
                     await componentModel.save();
                 } else {
                     log(`Skipping already imported component: ${component.name}`);
@@ -74,7 +75,7 @@ async function saveVendor(vendor: string) {
     }
 }
 
-export async function loadThirdPartyComponentsPool(vendor: string, reload: boolean=false) {
+export async function loadSupportedComponentsPool(vendor: string, reload: boolean=false) {
     await saveVendor(vendor);
     return await fse.readdir(path.join(THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT, vendor)).then(async (files)=>{
         log(`Loading components of ${files} from ${vendor}...`);
@@ -83,13 +84,16 @@ export async function loadThirdPartyComponentsPool(vendor: string, reload: boole
                 const components: AvailableComponent[] = JSON.parse(jsonString);
                 for (const component of components) {
                     try {
-                        let componentModel = await Component.findByImportSignatureAndName(component.importSignature, component.name);
+                        let componentModel = await Component.findByVendorAndName(component.vendor, component.name);
                         if (!componentModel) {
-                            await saveNewComponent(component);
+                            await saveComponent(component);
                         } else {
                             if (reload) {
                                 log(`Re-importing already imported component: ${component.name}`);
+                                console.log(componentModel);
                                 Object.assign(componentModel, component);
+                                console.log(componentModel);
+                                componentModel.markModified('props.*');
                                 await componentModel.save();
                             } else {
                                 log(`Skipping already imported component: ${component.name}`);
@@ -110,14 +114,14 @@ export async function loadThirdPartyComponentsPool(vendor: string, reload: boole
     });
 }
 
-export async function loadAllThirdPartyComponentsPool(reload: boolean=false) {
+export async function loadAllSupportedComponentsPool(reload: boolean=false) {
     return await fse.readdir(THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT).then(async (vendors)=>{
         //listing all files using forEach
         for(const vendor of vendors) {
-            await loadThirdPartyComponentsPool(vendor, reload);
+            await loadSupportedComponentsPool(vendor, reload);
         }
-        log(`Loaded supported third-party components from vendors ${JSON.stringify(vendors)}`);
-        return `Loaded supported third-party components from vendors ${JSON.stringify(vendors)}`;
+        log(`Loaded supported components from vendors ${JSON.stringify(vendors)}`);
+        return `Loaded supported components from vendors ${JSON.stringify(vendors)}`;
     }).catch((err)=>{
         log('Unable to scan directory: ', err);
         throw err;

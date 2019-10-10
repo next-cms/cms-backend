@@ -1,0 +1,105 @@
+[
+    {
+        "name": "div",
+        "vendor": "html",
+        "importSignature": "",
+        "props": {
+            "children": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "to display text or to hold another element"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "to add class"
+            }
+        }
+    },
+    {
+        "name": "span",
+        "vendor": "html",
+        "importSignature": "",
+        "props": {
+            "children": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "to display text or to hold another element"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "to add class"
+            }
+        }
+    },
+    {
+        "name": "a",
+        "vendor": "html",
+        "importSignature": "",
+        "props": {
+            "children": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "to display text or to hold another element"
+            },
+            "href": {
+                "type": "string",
+                "isRequired": true,
+                "description": "to reroute to specified link"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "to add class"
+            }
+        }
+    },
+    {
+        "name": "img",
+        "vendor": "html",
+        "importSignature": "",
+        "props": {
+            "children": {
+                "type": "string|element",
+                "isRequired": false,
+                "description": "to display text or to hold another element"
+            },
+            "src": {
+                "type": "string",
+                "isRequired": true,
+                "description": "to display the image of the specified link"
+            },
+            "alt": {
+                "type": "string",
+                "isRequired": true,
+                "description": "to show alternate text if the image is not available"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "to customize the styles"
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false,
+                "description": "to add class"
+            }
+        }
+    }
+]

@@ -11,21 +11,21 @@ const Routes: Route[] = [
         method: "post",
         handler: (req, res) => AppController.reloadComponents(req, res).then(res=>res).catch(err=>err)
     }, {
-        path: "/app/load/ThirdParty",
+        path: "/app/load/SupportedComponents",
         method: "post",
-        handler: (req, res) => AppController.loadThirdPartyComponents(req, res).then(res=>res).catch(err=>err)
+        handler: (req, res) => AppController.loadSupportedComponents(req, res).then(res=>res).catch(err=>err)
     }, {
-        path: "/app/load/ThirdParty/:vendor",
+        path: "/app/load/SupportedComponents/:vendor",
         method: "post",
-        handler: (req, res) => AppController.loadThirdPartyComponents(req, res).then(res=>res).catch(err=>err)
+        handler: (req, res) => AppController.loadSupportedComponents(req, res).then(res=>res).catch(err=>err)
     }, {
-        path: "/app/reload/ThirdParty",
+        path: "/app/reload/SupportedComponents",
         method: "post",
-        handler: (req, res) => AppController.reloadThirdPartyComponents(req, res).then(res=>res).catch(err=>err)
+        handler: (req, res) => AppController.reloadSupportedComponents(req, res).then(res=>res).catch(err=>err)
     }, {
-        path: "/app/reload/ThirdParty/:vendor",
+        path: "/app/reload/SupportedComponents/:vendor",
         method: "post",
-        handler: (req, res) => AppController.reloadThirdPartyComponents(req, res).then(res=>res).catch(err=>err)
+        handler: (req, res) => AppController.reloadSupportedComponents(req, res).then(res=>res).catch(err=>err)
     }
 ];
 

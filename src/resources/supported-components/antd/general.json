@@ -1,0 +1,372 @@
+[
+    {
+        "name": "Button",
+        "vendor": "antd",
+        "importSignature": "import {Button} from \"antd\";",
+        "props": {
+            "disabled": {
+                "type": "boolean",
+                "isRequired": false,
+                "default": false,
+                "description": "disabled state of button"
+            },
+            "ghost": {
+                "type": "boolean",
+                "isRequired": false,
+                "default": false,
+                "description": "make background transparent and invert text and border colors, added in 2.7"
+            },
+            "href": {
+                "type": "string",
+                "isRequired": false,
+                "default": "",
+                "description": "redirect url of link button"
+            },
+            "htmlType": {
+                "type": "select",
+                "options": ["submit", "reset", "button"],
+                "isRequired": false,
+                "default": "button",
+                "description": "set the original html <code>type</code> of <code>button</code>, see: <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#attr-type\">MDN</a>"
+            },
+            "icon": {
+                "type": "string",
+                "isRequired": false,
+                "description": "set the icon of button, see: Icon component"
+            },
+            "loading": {
+                "type": "boolean|object",
+                "syntax": {"delay": "number"},
+                "default": false,
+                "isRequired": false,
+                "description": "set the icon of button, see: Icon component"
+            },
+            "shape": {
+                "type": "select",
+                "options": ["circle", "round", "default"],
+                "default": "default",
+                "isRequired": false,
+                "description": "Can be set to <code>circle</code>, <code>round</code> or omitted"
+            },
+            "size": {
+                "type": "select",
+                "options": ["small", "large", "default"],
+                "default": "default",
+                "isRequired": false,
+                "description": "Can be set to <code>small</code> <code>large</code> or omitted"
+            },
+            "target": {
+                "type": "string",
+                "isRequired": false,
+                "description": "same as target attribute of a, works when href is specified"
+            },
+            "type": {
+                "type": "select",
+                "options": ["primary", "ghost", "dashed", "danger", "link", "default"],
+                "default": "default",
+                "isRequired": false,
+                "description": "Can be set to <code>primary</code> <code>ghost</code> <code>dashed</code> <code>danger</code> <code>link</code>(added in 3.17) or omitted (meaning <code>default</code>)"
+            },
+            "onClick": {
+                "type": "function",
+                "syntax": "(event)=>{}",
+                "isRequired": false,
+                "description": "Set the handler to handle <code>click</code> event"
+            },
+            "block": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "option to fit button width to its parent width"
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false
+            },
+            "className": {
+                "type": "string",
+                "isRequired": false
+            }
+        }
+    },
+    {
+        "name": "Button.Group",
+        "vendor": "antd",
+        "importSignature": "import {Button} from \"antd\";",
+        "props": {}
+    },
+    {
+        "name": "Icon",
+        "vendor": "antd",
+        "importSignature": "import {Icon} from \"antd\";",
+        "props": {
+            "type": {
+                "type": "string",
+                "isRequired": true,
+                "description": "Type of the ant design icon. See <a href=\"https://ant.design/components/icon/\">here</a> for the available types."
+            },
+            "style": {
+                "type": "object",
+                "isRequired": false,
+                "description": "Style properties of icon, like <code>fontSize</code> and <code>color</code>"
+            },
+            "theme": {
+                "type": "select",
+                "options": ["filled", "outlined", "towTone"],
+                "default": "outlined",
+                "isRequired": false,
+                "description": "Style properties of icon, like <code>fontSize</code> and <code>color</code>"
+            },
+            "spin": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Rotate icon with animation"
+            },
+            "rotate": {
+                "type": "number",
+                "isRequired": false,
+                "description": "Rotate degrees (added in 3.13.0, not working in IE9)"
+            },
+            "component": {
+                "type": "element",
+                "isRequired": false,
+                "description": "The component used for the root node. This will override the <code>type</code> property. See <a href=\"https://ant.design/components/icon/#API\">here</a> for details of the components."
+            },
+            "twoToneColor": {
+                "type": "string",
+                "isRequired": false,
+                "description": "Only supports the two-tone icon. Specify the primary color."
+            }
+        }
+    },
+    {
+        "name": "Typography.Text",
+        "vendor": "antd",
+        "importSignature": "import {Typography} from \"antd\";",
+        "props": {
+            "code": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "code style"
+            },
+            "copyable": {
+                "type": "boolean|object",
+                "syntax": { "text": "string", "onCopy": "function" },
+                "default": false,
+                "isRequired": false,
+                "description": "Config copy. Can set copy text and callback when is an object"
+            },
+            "delete": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "delete line style"
+            },
+            "disabled": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Disable content"
+            },
+            "editable": {
+                "type": "boolean|object",
+                "syntax": { "editing": "boolean", "onStart": "function", "onChange": "function" },
+                "default": false,
+                "isRequired": false,
+                "description": "Editable. Can control edit state when is object"
+            },
+            "ellipsis": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Display ellipsis when overflow"
+            },
+            "mark": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "mark style"
+            },
+            "underline": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "underline style"
+            },
+            "onChange": {
+                "type": "function",
+                "syntax": "(string)=>{}",
+                "isRequired": false,
+                "description": "Trigger when user edit the content"
+            },
+            "strong": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "bold style"
+            },
+            "type": {
+                "type": "select",
+                "options": ["secondary", "warning", "danger", "default"],
+                "default": "default",
+                "isRequired": false,
+                "description": "Content type"
+            }
+        }
+    },
+    {
+        "name": "Typography.Title",
+        "vendor": "antd",
+        "importSignature": "import {Typography} from \"antd\";",
+        "props": {
+            "code": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "code style"
+            },
+            "copyable": {
+                "type": "boolean|object",
+                "syntax": { "text": "string", "onCopy": "function" },
+                "default": false,
+                "isRequired": false,
+                "description": "Config copy. Can set copy text and callback when is an object"
+            },
+            "delete": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "delete line style"
+            },
+            "disabled": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Disable content"
+            },
+            "editable": {
+                "type": "boolean|object",
+                "syntax": { "editing": "boolean", "onStart": "function", "onChange": "function" },
+                "default": false,
+                "isRequired": false,
+                "description": "Editable. Can control edit state when is object"
+            },
+            "ellipsis": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Display ellipsis when overflow"
+            },
+            "mark": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "mark style"
+            },
+            "underline": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "underline style"
+            },
+            "onChange": {
+                "type": "function",
+                "syntax": "(string)=>{}",
+                "isRequired": false,
+                "description": "Trigger when user edit the content"
+            },
+            "strong": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "bold style"
+            },
+            "type": {
+                "type": "select",
+                "options": ["secondary", "warning", "danger", "default"],
+                "default": "default",
+                "isRequired": false,
+                "description": "Content type"
+            }
+        }
+    },
+    {
+        "name": "Typography.Paragraph",
+        "vendor": "antd",
+        "importSignature": "import {Typography} from \"antd\";",
+        "props": {
+            "code": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "code style"
+            },
+            "copyable": {
+                "type": "boolean|object",
+                "syntax": { "text": "string", "onCopy": "function" },
+                "default": false,
+                "isRequired": false,
+                "description": "Config copy. Can set copy text and callback when is an object"
+            },
+            "delete": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "delete line style"
+            },
+            "disabled": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Disable content"
+            },
+            "editable": {
+                "type": "boolean|object",
+                "syntax": { "editing": "boolean", "onStart": "function", "onChange": "function" },
+                "default": false,
+                "isRequired": false,
+                "description": "Editable. Can control edit state when is object"
+            },
+            "ellipsis": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "Display ellipsis when overflow"
+            },
+            "level": {
+                "type": "select",
+                "options": [1, 2, 3, 4],
+                "default": 1,
+                "isRequired": false,
+                "description": "Set content importance. Match with <code>h1</code>, <code>h2</code>, <code>h3</code>, <code>h4</code>"
+            },
+            "mark": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "mark style"
+            },
+            "underline": {
+                "type": "boolean",
+                "default": false,
+                "isRequired": false,
+                "description": "underline style"
+            },
+            "onChange": {
+                "type": "function",
+                "syntax": "(string)=>{}",
+                "isRequired": false,
+                "description": "Trigger when user edit the content"
+            },
+            "type": {
+                "type": "select",
+                "options": ["secondary", "warning", "danger", "default"],
+                "default": "default",
+                "isRequired": false,
+                "description": "Content type"
+            }
+        }
+    }
+]

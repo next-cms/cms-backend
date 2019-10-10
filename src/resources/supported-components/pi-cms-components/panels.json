@@ -1,0 +1,32 @@
+[
+    {
+        "name" : "InfoBox",
+        "vendor" : "pi-cms-components",
+        "importSignature" : "import {InfoBox} from \"pi-cms-components\";",
+        "props" : {
+            "icon" : {
+                "type" : "element",
+                "isRequired" : false
+            },
+            "text" : {
+                "type" : "string",
+                "isRequired" : false
+            }
+        }
+    },
+    {
+        "name" : "Brand",
+        "vendor" : "pi-cms-components",
+        "importSignature" : "import {Brand} from \"pi-cms-components\";",
+        "props" : {
+            "imageUrl" : {
+                "type" : "image",
+                "isRequired" : false
+            },
+            "brandName" : {
+                "type" : "string",
+                "isRequired" : false
+            }
+        }
+    }
+]
