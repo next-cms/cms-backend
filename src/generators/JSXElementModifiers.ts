@@ -116,13 +116,13 @@ function getJSXAttributesFromProps(props: PropsType) {
                     "value": prop.value.value
                 } : undefined;
             default:
-                return {
+                return prop.value ? {
                     "type": "JSXExpressionContainer",
                     "expression": {
                         "type": "Literal",
-                        "raw": prop.value ? prop.value.value : "true"
+                        "raw": prop.value.value
                     }
-                }
+                } : undefined;
         }
     }
 
@@ -169,10 +169,7 @@ function addAsChildElement(sourceNode: any, component: Component): void {
     sourceNode.openingElement.selfClosing = false;
     sourceNode.closingElement = {
         type: "JSXClosingElement",
-        name: {
-            type: "JSXIdentifier",
-            name: sourceNode.openingElement.name.name
-        }
+        name: sourceNode.openingElement.name
     };
     sourceNode.children.push(childNode);
 }
