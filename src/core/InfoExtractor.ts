@@ -30,7 +30,9 @@ export async function getDefaultExportIdentifier(ast: Program|Node): Promise<str
     let identifier: string = "";
     await AcornWalker.walk.recursive(ast, {}, {
         ExportDefaultDeclaration(node: ExportDefaultDeclaration, state, c) {
-            c(node.declaration, "ExportDefaultDeclaration");
+            if (node.declaration.type === "CallExpression" || node.declaration.type === "Identifier") {
+                c(node.declaration, "ExportDefaultDeclaration");
+            }
         },
         Identifier(node: Identifier, state, c) {
             identifier = node.name;
