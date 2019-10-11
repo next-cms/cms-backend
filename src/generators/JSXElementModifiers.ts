@@ -86,10 +86,7 @@ function addNewChildElement(sourceNode: any, component: AvailableComponent): voi
     sourceNode.openingElement.selfClosing = false;
     sourceNode.closingElement = {
         type: "JSXClosingElement",
-        name: {
-            type: "JSXIdentifier",
-            name: sourceNode.openingElement.name.name
-        }
+        name: sourceNode.openingElement.name
     };
     sourceNode.children.push({
         type: "JSXElement",
