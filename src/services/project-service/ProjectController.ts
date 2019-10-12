@@ -56,10 +56,22 @@ class ProjectController {
             const projectDir = path.join(PROJECT_ROOT, projectId);
 
             const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
-            if (!cached) {
 
-            }
             return await handle(req, res);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    static async handleStaticFileRequest(req: Request, res: Response) {
+        try {
+            const projectId = (req.header('Referer') ? new URL(req.header('Referer')).searchParams.get('projectId') : null) || req.query.projectId;
+            if (!projectId) return res.send({error: true, message: "projectId is undefined"});
+            const projectDir = path.join(PROJECT_ROOT, projectId);
+
+            // const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
+
+            console.log(path.resolve("."+req.path.substr("/next-project".length)));
+            return res.status(200).sendFile(path.resolve(`./${projectDir}${req.path.substr("/next-project".length)}`));
         } catch (e) {
             console.error(e);
         }

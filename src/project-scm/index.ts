@@ -34,18 +34,20 @@ export const initializeNewProject = (projectDirName: string) => {
             execCommand('curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=3 next.js-canary/examples/with-ant-design', `${PROJECT_ROOT}/${projectDirName}`, () => {
                 execCommand('npm install --save', `${PROJECT_ROOT}/${projectDirName}`, () => {
                     // TODO start: remove when we have a project initializer
-                    fse.copy(path.join(__dirname, '../templates', 'BlankPage.js.template'), `${PROJECT_ROOT}/${projectDirName}/pages/index.js`, err => {
-                        if (err) return console.error(err);
-                        console.log('success!');
-                        // TODO ends: here
-                        execCommand('git init', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                            fse.copy(path.join(__dirname, '../templates', 'gitignore.template'), `${PROJECT_ROOT}/${projectDirName}/.gitignore`, err => {
-                                if (err) return console.error(err);
-                                console.log('success!');
-                                execCommand('git add .', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                                    execCommand('git commit -m "project initialized"', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                                        console.log("project initialization successful");
-                                        resolve(true);
+                    execCommand('npm install pi-cms-components', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                        fse.copy(path.join(__dirname, '../templates', 'BlankPage.js.template'), `${PROJECT_ROOT}/${projectDirName}/pages/index.js`, err => {
+                            if (err) return console.error(err);
+                            console.log('success!');
+                            // TODO ends: here
+                            execCommand('git init', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                fse.copy(path.join(__dirname, '../templates', 'gitignore.template'), `${PROJECT_ROOT}/${projectDirName}/.gitignore`, err => {
+                                    if (err) return console.error(err);
+                                    console.log('success!');
+                                    execCommand('git add .', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                        execCommand('git commit -m "project initialized"', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                            console.log("project initialization successful");
+                                            resolve(true);
+                                        });
                                     });
                                 });
                             });

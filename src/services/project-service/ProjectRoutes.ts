@@ -8,6 +8,11 @@ const Routes: Route[] = [
         handler: ProjectController.loadProject
     },
     {
+        path: "/next-project/static/*",
+        method: "get",
+        handler: ProjectController.handleStaticFileRequest
+    },
+    {
         path: "/next-project/:page",
         method: "get",
         handler: ProjectController.loadProjectPage

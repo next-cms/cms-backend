@@ -32,9 +32,24 @@ export function verifyToken(req: Request, res: Response, next) {
     if (authorization) token = authorization.replace("Bearer ", "");
     // console.log("verifyToken: given token: ", token);
     jwt.verify(token, secret, (err, decoded) => {
-        // console.log("verifyToken: err: ", err, decoded);
-        if (err) return res.status(401).json({ status: "error", message: err });
+        if (err) {
+            return res.status(401).json({ status: "error", message: err });
+        }
         return next(decoded);
+    });
+}
+
+export function verifyTokenMiddleware(req: Request, res: Response, next) {
+    // console.log("verifyToken: ", req.path);
+    const authorization = req.headers["authorization"];
+    let token = null;
+    if (authorization) token = authorization.replace("Bearer ", "");
+    // console.log("verifyToken: given token: ", token);
+    jwt.verify(token, secret, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ status: "error", message: err });
+        }
+        next();
     });
 }
 

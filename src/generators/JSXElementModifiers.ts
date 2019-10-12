@@ -4,6 +4,7 @@ import fs from "fs";
 import {Component, PageDetails, Value} from "../api-models/PageDetails";
 import ComponentModel from "../models/Component";
 import {AvailableComponent, AvailableComponentInfo, PropsType} from "../api-models/AvailableComponent";
+import * as util from "util";
 import {debuglog} from "util";
 import {Node} from "acorn";
 import {
@@ -18,7 +19,7 @@ import {cloneDeep} from "apollo-utilities";
 import AcornParser from "../core/AcornParser";
 import AstringGenerator from "../core/AstringGenerator";
 import AcornWalker from "../core/AcornWalker";
-import {CallExpression, ExportDefaultDeclaration, Identifier, Program} from "estree";
+import {CallExpression, ExportDefaultDeclaration, Identifier} from "estree";
 import {commitCode} from "../project-scm";
 
 const debug = debuglog("pi-cms.generators.ComponentGenerator");
@@ -47,7 +48,7 @@ function wrapWithFragment(node: Node): any {
     }
 }
 
-async function updateJSXElement(jsxElement: Node, component: Component): Promise<any> {
+async function updateJSXElement(jsxElement: Node | any, component: Component): Promise<any> {
     const updatedJSXElement = cloneDeep(jsxElement);
     await AcornWalker.walk.recursive(updatedJSXElement, {}, {
         JSXAttribute(node, state, c) {
@@ -56,25 +57,42 @@ async function updateJSXElement(jsxElement: Node, component: Component): Promise
                     node.value.expression.value = component.props[node.name.name].value.value;
                     delete node.value.expression.raw;
                 } else if (node.value.expression.type === "JSXElement") {
-                // TODO may be better approach and better representation
+                    // TODO may be better approach and better representation
                     node.value.expression = component.props[node.name.name].value.value;
                     delete node.value.raw;
                 } else {
-                    node.value.expression.value = component.props[node.name.name].value.value
+                    node.value.expression.value = component.props[node.name.name].value.value;
                     delete node.value.expression.raw;
                 }
             } else {
                 if (node.value) {
-                    node.value.value = component.props[node.name.name].value.value
+                    node.value.value = component.props[node.name.name].value.value;
                     delete node.value.raw;
                 } else {
                     node.value = {
+                        type: "Literal",
                         value: component.props[node.name.name].value.value
                     };
                 }
             }
+            delete component.props[node.name.name];
         }
     });
+    for (const key of Object.keys(component.props)) {
+        if (component.props[key].value) {
+            updatedJSXElement.openingElement.attributes.push({
+                "type": "JSXAttribute",
+                "name": {
+                    "type": "JSXIdentifier",
+                    "name": key
+                },
+                "value": {
+                    type: "Literal",
+                    value: component.props[key].value.value
+                }
+            });
+        }
+    }
     return updatedJSXElement;
 }
 
@@ -86,10 +104,7 @@ function addNewChildElement(sourceNode: any, component: AvailableComponent): voi
     sourceNode.openingElement.selfClosing = false;
     sourceNode.closingElement = {
         type: "JSXClosingElement",
-        name: {
-            type: "JSXIdentifier",
-            name: sourceNode.openingElement.name.name
-        }
+        name: sourceNode.openingElement.name
     };
     sourceNode.children.push({
         type: "JSXElement",
@@ -119,13 +134,13 @@ function getJSXAttributesFromProps(props: PropsType) {
                     "value": prop.value.value
                 } : undefined;
             default:
-                return {
+                return prop.value ? {
                     "type": "JSXExpressionContainer",
                     "expression": {
                         "type": "Literal",
-                        "raw": prop.value ? prop.value.value : "true"
+                        "raw": prop.value.value
                     }
-                }
+                } : undefined;
         }
     }
 
@@ -146,7 +161,7 @@ function getJSXAttributesFromProps(props: PropsType) {
 }
 
 function addAsChildElement(sourceNode: any, component: Component): void {
-    const childNode =  {
+    const childNode = {
         type: "JSXElement",
         openingElement: {
             type: "JSXOpeningElement",
@@ -172,10 +187,7 @@ function addAsChildElement(sourceNode: any, component: Component): void {
     sourceNode.openingElement.selfClosing = false;
     sourceNode.closingElement = {
         type: "JSXClosingElement",
-        name: {
-            type: "JSXIdentifier",
-            name: sourceNode.openingElement.name.name
-        }
+        name: sourceNode.openingElement.name
     };
     sourceNode.children.push(childNode);
 }
@@ -193,7 +205,7 @@ async function saveElementInSourceCode(sourceCode: string, component: Component)
     // console.log("current jsxElement: ", util.inspect(jsxElement, false, null, true /* enable colors */));
     // console.log("component: ", util.inspect(component, false, null, true /* enable colors */));
     const updatedJSXElement = await updateJSXElement(jsxElement, component);
-    // console.log("updatedJSXElement: ", util.inspect(updatedJSXElement, false, null, true /* enable colors */));
+    console.log("updatedJSXElement: ", util.inspect(updatedJSXElement, false, null, true /* enable colors */));
 
     return sourceCode.substr(0, jsxElement.start) + AstringGenerator.generate(updatedJSXElement) + sourceCode.substr(jsxElement.end);
     // console.log(sourceCode.substr(0, jsxElement.start) + generateJsx(updatedJSXElement) + sourceCode.substr(jsxElement.end));
@@ -277,7 +289,7 @@ export async function addNewElement(projectId: string, page: string, component: 
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await addNewElementInSourceCode(sourceCode, component, parent);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return commitCode(projectId, `Add new element ${component.name} in page ${page}.js`).then(()=>true);
+        return commitCode(projectId, `Add new element ${component.name} in page ${page}.js`).then(() => true).catch(() => false);
     });
 }
 
@@ -286,7 +298,7 @@ export async function saveElement(projectId: string, page: string, component: Co
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await saveElementInSourceCode(sourceCode, component);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return commitCode(projectId, `Updated element ${component.name} in page ${page}.js`).then(()=>true);
+        return commitCode(projectId, `Updated element ${component.name} in page ${page}.js`).then(() => true).catch(() => false);
     });
 }
 
@@ -295,7 +307,7 @@ export async function deleteElement(projectId: string, page: string, component: 
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await deleteElementFromSourceCode(sourceCode, component);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return commitCode(projectId, `Removed element ${component.name} from page ${page}.js`).then(()=>true);
+        return commitCode(projectId, `Removed element ${component.name} from page ${page}.js`).then(() => true).catch(() => false);
     });
 }
 
@@ -304,7 +316,7 @@ export async function updateComponentPlacement(components: Component[], projectI
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await updateComponentPlacementInSourceCode(sourceCode, components);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return commitCode(projectId, `Reorder elements in page ${page}.js`).then(()=>true);
+        return commitCode(projectId, `Reorder elements in page ${page}.js`).then(() => true).catch(() => false);
     });
 }
 
@@ -313,6 +325,6 @@ export async function updatePageComponentName(projectId: string, fileName: strin
     const sourceCode = await readSourceCodeFile(filePath);
     const newSourceCode = await updatePageComponentNameInSourceCode(sourceCode, pageDetails);
     return await fsp.writeFile(filePath, AstringGenerator.generate(AcornParser.parse(newSourceCode)), 'utf8').then(() => {
-        return commitCode(projectId, `Update page name and route of page ${fileName}`).then(()=>true);
+        return commitCode(projectId, `Update page name and route of page ${fileName}`).then(() => true).catch(() => false);
     });
 }
