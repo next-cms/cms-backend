@@ -4,6 +4,7 @@ import userSchema from './User';
 import projectSchema from './Project';
 import pageSchema from './Page';
 import componentSchema from './Component';
+import gallerySchema from './Gallery';
 
 const linkSchema = gql`
   scalar Date
@@ -20,4 +21,4 @@ const linkSchema = gql`
   }
 `;
 
-export default [linkSchema, userSchema, projectSchema, pageSchema, componentSchema];
+export default [linkSchema, userSchema, projectSchema, pageSchema, componentSchema, gallerySchema];

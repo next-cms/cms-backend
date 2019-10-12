@@ -5,7 +5,7 @@ import {debuglog} from "util";
 import Vendor from "../models/Vendor";
 import path from "path";
 import fse from "fs-extra";
-import {THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT} from "../constants/DirectoryStructureConstants";
+import {SUPPORTED_COMPONENTS_ROOT} from "../constants/DirectoryStructureConstants";
 
 const log = debuglog("pi-cms.utils.SyncUtils");
 
@@ -77,10 +77,10 @@ async function saveVendor(vendor: string) {
 
 export async function loadSupportedComponentsPool(vendor: string, reload: boolean=false) {
     await saveVendor(vendor);
-    return await fse.readdir(path.join(THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT, vendor)).then(async (files)=>{
+    return await fse.readdir(path.join(SUPPORTED_COMPONENTS_ROOT, vendor)).then(async (files)=>{
         log(`Loading components of ${files} from ${vendor}...`);
         for (const file of files) {
-            await fse.readFile(path.join(THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT, vendor, file)).then(async (jsonString)=>{
+            await fse.readFile(path.join(SUPPORTED_COMPONENTS_ROOT, vendor, file)).then(async (jsonString)=>{
                 const components: AvailableComponent[] = JSON.parse(jsonString);
                 for (const component of components) {
                     try {
@@ -115,7 +115,7 @@ export async function loadSupportedComponentsPool(vendor: string, reload: boolea
 }
 
 export async function loadAllSupportedComponentsPool(reload: boolean=false) {
-    return await fse.readdir(THIRD_PARTY_SUPPORTED_COMPONENTS_ROOT).then(async (vendors)=>{
+    return await fse.readdir(SUPPORTED_COMPONENTS_ROOT).then(async (vendors)=>{
         //listing all files using forEach
         for(const vendor of vendors) {
             await loadSupportedComponentsPool(vendor, reload);

@@ -20,8 +20,8 @@ export async function getProjectPages(projectId): Promise<Page[]> {
                 slug: slug,
                 title: slug,
                 key: slug,
-                path: `/project/pages?id=${projectId}&pageName=${slug}`,
-                pathAs: `/project/pages?id=${projectId}&pageName=${slug}`,
+                path: `/project/pages?projectId=${projectId}&pageName=${slug}`,
+                pathAs: `/project/pages?projectId=${projectId}&pageName=${slug}`,
                 pathParam: slug
             });
         });
