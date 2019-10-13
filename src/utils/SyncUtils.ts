@@ -5,7 +5,9 @@ import {debuglog} from "util";
 import Vendor from "../models/Vendor";
 import path from "path";
 import fse from "fs-extra";
-import {SUPPORTED_COMPONENTS_ROOT} from "../constants/DirectoryStructureConstants";
+import {SUPPORTED_COMPONENTS_ROOT, TEMPLATE_MODELS_ROOT} from "../constants/DirectoryStructureConstants";
+import {DataTemplateType} from "../api-models/DataType";
+import DataModelTemplate from "../models/DataModelTemplate";
 
 const log = debuglog("pi-cms.utils.SyncUtils");
 
@@ -14,6 +16,18 @@ async function saveComponent(component: AvailableComponent) {
     log(`Importing/Updating component: ${component.name}`);
     await componentModel.save().then(res => {
         log(`Imported/Updated component: ${component.name}`);
+        return res;
+    }).catch(err => {
+        log(JSON.stringify(err));
+        throw err;
+    });
+}
+
+async function saveTemplate(template: DataTemplateType) {
+    const templateModel = new DataModelTemplate(template);
+    log(`Importing/Updating template: ${template.name}`);
+    await templateModel.save().then(res => {
+        log(`Imported/Updated template: ${template.name}`);
         return res;
     }).catch(err => {
         log(JSON.stringify(err));
@@ -90,9 +104,7 @@ export async function loadSupportedComponentsPool(vendor: string, reload: boolea
                         } else {
                             if (reload) {
                                 log(`Re-importing already imported component: ${component.name}`);
-                                console.log(componentModel);
                                 Object.assign(componentModel, component);
-                                console.log(componentModel);
                                 componentModel.markModified('props.*');
                                 await componentModel.save();
                             } else {
@@ -122,6 +134,42 @@ export async function loadAllSupportedComponentsPool(reload: boolean=false) {
         }
         log(`Loaded supported components from vendors ${JSON.stringify(vendors)}`);
         return `Loaded supported components from vendors ${JSON.stringify(vendors)}`;
+    }).catch((err)=>{
+        log('Unable to scan directory: ', err);
+        throw err;
+    });
+}
+
+export async function loadAllDataTemplateModels(reload: boolean=false) {
+    return await fse.readdir(TEMPLATE_MODELS_ROOT).then(async (files)=>{
+        log(`Loading template models of ${files}...`);
+        for (const file of files) {
+            await fse.readFile(path.join(TEMPLATE_MODELS_ROOT, file)).then(async (jsonString)=>{
+                const templates: DataTemplateType[] = JSON.parse(jsonString);
+                for (const template of templates) {
+                    try {
+                        let templateModel = await DataModelTemplate.findByName(template.name);
+                        if (!templateModel) {
+                            await saveTemplate(template);
+                        } else {
+                            if (reload) {
+                                log(`Re-importing already imported template: ${template.name}`);
+                                Object.assign(templateModel, template);
+                                templateModel.markModified('fields.*');
+                                await templateModel.save();
+                            } else {
+                                log(`Skipping already imported template: ${template.name}`);
+                            }
+                        }
+                    } catch (e) {
+                        log(e.message, e);
+                        throw e;
+                    }
+                }
+            });
+        }
+        log(`Loaded templates of ${files}`);
+        return `Loaded templates of ${files}`;
     }).catch((err)=>{
         log('Unable to scan directory: ', err);
         throw err;

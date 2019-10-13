@@ -6,8 +6,10 @@ import {isAdmin, isAuthenticated} from "./Authorization";
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
 import {initializeNewProject} from '../project-scm';
+import {debuglog} from "util";
 
 const fs = require("fs-extra");
+const log = debuglog("pi-cms.resolvers.Project");
 
 const ProjectResolver: IResolvers = {
     Query: {
@@ -58,7 +60,8 @@ const ProjectResolver: IResolvers = {
                         return err;
                     })
                 } catch (e) {
-                    return e.message;
+                    console.error(e);
+                    throw e;
                 }
             }
         ),
@@ -75,13 +78,13 @@ const ProjectResolver: IResolvers = {
                     );
                 }
                 if (project.ownerId === user.id) {
-                    const updatedProject = {
-                        ...project, ...{
+                    Object.assign(project, {
                             title, description, websiteUrl, brand, siteMeta, modifiedAt: Date.now()
-                        }
-                    };
-                    await updatedProject.save();
-                    return updatedProject;
+                        });
+                    return await project.save().then(updatedProject=>{
+                        log(updatedProject);
+                        return updatedProject
+                    });
                 }
                 return new ForbiddenError('Not authorized.');
             }

@@ -2,7 +2,7 @@ import mongoose, {Model, Schema} from "mongoose";
 import bcrypt from "bcrypt";
 import {isEmail} from "validator";
 
-export const UserSchema: any = new Schema({
+const UserSchema: any = new Schema({
     name: {
         type: String,
         trim: true,

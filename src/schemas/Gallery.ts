@@ -7,8 +7,12 @@ export default gql`
         height: Float
         width: Float
     }
+    type MediaResult {
+        data: [FileInfo],
+        hasMore: Boolean
+    }
     extend type Query {
-        allMedia(projectId: String!, limit: Int, skip: Int): [FileInfo!]
+        allMedia(projectId: String!, limit: Int, skip: Int): MediaResult
     }
     extend type Mutation {
         upload: String

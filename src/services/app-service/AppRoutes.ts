@@ -26,6 +26,14 @@ const Routes: Route[] = [
         path: "/app/reload/SupportedComponents/:vendor",
         method: "post",
         handler: (req, res) => AppController.reloadSupportedComponents(req, res).then(res=>res).catch(err=>err)
+    }, {
+        path: "/app/load/DataTemplates",
+        method: "post",
+        handler: (req, res) => AppController.loadDataTemplates(req, res).then(res=>res).catch(err=>err)
+    }, {
+        path: "/app/reload/DataTemplates",
+        method: "post",
+        handler: (req, res) => AppController.reloadDataTemplates(req, res).then(res=>res).catch(err=>err)
     }
 ];
 

@@ -71,7 +71,7 @@ class ProjectController {
             // const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
 
             console.log(path.resolve("."+req.path.substr("/next-project".length)));
-            return res.status(200).sendFile(path.resolve(`./${projectDir}${req.path.substr("/next-project".length)}`));
+            return res.status(200).sendFile(decodeURIComponent(path.resolve(`./${projectDir}${req.path.substr("/next-project".length)}`)));
         } catch (e) {
             console.error(e);
         }

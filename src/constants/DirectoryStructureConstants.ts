@@ -4,4 +4,5 @@ export const AVAILABLE_COMPONENTS_ROOT: string = "_components";
 export const DEFAULT_AVAILABLE_COMPONENTS_ROOT: string = `${AVAILABLE_COMPONENTS_ROOT}/_default`;
 export const RESOURCES_ROOT = "resources";
 export const SUPPORTED_COMPONENTS_ROOT: string = `${__dirname}/../${RESOURCES_ROOT}/supported-components`;
+export const TEMPLATE_MODELS_ROOT: string = `${__dirname}/../${RESOURCES_ROOT}/data-template-models`;
 export const IMAGE_STORAGE_PATH = "static/images/";

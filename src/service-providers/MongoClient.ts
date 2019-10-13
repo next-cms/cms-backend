@@ -4,6 +4,7 @@
 import mongoose from 'mongoose';
 import {debuglog} from "util";
 import dotenv from "dotenv";
+import {loadAllDataTemplateModels, loadAllSupportedComponentsPool} from "../utils/SyncUtils";
 dotenv.config();
 
 const log = debuglog("pi-cms.service-providers.MongoClient");
@@ -50,6 +51,10 @@ const mongoClient = (function connectWithMongoDB() {
             log("MongoDB Connected! Ready to use MongoDB.");
             // User.collection.drop();
             // await utils.importDefaultComponentsPool();
+            if (process.env.AUTO_LOAD_RESOURCES === "true") {
+                await loadAllSupportedComponentsPool(process.env.AUTO_RELOAD_RESOURCES === "true");
+                await loadAllDataTemplateModels(process.env.AUTO_RELOAD_RESOURCES === "true");
+            }
             // log("Imported available components");
         },
         err => {

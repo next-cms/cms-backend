@@ -4,7 +4,7 @@ export type VendorModel = {
     name: string;
 };
 
-export const VendorSchema: any = new Schema({
+const VendorSchema: any = new Schema({
     name: {
         type: String,
         required: true

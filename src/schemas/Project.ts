@@ -23,14 +23,11 @@ export default gql`
     isDeleted: Boolean
     ownerId: String!
   }
-  type ProjectMeta {
-    count: Int
-  }
   extend type Query {
     allProjects(limit: Int, skip: Int): [Project!]
     projects(limit: Int, skip: Int): [Project!]
     project(id: String!): Project
-    _projectsMeta: ProjectMeta
+    _projectsMeta: Meta
   }
   extend type Mutation {
     createProject(
