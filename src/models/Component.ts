@@ -1,6 +1,6 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-export const ComponentSchema: any = new Schema({
+const ComponentSchema: any = new Schema({
     importSignature: {
         type: String,
         required: false,

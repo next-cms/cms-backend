@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {
     loadAllSupportedComponentsPool,
     loadSupportedComponentsPool,
-    importDefaultComponentsPool
+    importDefaultComponentsPool, loadAllDataTemplateModels
 } from "../../utils/SyncUtils";
 
 class AppController {
@@ -72,6 +72,38 @@ class AppController {
             return res.json({
                 status: "success",
                 message: "Supported components reloaded successfully!",
+                data: result
+            });
+        } catch (e) {
+            console.error(e);
+            return res.status(400).json({
+                status: "error",
+                message: e
+            });
+        }
+    }
+    static async loadDataTemplates(req: Request, res: Response) {
+        try {
+            const result = await loadAllDataTemplateModels(false);
+            return res.json({
+                status: "success",
+                message: "Data Templates loaded successfully!",
+                data: result
+            });
+        } catch (e) {
+            console.error(e);
+            return res.status(400).json({
+                status: "error",
+                message: e
+            });
+        }
+    }
+    static async reloadDataTemplates(req: Request, res: Response) {
+        try {
+            const result = await loadAllDataTemplateModels(true);
+            return res.json({
+                status: "success",
+                message: "Data Templates reloaded successfully!",
                 data: result
             });
         } catch (e) {

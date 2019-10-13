@@ -42,10 +42,16 @@ export const listAllMedia = async (projectId, limit, skip) => {
                 height: 1,
                 width: dimension.width/dimension.height
             });
-            else return list;
+            else return {
+                data: list,
+                hasMore: true
+            };
         }
         console.log(list);
-        return list;
+        return {
+            data: list,
+            hasMore: false
+        };
     } catch (e) {
         console.log('Unable to scan directory: ' + e);
         throw e;

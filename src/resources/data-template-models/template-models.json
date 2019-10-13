@@ -1,0 +1,21 @@
+[
+    {
+        "name": "Blank",
+        "type": "blank"
+    },
+    {
+        "name": "Post",
+        "type": "post",
+        "fields": {
+            "timeToRead": {
+                "type": "string",
+                "description": "Approximate time needed to read the post/article"
+            },
+            "status": {
+                "type": "select",
+                "options": ["draft", "published", "deleted"],
+                "description": "Current status of the post/article."
+            }
+        }
+    }
+]

@@ -1,6 +1,6 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-export const ProjectSchema: any = new Schema({
+const ProjectSchema: any = new Schema({
     title: {
         type: String,
         required: true

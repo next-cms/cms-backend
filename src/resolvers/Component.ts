@@ -13,16 +13,12 @@ const ComponentResolver: IResolvers = {
     Query: {
         allAvailableComponents: combineResolvers(
             isAuthenticated, async (parent, {limit, skip}, context) => {
-                return [
-                    ...await Component.getAllComponent(limit, skip)
-                ];
+                return await Component.getAllComponent(limit, skip);
             }
         ),
         allProjectAvailableComponents: combineResolvers(
             isAuthenticated, async (parent, {projectId, limit, skip}, context) => {
-                return [
-                    ...await collectCustomComponents(projectId)
-                ];
+                return await collectCustomComponents(projectId);
             }
         ),
         availableComponentById: combineResolvers(isAuthenticated, isAuthorized, async (parent, { limit, skip }, context) => {
