@@ -8,7 +8,7 @@ export default gql`
         type: String!
         templateTypeId: String
         templateFields: JSONObject
-        contents: JSONObject
+        contents: [JSONObject]
         createdAt: Date
         modifiedAt: Date
     }
@@ -18,7 +18,7 @@ export default gql`
         type: String!
         templateTypeId: String!
         templateFields: JSONObject
-        contents: JSONObject
+        contents: [JSONObject]
     }
     extend type Query {
         allDataModels(projectId: String!, limit: Int, skip: Int): [DataModel!]
