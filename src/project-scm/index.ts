@@ -1,13 +1,15 @@
-import { exec } from 'child_process';
+import {exec} from 'child_process';
 import fs from 'fs';
 import fse from 'fs-extra';
-import { PROJECT_ROOT } from '../constants/DirectoryStructureConstants';
+import {PROJECT_ROOT} from '../constants/DirectoryStructureConstants';
 import path from "path";
+import Project from "../api-models/Project";
+import {addPackageJson} from "./PackageJSON";
 
 const execCommand = (command: string, cwd: string, callback: Function) => {
     console.log(cwd);
     // @ts-ignore
-    exec(command, { cwd: cwd }, (err, stdout, stderr) => {
+    exec(command, {cwd: cwd}, (err, stdout, stderr) => {
         if (err) {
             console.log(`stderr: ${stderr}`);
             console.error('err:', err);
@@ -20,8 +22,8 @@ const execCommand = (command: string, cwd: string, callback: Function) => {
     });
 };
 
-export const initializeNewProject = (projectDirName: string) => {
-    return new Promise((resolve, reject)=>{
+export const initializeNewProject = (project: Project) => {
+    return new Promise((resolve, reject) => {
         if (!fs.existsSync(PROJECT_ROOT)) {
             console.log(`${PROJECT_ROOT} folder not exist!`);
             fs.mkdirSync(PROJECT_ROOT);
@@ -29,12 +31,13 @@ export const initializeNewProject = (projectDirName: string) => {
             console.log(`${PROJECT_ROOT} folder exist!`);
         }
 
+        const projectDirName = project.id;
         fs.mkdirSync(PROJECT_ROOT + "/" + projectDirName);
-        try{
+        try {
             execCommand('curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=3 next.js-canary/examples/with-ant-design', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                execCommand('npm install --save', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                    // TODO start: remove when we have a project initializer
-                    execCommand('npm install pi-cms-components', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                addPackageJson(project, () => {
+                    execCommand('npm install --save', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                        // TODO start: remove when we have a project initializer
                         fse.copy(path.join(__dirname, '../templates', 'BlankPage.js.template'), `${PROJECT_ROOT}/${projectDirName}/pages/index.js`, err => {
                             if (err) return console.error(err);
                             console.log('success!');
@@ -53,7 +56,7 @@ export const initializeNewProject = (projectDirName: string) => {
                             });
                         });
                     });
-                })
+                });
             });
         } catch (e) {
             reject(e);

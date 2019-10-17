@@ -52,7 +52,7 @@ const ProjectResolver: IResolvers = {
                     let project = new Project({title, description, websiteUrl, ownerId: user.id});
                     return project.save().then(res => {
                         console.log(res);
-                        return initializeNewProject(res._id).then(()=>{
+                        return initializeNewProject(res).then(()=>{
                             return res;
                         });
                     }).catch(err => {
