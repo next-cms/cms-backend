@@ -7,8 +7,8 @@ export default gql`
         name: String!
         type: String!
         templateTypeId: String
-        templateFields: JSONObject
-        contents: [JSONObject]
+        fields: JSONObject
+        contents: JSONObject
         createdAt: Date
         modifiedAt: Date
     }
@@ -17,8 +17,8 @@ export default gql`
         projectId: String!
         type: String!
         templateTypeId: String!
-        templateFields: JSONObject
-        contents: [JSONObject]
+        fields: JSONObject
+        contents: JSONObject
     }
     extend type Query {
         allDataModels(projectId: String!, limit: Int, skip: Int): [DataModel!]
@@ -27,5 +27,6 @@ export default gql`
     extend type Mutation {
         addDataModel(dataModel: DataModelInput!, projectId: String!): DataModel
         updateDataModel(dataModel: DataModelInput!, projectId: String!): DataModel
+        deleteDataModel(id: String!, projectId: String!): DataModel
     }
 `;
