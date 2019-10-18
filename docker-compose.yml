@@ -4,7 +4,7 @@ services:
   mongodb:
     image: 'bitnami/mongodb:latest'
     ports:
-      - "27017"
+      - "27016:27017"
     volumes:
       - ./mongodb-data:/bitnami
     networks:
@@ -22,8 +22,9 @@ services:
       build:
           context: .
           dockerfile: Dockerfile-nginx
-      networks:
-          - picms-net
+      # networks:
+      #     - picms-net
+      network_mode: host
       depends_on:
           - mongodb
       volumes:
