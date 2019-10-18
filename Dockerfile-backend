@@ -1,0 +1,22 @@
+# production environment
+FROM node:12.8.1-alpine
+
+# replace shell with bash so we can source files
+#RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+# set working directory
+WORKDIR /usr/src/app
+
+RUN npm install yarn -g --silent
+
+# Copy application files
+COPY . /usr/src/app
+RUN touch .env
+
+RUN yarn install --quiet pm2 -g &&\
+  yarn install --quiet
+
+RUN yarn build
+
+EXPOSE $SERVER_PORT
+CMD ["yarn", "prod"]

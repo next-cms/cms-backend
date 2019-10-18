@@ -37,6 +37,17 @@ services:
           - '27017:27017'
       restart: 'no'
 
+  backend:
+      image: pi-cms-backend:0.1.0
+      build:
+          context: .
+          dockerfile: Dockerfile-backend
+      ports:
+          - "5000:5000"
+      networks:
+          - host
+      restart: 'no'
+
 networks:
     picms-net:
         driver: bridge
