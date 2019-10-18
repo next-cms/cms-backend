@@ -13,10 +13,14 @@ RUN npm install yarn -g --silent
 COPY . /usr/src/app
 RUN touch .env
 
-RUN yarn install --quiet pm2 -g &&\
-  yarn install --quiet
+RUN apk --no-cache add --virtual native-deps \
+  g++ gcc libgcc libstdc++ linux-headers make python && \
+  yarn install --quiet pm2 -g &&\
+  yarn install --quiet node-gyp -g &&\
+  yarn install --quiet && \
+  apk del native-deps
 
-RUN yarn build
+# RUN yarn build
 
 EXPOSE $SERVER_PORT
-CMD ["yarn", "prod"]
+CMD ["yarn", "start"]
