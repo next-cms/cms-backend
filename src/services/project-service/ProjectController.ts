@@ -4,6 +4,8 @@ import {PROJECT_ROOT} from "../../constants/DirectoryStructureConstants";
 import next from "next";
 import {URL} from "url";
 import {getNextServerConfig} from "./NextConfig";
+import {deployProjectInDockerWithNginx} from "../../project-manager";
+import Project from "../../models/Project";
 
 class ProjectController {
     static timeouts = {};
@@ -17,6 +19,20 @@ class ProjectController {
             const {app, handle, cached} = await ProjectController.getNextHandle(projectId, projectDir);
 
             return await app.render(req, res, '/index');
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    static async deployProject(req: Request, res: Response) {
+        req.setTimeout(0, ()=>{console.log("timeout callback called")}); // no timeout
+        try {
+            const projectId = req.query.projectId;
+            if (!projectId) return res.send({error: true, message: "projectId is undefined"});
+            const project = await Project.findById(projectId);
+            console.log("project is: ", project);
+            return deployProjectInDockerWithNginx(project).then((result)=>{
+                return res.send("Success!");
+            });
         } catch (e) {
             console.error(e);
         }

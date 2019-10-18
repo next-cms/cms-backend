@@ -5,6 +5,8 @@ import {PROJECT_ROOT} from '../constants/DirectoryStructureConstants';
 import path from "path";
 import Project from "../api-models/Project";
 import {addPackageJson} from "./PackageJSON";
+import {addBabelConfig} from "./BabelConfig";
+import {addDeploymentConfiguration} from "./DeploymentConfig";
 
 const execCommand = (command: string, cwd: string, callback: Function) => {
     console.log(cwd);
@@ -22,7 +24,7 @@ const execCommand = (command: string, cwd: string, callback: Function) => {
     });
 };
 
-export const initializeNewProject = (project: Project) => {
+export const initializeNewProject = (project: Project): Promise<any> => {
     return new Promise((resolve, reject) => {
         if (!fs.existsSync(PROJECT_ROOT)) {
             console.log(`${PROJECT_ROOT} folder not exist!`);
@@ -36,26 +38,45 @@ export const initializeNewProject = (project: Project) => {
         try {
             execCommand('curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=3 next.js-canary/examples/with-ant-design', `${PROJECT_ROOT}/${projectDirName}`, () => {
                 addPackageJson(project, () => {
-                    execCommand('npm install --save', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                        // TODO start: remove when we have a project initializer
-                        fse.copy(path.join(__dirname, '../templates', 'BlankPage.js.template'), `${PROJECT_ROOT}/${projectDirName}/pages/index.js`, err => {
-                            if (err) return console.error(err);
-                            console.log('success!');
-                            // TODO ends: here
-                            execCommand('git init', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                                fse.copy(path.join(__dirname, '../templates', 'gitignore.template'), `${PROJECT_ROOT}/${projectDirName}/.gitignore`, err => {
-                                    if (err) return console.error(err);
-                                    console.log('success!');
-                                    execCommand('git add .', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                                        execCommand('git commit -m "project initialized"', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                                            console.log("project initialization successful");
-                                            resolve(true);
+                    addBabelConfig(project, () => {
+                        execCommand('yarn', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                            // TODO start: remove when we have a project initializer
+                            fse.copy(path.join(__dirname, '../templates', 'BlankPage.js.template'), `${PROJECT_ROOT}/${projectDirName}/pages/index.js`, err => {
+                                if (err) return console.error(err);
+                                console.log('success!');
+                                // TODO ends: here
+                                execCommand('git init', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                    fse.copy(path.join(__dirname, '../templates', 'gitignore.template'), `${PROJECT_ROOT}/${projectDirName}/.gitignore`, err => {
+                                        if (err) return console.error(err);
+                                        console.log('success!');
+                                        execCommand('git add .', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                            execCommand('git commit -m "project initialized"', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                                console.log("project initialization successful");
+                                                resolve(true);
+                                            });
                                         });
                                     });
                                 });
                             });
                         });
                     });
+                });
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+export const deployProjectInDockerWithNginx = (project: Project): Promise<any> => {
+    return new Promise((resolve, reject) => {
+        const projectDirName = project.id;
+        try {
+            addDeploymentConfiguration(project, (err) => {
+                if (err) throw err;
+                execCommand('docker-compose up -d --build', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                    console.log("Project deployed successfully!");
+                    resolve(true);
                 });
             });
         } catch (e) {

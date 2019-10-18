@@ -4,6 +4,7 @@ export default gql`
     type DataObject {
         id: ID!
         projectId: ID!
+        title: String
         type: String!
         templateTypeId: String
         fields: JSONObject
@@ -12,6 +13,7 @@ export default gql`
         modifiedAt: Date
     }
     input DataObjectInput {
+        title: String
         projectId: String!
         type: String!
         templateTypeId: String!

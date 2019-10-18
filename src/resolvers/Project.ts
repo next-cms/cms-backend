@@ -5,7 +5,7 @@ import Project from "../models/Project";
 import {isAdmin, isAuthenticated} from "./Authorization";
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
-import {initializeNewProject} from '../project-scm';
+import {deployProjectInDockerWithNginx, initializeNewProject} from '../project-manager';
 import {debuglog} from "util";
 
 const fs = require("fs-extra");
@@ -101,6 +101,20 @@ const ProjectResolver: IResolvers = {
                         console.error(err);
                     });
                     return true;
+                } else {
+                    return new ForbiddenError('Not authorized.');
+                }
+            },
+        ),
+        deployProject: combineResolvers(
+            isAuthenticated,
+            async (parent, {id}, {user}) => {
+                const project = await Project.findById(id);
+                console.log("project is: ", project);
+                if (project && project.ownerId === user.id) {
+                    return deployProjectInDockerWithNginx(project).then((res)=>{
+                        return res;
+                    });
                 } else {
                     return new ForbiddenError('Not authorized.');
                 }

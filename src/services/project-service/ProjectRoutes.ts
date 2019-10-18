@@ -3,6 +3,11 @@ import { Route } from "../../utils/RouteUtils";
 
 const Routes: Route[] = [
     {
+        path: "/project/deploy",
+        method: "post",
+        handler: ProjectController.deployProject
+    },
+    {
         path: "/next-project",
         method: "get",
         handler: ProjectController.loadProject

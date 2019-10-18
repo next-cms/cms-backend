@@ -1,0 +1,22 @@
+{
+    "presets": [
+        ["next/babel", {
+            "preset-env": {
+                "targets": {
+                    "browsers": [">0.02%"]
+                },
+                "useBuiltIns": "usage",
+                "corejs": 3
+            }
+        }]
+    ],
+    "plugins": [
+        [
+            "import",
+            {
+                "libraryName": "antd",
+                "style": "css"
+            }
+        ]
+    ]
+}

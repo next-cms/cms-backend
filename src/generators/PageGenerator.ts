@@ -5,7 +5,7 @@ import fs from "fs";
 const fse = require("fs-extra");
 import {debuglog} from "util";
 import {updatePageComponentName} from "./JSXElementModifiers";
-import {commitCode} from "../project-scm";
+import {commitCode} from "../project-manager";
 
 const fsp = fs.promises;
 

@@ -13,7 +13,7 @@ export const addPackageJson = (project: Project, callback: Function) => {
         const [major, minor, patch] = [0, 1, 0];
         packageJson.version = `${major}.${minor}.${patch}`;
 
-        return fse.writeFile(`${PROJECT_ROOT}/${project.id}`, packageJson, 'utf8').then(()=>{
+        return fse.writeFile(`${PROJECT_ROOT}/${project.id}/package.json`, JSON.stringify(packageJson), 'utf8').then(()=>{
             log("package.json written!");
             callback && callback();
         });

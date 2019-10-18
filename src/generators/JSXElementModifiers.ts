@@ -20,7 +20,7 @@ import AcornParser from "../core/AcornParser";
 import AstringGenerator from "../core/AstringGenerator";
 import AcornWalker from "../core/AcornWalker";
 import {CallExpression, ExportDefaultDeclaration, Identifier} from "estree";
-import {commitCode} from "../project-scm";
+import {commitCode} from "../project-manager";
 
 const debug = debuglog("pi-cms.generators.ComponentGenerator");
 

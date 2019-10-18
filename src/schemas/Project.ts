@@ -53,5 +53,6 @@ export default gql`
     ): Project!
     updateProject(project: ProjectInput): Project!
     deleteProject(id: ID!): Boolean
+    deployProject(id: ID!): Boolean
   }
 `;
