@@ -5,14 +5,14 @@ import {isAuthenticated, isAuthorized} from "./Authorization";
 import DataModel from "../models/DataModel";
 const log = debuglog("pi-cms.resolvers.DataModel");
 
-const GalleryResolver: IResolvers = {
+const DataModelResolver: IResolvers = {
     Query: {
         allDataModels: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {projectId, limit, skip}, context) => {
                 return await DataModel.getAll(projectId, limit, skip);
             }
         ),
-        _allDataModelsMeta: combineResolvers(isAuthenticated,
+        _allDataModelsMeta: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {projectId}, {}) => {
                 return {
                     count: await DataModel.countDocuments({projectId})
@@ -40,7 +40,8 @@ const GalleryResolver: IResolvers = {
                     throw new Error(`DataModel with id ${dataModel.id} not found!`);
                 }
                 Object.assign(dataModelToSave, dataModel, {modifiedAt: Date.now()});
-                dataModelToSave.markModified('templateFields.*');
+                dataModelToSave.projectId = dataModel.projectId;
+                dataModelToSave.markModified('fields.*');
                 dataModelToSave.markModified('contents.*');
                 return dataModelToSave.save().then(updatedDataModel => {
                     log(updatedDataModel);
@@ -50,8 +51,23 @@ const GalleryResolver: IResolvers = {
                     throw err;
                 })
             }
+        ),
+        deleteDataModel: combineResolvers(
+            isAuthenticated, isAuthorized, async (parent, {id}, {}) => {
+                let dataModel = DataModel.findById(id);
+                if (!dataModel) {
+                    throw new Error(`DataModel with id ${dataModel.id} not found!`);
+                }
+                return DataModel.remove().then(deletedDataModel => {
+                    log(deletedDataModel);
+                    return deletedDataModel;
+                }).catch(err => {
+                    log(err);
+                    throw err;
+                })
+            }
         )
     }
 };
 
-export default GalleryResolver;
+export default DataModelResolver;

@@ -5,7 +5,7 @@ import Project from "../models/Project";
 import {isAdmin, isAuthenticated} from "./Authorization";
 import {PROJECT_ROOT} from "../constants/DirectoryStructureConstants";
 
-import {initializeNewProject} from '../project-scm';
+import {deployProjectInDockerWithNginx, initializeNewProject} from '../project-manager';
 import {debuglog} from "util";
 
 const fs = require("fs-extra");
@@ -52,7 +52,7 @@ const ProjectResolver: IResolvers = {
                     let project = new Project({title, description, websiteUrl, ownerId: user.id});
                     return project.save().then(res => {
                         console.log(res);
-                        return initializeNewProject(res._id).then(()=>{
+                        return initializeNewProject(res).then(()=>{
                             return res;
                         });
                     }).catch(err => {
@@ -68,20 +68,18 @@ const ProjectResolver: IResolvers = {
         updateProject: combineResolvers(
             isAuthenticated,
             async (parent,
-                   {id, title, description, websiteUrl, brand, siteMeta},
+                   {project},
                    {user},
             ) => {
-                const project = await Project.findById(id);
-                if (!project) {
+                const projectInDB = await Project.findById(project.id);
+                if (!projectInDB) {
                     throw new UserInputError(
                         'No project found with this id.',
                     );
                 }
-                if (project.ownerId === user.id) {
-                    Object.assign(project, {
-                            title, description, websiteUrl, brand, siteMeta, modifiedAt: Date.now()
-                        });
-                    return await project.save().then(updatedProject=>{
+                if (projectInDB.ownerId === user.id) {
+                    Object.assign(projectInDB, project, {modifiedAt: Date.now()});
+                    return await projectInDB.save().then(updatedProject=>{
                         log(updatedProject);
                         return updatedProject
                     });
@@ -103,6 +101,20 @@ const ProjectResolver: IResolvers = {
                         console.error(err);
                     });
                     return true;
+                } else {
+                    return new ForbiddenError('Not authorized.');
+                }
+            },
+        ),
+        deployProject: combineResolvers(
+            isAuthenticated,
+            async (parent, {id}, {user}) => {
+                const project = await Project.findById(id);
+                console.log("project is: ", project);
+                if (project && project.ownerId === user.id) {
+                    return deployProjectInDockerWithNginx(project).then((res)=>{
+                        return res;
+                    });
                 } else {
                     return new ForbiddenError('Not authorized.');
                 }

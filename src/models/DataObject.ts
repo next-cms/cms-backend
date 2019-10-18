@@ -1,10 +1,6 @@
 import mongoose, { Model, Schema } from "mongoose";
 
-const DataModelSchema: any = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
+const DataObjectSchema: any = new Schema({
     projectId: {
         type: Schema.Types.ObjectId,
         required: true
@@ -22,7 +18,7 @@ const DataModelSchema: any = new Schema({
         required: false
     },
     contents: {
-        type: [Schema.Types.Mixed],
+        type: Schema.Types.Mixed,
         required: false
     },
     createdAt: {
@@ -35,10 +31,13 @@ const DataModelSchema: any = new Schema({
     }
 });
 
-DataModelSchema.statics.getAll = async function (projectId, limit, skip) {
+DataObjectSchema.statics.getAll = async function (projectId, limit, skip) {
     return await this.find({projectId}).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
 };
+DataObjectSchema.statics.getAllByType = async function (projectId, type, limit, skip) {
+    return await this.find({projectId, type}).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+};
 
-const DataModel: Model<any, any> | any = mongoose.model("DataModel", DataModelSchema);
+const DataObject: Model<any, any> | any = mongoose.model("DataObject", DataObjectSchema);
 // Export Project Model/Schema
-export default DataModel;
+export default DataObject;

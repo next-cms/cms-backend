@@ -12,14 +12,30 @@ export default gql`
   
   type Project {
     id: ID!
+    name: String
     title: String!
     description: String
-    websiteUrl: String!
+    websiteUrl: String
+    siteName: String
     brand: Brand
     siteMeta: String
+    port: String
     createdAt: Date
     deletedAt: Date
     modifiedAt: Date
+    isDeleted: Boolean
+    ownerId: String!
+  }
+  input ProjectInput {
+    id: String!
+    name: String!
+    title: String!
+    description: String
+    websiteUrl: String!
+    siteName: String!
+    brand: BrandInput
+    siteMeta: String
+    port: String
     isDeleted: Boolean
     ownerId: String!
   }
@@ -35,14 +51,8 @@ export default gql`
       description: String
       websiteUrl: String!
     ): Project!
-    updateProject(
-      id: String!
-      title: String
-      description: String
-      websiteUrl: String
-      siteMeta: String
-      brand: BrandInput
-    ): Project!
+    updateProject(project: ProjectInput): Project!
     deleteProject(id: ID!): Boolean
+    deployProject(id: ID!): Boolean
   }
 `;

@@ -5,7 +5,7 @@ import {isAuthenticated} from "./Authorization";
 import DataModelTemplate from "../models/DataModelTemplate";
 const debug = debuglog("pi-cms.resolvers.DataModelTemplate");
 
-const GalleryResolver: IResolvers = {
+const DataModelTemplateResolver: IResolvers = {
     Query: {
         allDataModelTemplates: combineResolvers(
             isAuthenticated, async (parent, {limit, skip}, {}) => {
@@ -22,4 +22,4 @@ const GalleryResolver: IResolvers = {
     }
 };
 
-export default GalleryResolver;
+export default DataModelTemplateResolver;
