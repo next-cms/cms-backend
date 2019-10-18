@@ -16,7 +16,7 @@ const DataObjectSchema: any = new Schema({
     },
     templateTypeId: {
         type: String,
-        required: true
+        required: false
     },
     fields: {
         type: Schema.Types.Mixed,

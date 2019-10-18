@@ -14,18 +14,19 @@ export default gql`
         modifiedAt: Date
     }
     input DataObjectInput {
+        id: ID
         title: String
         slug: String
         projectId: String!
         type: String!
-        templateTypeId: String!
+        templateTypeId: String
         fields: JSONObject
         contents: JSONObject
     }
     extend type Query {
         allDataObjects(projectId: String!, limit: Int, skip: Int): [DataObject!]
         allDataObjectsByType(projectId: String!, type: String!, limit: Int, skip: Int): [DataObject!]
-        dataObjectsBySlug(projectId: String!, slug: String!): [DataObject!]
+        dataObjectsBySlug(projectId: String!, slug: String!): DataObject
         _allDataObjectsMeta: Meta
         _allDataObjectsByTypeMeta: Meta
     }

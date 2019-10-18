@@ -23,7 +23,7 @@ async function* getFiles(dir) {
 }
 
 export const listAllMedia = async (projectId, limit, skip) => {
-    const staticDir = path.join(PROJECT_ROOT, projectId, 'static', 'images');
+    const staticDir = path.join(PROJECT_ROOT, projectId, 'public/static', 'images');
     if (!fse.existsSync(staticDir)) {
         return [];
     }

@@ -19,7 +19,7 @@ class FileController {
         const imageUpload = multer({
             storage: multer.diskStorage({
                 destination: (req, file, cb) => {
-                    const dir = path.join(PROJECT_ROOT, projectId, "static/images/");
+                    const dir = path.join(PROJECT_ROOT, projectId, "public/static/images/");
                     if (!fse.existsSync(dir)) {
                         console.log(`${dir} folder not exist!`);
                         fse.mkdirSync(dir, { recursive: true });
@@ -46,7 +46,7 @@ class FileController {
         const imageUpload = multer({
             storage: multer.diskStorage({
                 destination: (req, file, cb) => {
-                    const dir = path.join(PROJECT_ROOT, projectId, "static/images/");
+                    const dir = path.join(PROJECT_ROOT, projectId, "public/static/images/");
                     if (!fse.existsSync(dir)) {
                         console.log(`${dir} folder not exist!`);
                         fse.mkdirSync(dir, { recursive: true });
