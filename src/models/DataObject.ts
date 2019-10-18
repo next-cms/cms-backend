@@ -18,7 +18,7 @@ const DataObjectSchema: any = new Schema({
         required: false
     },
     contents: {
-        type: [Schema.Types.Mixed],
+        type: Schema.Types.Mixed,
         required: false
     },
     createdAt: {
