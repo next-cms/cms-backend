@@ -68,20 +68,18 @@ const ProjectResolver: IResolvers = {
         updateProject: combineResolvers(
             isAuthenticated,
             async (parent,
-                   {id, title, description, websiteUrl, brand, siteMeta},
+                   {project},
                    {user},
             ) => {
-                const project = await Project.findById(id);
-                if (!project) {
+                const projectInDB = await Project.findById(project.id);
+                if (!projectInDB) {
                     throw new UserInputError(
                         'No project found with this id.',
                     );
                 }
-                if (project.ownerId === user.id) {
-                    Object.assign(project, {
-                            title, description, websiteUrl, brand, siteMeta, modifiedAt: Date.now()
-                        });
-                    return await project.save().then(updatedProject=>{
+                if (projectInDB.ownerId === user.id) {
+                    Object.assign(projectInDB, project, {modifiedAt: Date.now()});
+                    return await projectInDB.save().then(updatedProject=>{
                         log(updatedProject);
                         return updatedProject
                     });
