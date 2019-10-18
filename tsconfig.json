@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "lib": ["esnext"],
+        "lib": ["esnext", "es6"],
         "module": "commonjs",
         "esModuleInterop": true,
         "moduleResolution": "node",
@@ -18,6 +18,8 @@
         "src/**/*.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "src/**/*.d.ts",
+        "node_modules/*"
     ]
 }
