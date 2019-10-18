@@ -9,6 +9,11 @@ const DataObjectSchema: any = new Schema({
         type: String,
         required: true
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    },
     templateTypeId: {
         type: String,
         required: true
@@ -36,6 +41,9 @@ DataObjectSchema.statics.getAll = async function (projectId, limit, skip) {
 };
 DataObjectSchema.statics.getAllByType = async function (projectId, type, limit, skip) {
     return await this.find({projectId, type}).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+};
+DataObjectSchema.statics.getBySlug = async function (projectId, slug) {
+    return await this.findOne({projectId, slug});
 };
 
 const DataObject: Model<any, any> | any = mongoose.model("DataObject", DataObjectSchema);

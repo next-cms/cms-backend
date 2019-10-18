@@ -3,6 +3,7 @@ import {gql} from 'apollo-server-express';
 export default gql`
     type DataObject {
         id: ID!
+        slug: String
         projectId: ID!
         title: String
         type: String!
@@ -14,6 +15,7 @@ export default gql`
     }
     input DataObjectInput {
         title: String
+        slug: String
         projectId: String!
         type: String!
         templateTypeId: String!
@@ -23,6 +25,7 @@ export default gql`
     extend type Query {
         allDataObjects(projectId: String!, limit: Int, skip: Int): [DataObject!]
         allDataObjectsByType(projectId: String!, type: String!, limit: Int, skip: Int): [DataObject!]
+        dataObjectsBySlug(projectId: String!, slug: String!): [DataObject!]
         _allDataObjectsMeta: Meta
         _allDataObjectsByTypeMeta: Meta
     }

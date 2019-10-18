@@ -1,7 +1,7 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { IResolvers } from 'apollo-server-express';
 import {debuglog} from "util";
-import {isAuthenticated, isAuthorized} from "./Authorization";
+import {isAuthenticated, isAuthorized, isAuthorizedToRead} from "./Authorization";
 import DataObject from "../models/DataObject";
 const log = debuglog("pi-cms.resolvers.DataObject");
 
@@ -15,6 +15,11 @@ const DataObjectResolver: IResolvers = {
         allDataObjectsByType: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {projectId, type, limit, skip}, context) => {
                 return await DataObject.getAllByType(projectId, type, limit, skip);
+            }
+        ),
+        dataObjectsBySlug: combineResolvers(
+            isAuthorizedToRead, async (parent, {projectId, slug}, context) => {
+                return await DataObject.getBySlug(projectId, slug);
             }
         ),
         _allDataObjectsMeta: combineResolvers(isAuthenticated, isAuthorized,
