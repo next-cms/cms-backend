@@ -7,6 +7,7 @@ export default gql`
         projectId: ID!
         title: String
         type: String!
+        isDraft: Boolean
         templateTypeId: String
         fields: JSONObject
         contents: JSONObject
@@ -18,6 +19,7 @@ export default gql`
         title: String
         slug: String
         projectId: String!
+        isDraft: Boolean
         type: String!
         templateTypeId: String
         fields: JSONObject

@@ -14,6 +14,10 @@ const DataObjectSchema: any = new Schema({
         required: true,
         unique: true
     },
+    isDraft: {
+        type: Boolean,
+        required: false
+    },
     templateTypeId: {
         type: String,
         required: false
