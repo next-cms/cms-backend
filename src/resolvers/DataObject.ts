@@ -18,7 +18,8 @@ const DataObjectResolver: IResolvers = {
             }
         ),
         dataObjectsBySlug: combineResolvers(
-            isAuthorizedToRead, async (parent, {projectId, slug}, context) => {
+            // isAuthorizedToRead,
+            async (parent, {projectId, slug}, context) => {
                 return await DataObject.getBySlug(projectId, slug);
             }
         ),
