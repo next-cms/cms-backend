@@ -21,12 +21,13 @@ const DataObjectResolver: IResolvers = {
             log(projectId, slug);
             return await DataObject.getBySlug(projectId, slug);
         },
-        // dataObjectsBySlug: combineResolvers(
-        //     isAuthorizedToRead,
-        //     async (parent, {projectId, slug}, context) => {
-        //         return await DataObject.getBySlug(projectId, slug);
-        //     }
-        // ),
+        dataObjectsByPostId: combineResolvers(
+            isAuthorizedToRead,
+            async (parent, {projectId, postId}, context) => {
+                log(projectId, postId);
+                return await DataObject.getByPostId(projectId, postId);
+            }
+        ),
         _allDataObjectsMeta: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {projectId}, {}) => {
                 return {

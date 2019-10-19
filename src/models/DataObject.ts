@@ -49,6 +49,9 @@ DataObjectSchema.statics.getAllByType = async function (projectId, type, limit, 
 DataObjectSchema.statics.getBySlug = async function (projectId, slug) {
     return await this.findOne({projectId, slug});
 };
+DataObjectSchema.statics.getByPostId = async function (projectId, postId) {
+    return await this.findById(postId);
+};
 
 const DataObject: Model<any, any> | any = mongoose.model("DataObject", DataObjectSchema);
 // Export Project Model/Schema
