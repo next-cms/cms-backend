@@ -1,5 +1,4 @@
 import mongoose, { Model, Schema } from "mongoose";
-import {Int32} from "bson";
 
 const ProjectSchema: any = new Schema({
     title: {
@@ -37,7 +36,7 @@ const ProjectSchema: any = new Schema({
         type: String,
     },
     port: {
-        type: Int32,
+        type: Number,
     },
     createdAt: {
         type: Date,
