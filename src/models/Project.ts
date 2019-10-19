@@ -1,9 +1,14 @@
 import mongoose, { Model, Schema } from "mongoose";
+import {Int32} from "bson";
 
 const ProjectSchema: any = new Schema({
     title: {
         type: String,
         required: true
+    },
+    name: {
+        type: String,
+        required: false
     },
     ownerId: {
         type: String,
@@ -27,6 +32,12 @@ const ProjectSchema: any = new Schema({
     },
     siteMeta: {
         type: String,
+    },
+    siteName: {
+        type: String,
+    },
+    port: {
+        type: Int32,
     },
     createdAt: {
         type: Date,
