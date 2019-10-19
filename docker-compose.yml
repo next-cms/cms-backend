@@ -44,7 +44,8 @@ services:
           context: .
           dockerfile: Dockerfile-backend
       volumes:
-            - ./.env:/usr/src/app/.env
+          - ./.env:/usr/src/app/.env
+          - ./_projects:/usr/src/app/_projects
       depends_on:
           - mongodb
       ports:

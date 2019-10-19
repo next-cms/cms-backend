@@ -38,7 +38,7 @@ export const createContext = async ({ req }) => {
         user: await resolveUserWithToken(req),
         secret: process.env.JWT_TOKEN_SECRET,
         project: undefined,
-        xAuth: req.headers["xauth"]
+        xAuth: req.headers["xauth"] || req.headers["XAuth"]
     };
     if (req.body.projectId || req.body.variables.projectId) {
         if (context.user || context.xAuth) {
