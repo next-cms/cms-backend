@@ -17,12 +17,16 @@ const DataObjectResolver: IResolvers = {
                 return await DataObject.getAllByType(projectId, type, limit, skip);
             }
         ),
-        dataObjectsBySlug: combineResolvers(
-            // isAuthorizedToRead,
-            async (parent, {projectId, slug}, context) => {
-                return await DataObject.getBySlug(projectId, slug);
-            }
-        ),
+        dataObjectsBySlug: async (parent, {projectId, slug}, context) => {
+            log(projectId, slug);
+            return await DataObject.getBySlug(projectId, slug);
+        },
+        // dataObjectsBySlug: combineResolvers(
+        //     isAuthorizedToRead,
+        //     async (parent, {projectId, slug}, context) => {
+        //         return await DataObject.getBySlug(projectId, slug);
+        //     }
+        // ),
         _allDataObjectsMeta: combineResolvers(isAuthenticated, isAuthorized,
             async (parent, {projectId}, {}) => {
                 return {
