@@ -64,8 +64,12 @@ const DataObjectResolver: IResolvers = {
                 }
                 Object.assign(dataObjectToSave, dataObject, {modifiedAt: Date.now()});
                 dataObjectToSave.projectId = dataObject.projectId;
-                dataObjectToSave.markModified('fields.*');
-                dataObjectToSave.markModified('contents.*');
+                if (dataObjectToSave.fields) {
+                    dataObjectToSave.markModified('fields.*');
+                }
+                if (dataObjectToSave.fields) {
+                    dataObjectToSave.markModified('contents.*');
+                }
                 return dataObjectToSave.save().then(updatedDataObject => {
                     log(updatedDataObject);
                     return updatedDataObject;
