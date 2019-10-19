@@ -58,7 +58,7 @@ const DataObjectResolver: IResolvers = {
         ),
         updateDataObject: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {dataObject}, {}) => {
-                let dataObjectToSave = DataObject.findById(dataObject.id);
+                let dataObjectToSave = await DataObject.findById(dataObject.id);
                 if (!dataObjectToSave) {
                     throw new Error(`DataObject with id ${dataObject.id} not found!`);
                 }
@@ -77,7 +77,7 @@ const DataObjectResolver: IResolvers = {
         ),
         deleteDataObject: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {id}, {}) => {
-                let dataObject = DataObject.findById(id);
+                let dataObject = await DataObject.findById(id);
                 if (!dataObject) {
                     throw new Error(`DataObject with id ${dataObject.id} not found!`);
                 }

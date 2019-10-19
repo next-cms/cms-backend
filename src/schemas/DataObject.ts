@@ -24,7 +24,6 @@ export default gql`
         templateTypeId: String
         fields: JSONObject
         contents: JSONObject
-        modifiedAt: Date
     }
     extend type Query {
         allDataObjects(projectId: String!, limit: Int, skip: Int): [DataObject!]

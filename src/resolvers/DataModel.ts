@@ -35,7 +35,7 @@ const DataModelResolver: IResolvers = {
         ),
         updateDataModel: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {dataModel}, {}) => {
-                let dataModelToSave = DataModel.findById(dataModel.id);
+                let dataModelToSave = await DataModel.findById(dataModel.id);
                 if (!dataModelToSave) {
                     throw new Error(`DataModel with id ${dataModel.id} not found!`);
                 }
@@ -54,7 +54,7 @@ const DataModelResolver: IResolvers = {
         ),
         deleteDataModel: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {id}, {}) => {
-                let dataModel = DataModel.findById(id);
+                let dataModel = await DataModel.findById(id);
                 if (!dataModel) {
                     throw new Error(`DataModel with id ${dataModel.id} not found!`);
                 }
