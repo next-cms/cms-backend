@@ -41,7 +41,9 @@ const DataModelResolver: IResolvers = {
                 }
                 Object.assign(dataModelToSave, dataModel, {modifiedAt: Date.now()});
                 dataModelToSave.projectId = dataModel.projectId;
-                dataModelToSave.markModified('fields.*');
+                if (dataModelToSave.fields) {
+                    dataModelToSave.markModified('fields.*');
+                }
                 dataModelToSave.markModified('contents.*');
                 return dataModelToSave.save().then(updatedDataModel => {
                     log(updatedDataModel);
