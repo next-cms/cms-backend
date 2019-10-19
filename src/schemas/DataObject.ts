@@ -29,7 +29,7 @@ export default gql`
         allDataObjects(projectId: String!, limit: Int, skip: Int): [DataObject!]
         allDataObjectsByType(projectId: String!, type: String!, limit: Int, skip: Int): [DataObject!]
         dataObjectsBySlug(projectId: String!, slug: String!): DataObject
-        dataObjectsById(projectId: String!, postId: String!): DataObject
+        dataObjectsByPostId(projectId: String!, postId: String!): DataObject
         _allDataObjectsMeta: Meta
         _allDataObjectsByTypeMeta: Meta
     }
