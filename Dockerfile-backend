@@ -13,7 +13,7 @@ RUN npm install yarn -g --silent
 COPY . /usr/src/app
 RUN touch .env
 
-RUN apk --no-cache add --virtual native-deps \
+RUN apk --no-cache add --virtual native-deps git \
   g++ gcc libgcc libstdc++ linux-headers make python && \
   yarn install --quiet pm2 -g &&\
   yarn install --quiet node-gyp -g &&\

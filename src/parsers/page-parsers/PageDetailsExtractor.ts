@@ -3,7 +3,6 @@ import {Component, PageDetails} from "../../api-models/PageDetails";
 import {
     getDefaultExportIdentifier,
     getImportDeclarations,
-    getImportSignatureOfVendorComponentFromImportSpecifierNode,
     getImportsNameNodesOfGivenVendors
 } from "../../core/InfoExtractor";
 import Vendor from "../../models/Vendor";
@@ -12,8 +11,23 @@ import {debuglog} from "util";
 import {AvailableComponent} from "../../api-models/AvailableComponent";
 import {ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier} from "estree";
 import AcornWalker from "../../core/AcornWalker";
+import {Page} from "../../api-models/Page";
+import {startCase} from "lodash";
 
 const log = debuglog("pi-cms.page-parsers.PageDetailsExtractor");
+
+export async function extractPageInfo(ast: Node, projectId: string, page: string) {
+    const name = await getDefaultExportIdentifier(ast);
+    return new Page({
+        title: startCase(name),
+        name: name,
+        slug: page,
+        key: page,
+        path: `/project/pages?projectId=${projectId}&pageName=${page}`,
+        pathAs: `/project/pages?projectId=${projectId}&pageName=${page}`,
+        pathParam: page
+    });
+}
 
 export async function extractPageDetails(ast: Node, page: string) {
     const pageDetails: PageDetails = new PageDetails();
