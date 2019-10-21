@@ -183,7 +183,7 @@ export async function loadAllLayoutTemplate(reload: boolean=false) {
         let children = new RegExp("{children}");
         let header = new RegExp("{header}");
         let footer = new RegExp("{footer}");
-        let sider = new RegExp("{sideren}");
+        let sider = new RegExp("{sider}");
 
         //listing all files using forEach
         for(const template of templates) {
@@ -205,6 +205,8 @@ export async function loadAllLayoutTemplate(reload: boolean=false) {
                 const layoutTemplate = new LayoutTemplate(templateJson);
 
                 const layout = await LayoutTemplate.findByFileName(templateJson.fileName);
+
+                // need to apply conditions
 
                 if(layout === null) {
                     layoutTemplate.save();
