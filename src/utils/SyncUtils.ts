@@ -5,9 +5,10 @@ import {debuglog} from "util";
 import Vendor from "../models/Vendor";
 import path from "path";
 import fse from "fs-extra";
-import {SUPPORTED_COMPONENTS_ROOT, TEMPLATE_MODELS_ROOT} from "../constants/DirectoryStructureConstants";
+import {SUPPORTED_COMPONENTS_ROOT, TEMPLATE_MODELS_ROOT, LAYOUT_TEMPLATE_ROOT} from "../constants/DirectoryStructureConstants";
 import {DataTemplateType} from "../api-models/DataType";
 import DataModelTemplate from "../models/DataModelTemplate";
+import LayoutTemplate from "../models/LayoutTemplate";
 
 const log = debuglog("pi-cms.utils.SyncUtils");
 
@@ -175,3 +176,49 @@ export async function loadAllDataTemplateModels(reload: boolean=false) {
         throw err;
     });
 }
+
+export async function loadAllLayoutTemplate(reload: boolean=false) {
+    return await fse.readdir(LAYOUT_TEMPLATE_ROOT).then(async (templates)=>{
+
+        let children = new RegExp("{children}");
+        let header = new RegExp("{header}");
+        let footer = new RegExp("{footer}");
+        let sider = new RegExp("{sideren}");
+
+        //listing all files using forEach
+        for(const template of templates) {
+
+            fse.readFile(path.join(LAYOUT_TEMPLATE_ROOT, template), "utf8").then(async (file) => {
+
+                let splitFileName = template.split(".");
+                
+                let templateJson = {
+                    name: splitFileName[0],
+                    fileName: template,
+                    children: children.test(file),
+                    header: header.test(file),
+                    footer: footer.test(file),
+                    sider: sider.test(file)
+
+                }
+                
+                const layoutTemplate = new LayoutTemplate(templateJson);
+
+                const layout = await LayoutTemplate.findByFileName(templateJson.fileName);
+
+                if(layout === null) {
+                    layoutTemplate.save();
+                    log(`New layout save into databases ${JSON.stringify(templateJson)}`);
+                }
+
+            })
+        }
+
+        log(`Loaded layout template from templates ${JSON.stringify(templates)}`);
+        return `Loaded layout template from templates ${JSON.stringify(templates)}`;
+    }).catch((err)=>{
+        log('Unable to scan directory: ', err);
+        throw err;
+    });
+}
+

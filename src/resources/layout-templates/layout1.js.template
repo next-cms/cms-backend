@@ -1,0 +1,17 @@
+import React from 'react';
+import { Layout } from 'antd';
+
+const { Header, Footer, Content } = Layout;
+
+
+const Layout1 = ({ header, children, footer }) => {
+    return (
+        <Layout>
+            <Header>{header}</Header>
+            <Content>{children}</Content>
+            <Footer>{footer}</Footer>
+        </Layout>
+    );
+}
+
+export default Layout1;
