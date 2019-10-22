@@ -1,4 +1,4 @@
-import {exec} from 'child_process';
+import {exec, spawn} from 'child_process';
 import fs from 'fs';
 import fse from 'fs-extra';
 import {PROJECT_ROOT} from '../constants/DirectoryStructureConstants';
@@ -8,20 +8,28 @@ import {addPackageJson} from "./PackageJSON";
 import {addBabelConfig} from "./BabelConfig";
 import {addDeploymentConfiguration} from "./DeploymentConfig";
 
-const execCommand = (command: string, cwd: string, callback: Function) => {
-    console.log(cwd);
-    // @ts-ignore
-    exec(command, {cwd: cwd}, (err, stdout, stderr) => {
-        if (err) {
-            console.log(`stderr: ${stderr}`);
-            console.error('err:', err);
-            throw err;
-        }
-        console.log(`stdout: ${stdout}`);
-        if (callback) {
-            callback()
-        }
-    });
+const execCommand = (cmd: string, args: string[], cwd: string, callback: Function) => {
+    try {
+        let child = spawn(cmd, args, {cwd: cwd});
+
+        child.stdout.on('data', function (data) {
+            console.log('stdout: ' + data);
+        });
+
+        child.stderr.on('data', function (data) {
+            console.error('stderr: ' + data);
+        });
+
+        child.on('close', function (code) {
+            console.log('child process exited with code ' + code);
+            if (!code && callback) {
+                callback()
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        throw e;
+    }
 };
 
 export const initializeNewProject = (project: Project): Promise<any> => {
@@ -36,21 +44,21 @@ export const initializeNewProject = (project: Project): Promise<any> => {
         const projectDirName = project.id;
         fs.mkdirSync(PROJECT_ROOT + "/" + projectDirName);
         try {
-            execCommand('curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=3 next.js-canary/examples/with-ant-design', `${PROJECT_ROOT}/${projectDirName}`, () => {
+            execCommand('curl',  ['https://codeload.github.com/zeit/next.js/tar.gz/canary', '|', 'tar', '-xz', '--strip=3', 'next.js-canary/examples/with-ant-design'], `${PROJECT_ROOT}/${projectDirName}`, () => {
                 addPackageJson(project, () => {
                     addBabelConfig(project, () => {
-                        execCommand('yarn', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                        execCommand('yarn', [], `${PROJECT_ROOT}/${projectDirName}`, () => {
                             // TODO start: remove when we have a project initializer
                             fse.copy(path.join(__dirname, '../templates', 'BlankPage.js.template'), `${PROJECT_ROOT}/${projectDirName}/pages/index.js`, err => {
                                 if (err) return console.error(err);
                                 console.log('success!');
                                 // TODO ends: here
-                                execCommand('git init', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                execCommand('git', ['init'], `${PROJECT_ROOT}/${projectDirName}`, () => {
                                     fse.copy(path.join(__dirname, '../templates', 'gitignore.template'), `${PROJECT_ROOT}/${projectDirName}/.gitignore`, err => {
                                         if (err) return console.error(err);
                                         console.log('success!');
-                                        execCommand('git add .', `${PROJECT_ROOT}/${projectDirName}`, () => {
-                                            execCommand('git commit -m "project initialized"', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                        execCommand('git', ['add', '.'], `${PROJECT_ROOT}/${projectDirName}`, () => {
+                                            execCommand('git', ['commit', '-m', '"project initialized"'], `${PROJECT_ROOT}/${projectDirName}`, () => {
                                                 console.log("project initialization successful");
                                                 resolve(true);
                                             });
@@ -74,7 +82,7 @@ export const deployProjectInDockerWithNginx = (project: Project): Promise<any> =
         try {
             addDeploymentConfiguration(project, (err) => {
                 if (err) throw err;
-                execCommand('docker-compose up -d --build', `${PROJECT_ROOT}/${projectDirName}`, () => {
+                execCommand('docker-compose', ['up', '-d', '--build'], `${PROJECT_ROOT}/${projectDirName}`, () => {
                     console.log("Project deployed successfully!");
                     resolve(true);
                 });
@@ -88,8 +96,8 @@ export const deployProjectInDockerWithNginx = (project: Project): Promise<any> =
 export const commitCode = (projectId: string, message): Promise<any> => {
     return new Promise((resolve, reject) => {
         try {
-            execCommand('git add .', `${PROJECT_ROOT}/${projectId}`, () => {
-                execCommand(`git commit -m "${message}"`, `${PROJECT_ROOT}/${projectId}`, () => {
+            execCommand('git', ['add', '.'], `${PROJECT_ROOT}/${projectId}`, () => {
+                execCommand('git', ['commit', '-m', '"${message}"'], `${PROJECT_ROOT}/${projectId}`, () => {
                     console.log(`project source code committed with message '${message}'`);
                     resolve();
                 });

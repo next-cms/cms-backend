@@ -9,9 +9,18 @@ const DataObjectSchema: any = new Schema({
         type: String,
         required: true
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    isDraft: {
+        type: Boolean,
+        required: false
+    },
     templateTypeId: {
         type: String,
-        required: true
+        required: false
     },
     fields: {
         type: Schema.Types.Mixed,
@@ -36,6 +45,12 @@ DataObjectSchema.statics.getAll = async function (projectId, limit, skip) {
 };
 DataObjectSchema.statics.getAllByType = async function (projectId, type, limit, skip) {
     return await this.find({projectId, type}).sort({ modifiedAt: -1 }).skip(skip).limit(limit);
+};
+DataObjectSchema.statics.getBySlug = async function (projectId, slug) {
+    return await this.findOne({projectId, slug});
+};
+DataObjectSchema.statics.getByPostId = async function (projectId, postId) {
+    return await this.findById(postId);
 };
 
 const DataObject: Model<any, any> | any = mongoose.model("DataObject", DataObjectSchema);

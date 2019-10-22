@@ -38,7 +38,9 @@ export async function getDefaultExportIdentifier(ast: Program|Node): Promise<str
             identifier = node.name;
         },
         CallExpression(node: CallExpression, state, c) {
-            c(node.arguments[0], "CallExpression");
+            if (state === "ExportDefaultDeclaration") {
+                c(node.arguments[0], "CallExpression");
+            }
         }
     });
     return identifier;

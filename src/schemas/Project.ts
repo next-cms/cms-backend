@@ -24,20 +24,20 @@ export default gql`
     deletedAt: Date
     modifiedAt: Date
     isDeleted: Boolean
-    ownerId: String!
+    ownerId: String
   }
   input ProjectInput {
     id: String!
     name: String!
     title: String!
     description: String
-    websiteUrl: String!
-    siteName: String!
+    websiteUrl: String
+    siteName: String
     brand: BrandInput
     siteMeta: String
     port: String
     isDeleted: Boolean
-    ownerId: String!
+    ownerId: String
   }
   extend type Query {
     allProjects(limit: Int, skip: Int): [Project!]

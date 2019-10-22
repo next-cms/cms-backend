@@ -1,3 +1,4 @@
+export declare var PopStateEvent: any;
 /* =============================
         Import All
 ================================ */

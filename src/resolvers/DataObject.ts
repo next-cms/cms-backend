@@ -1,7 +1,7 @@
 import { combineResolvers } from 'graphql-resolvers';
 import { IResolvers } from 'apollo-server-express';
 import {debuglog} from "util";
-import {isAuthenticated, isAuthorized} from "./Authorization";
+import {isAuthenticated, isAuthorized, isAuthorizedToRead} from "./Authorization";
 import DataObject from "../models/DataObject";
 const log = debuglog("pi-cms.resolvers.DataObject");
 
@@ -15,6 +15,17 @@ const DataObjectResolver: IResolvers = {
         allDataObjectsByType: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {projectId, type, limit, skip}, context) => {
                 return await DataObject.getAllByType(projectId, type, limit, skip);
+            }
+        ),
+        dataObjectsBySlug: async (parent, {projectId, slug}, context) => {
+            log(projectId, slug);
+            return await DataObject.getBySlug(projectId, slug);
+        },
+        dataObjectsByPostId: combineResolvers(
+            isAuthorizedToRead,
+            async (parent, {projectId, postId}, context) => {
+                log(projectId, postId);
+                return await DataObject.getByPostId(projectId, postId);
             }
         ),
         _allDataObjectsMeta: combineResolvers(isAuthenticated, isAuthorized,
@@ -47,14 +58,18 @@ const DataObjectResolver: IResolvers = {
         ),
         updateDataObject: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {dataObject}, {}) => {
-                let dataObjectToSave = DataObject.findById(dataObject.id);
+                let dataObjectToSave = await DataObject.findById(dataObject.id);
                 if (!dataObjectToSave) {
                     throw new Error(`DataObject with id ${dataObject.id} not found!`);
                 }
                 Object.assign(dataObjectToSave, dataObject, {modifiedAt: Date.now()});
                 dataObjectToSave.projectId = dataObject.projectId;
-                dataObjectToSave.markModified('fields.*');
-                dataObjectToSave.markModified('contents.*');
+                if (dataObjectToSave.fields) {
+                    dataObjectToSave.markModified('fields.*');
+                }
+                if (dataObjectToSave.fields) {
+                    dataObjectToSave.markModified('contents.*');
+                }
                 return dataObjectToSave.save().then(updatedDataObject => {
                     log(updatedDataObject);
                     return updatedDataObject;
@@ -66,7 +81,7 @@ const DataObjectResolver: IResolvers = {
         ),
         deleteDataObject: combineResolvers(
             isAuthenticated, isAuthorized, async (parent, {id}, {}) => {
-                let dataObject = DataObject.findById(id);
+                let dataObject = await DataObject.findById(id);
                 if (!dataObject) {
                     throw new Error(`DataObject with id ${dataObject.id} not found!`);
                 }

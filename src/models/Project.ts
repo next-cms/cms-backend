@@ -5,6 +5,10 @@ const ProjectSchema: any = new Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+        required: false
+    },
     ownerId: {
         type: String,
         required: true
@@ -27,6 +31,12 @@ const ProjectSchema: any = new Schema({
     },
     siteMeta: {
         type: String,
+    },
+    siteName: {
+        type: String,
+    },
+    port: {
+        type: Number,
     },
     createdAt: {
         type: Date,
