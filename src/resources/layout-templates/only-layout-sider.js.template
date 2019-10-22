@@ -1,0 +1,19 @@
+import React from "react";
+import { Layout } from "antd";
+
+const { Header, Content, Footer, Sider } = Layout;
+const LayoutWithSider = ({ sider, children }) => {
+    return (
+        <Layout>
+            <Layout>
+                <Sider>
+                    {sider}
+                </Sider>
+            </Layout>
+            <Layout>
+                <Content>{children}</Content>
+            </Layout>
+        </Layout>
+    );
+};
+export default LayoutWithSider;
