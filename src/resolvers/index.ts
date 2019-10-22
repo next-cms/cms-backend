@@ -10,6 +10,7 @@ import galleryResolver from './Gallery';
 import dataModelTemplatesResolver from './DataModelTemplate';
 import dataModelsResolver from './DataModel';
 import dataObjectsResolver from './DataObject';
+import layoutTemplateResolver from './LayoutTemplate';
 
 const customScalarResolver: IResolvers = {
     Date: GraphQLDateTime,
@@ -26,7 +27,8 @@ const resolvers: IResolvers[] = [
     galleryResolver,
     dataModelTemplatesResolver,
     dataModelsResolver,
-    dataObjectsResolver
+    dataObjectsResolver,
+    layoutTemplateResolver
 ];
 
 export default resolvers;

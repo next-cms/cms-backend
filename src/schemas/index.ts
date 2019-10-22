@@ -8,6 +8,7 @@ import gallerySchema from './Gallery';
 import dataModelTemplateSchema from './DataModelTemplate';
 import dataModelSchema from './DataModel';
 import dataObjectSchema from './DataObject';
+import layoutTemplateSchema from './LayoutTemplate';
 
 const linkSchema = gql`
   scalar Date
@@ -28,4 +29,4 @@ const linkSchema = gql`
 `;
 
 export default [linkSchema, userSchema, projectSchema, pageSchema, componentSchema, gallerySchema,
-    dataModelTemplateSchema, dataModelSchema, dataObjectSchema];
+    dataModelTemplateSchema, dataModelSchema, dataObjectSchema, layoutTemplateSchema];

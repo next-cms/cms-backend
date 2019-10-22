@@ -206,11 +206,17 @@ export async function loadAllLayoutTemplate(reload: boolean=false) {
 
                 const layout = await LayoutTemplate.findByFileName(templateJson.fileName);
 
-                // need to apply conditions
-
-                if(layout === null) {
+                if(!layout) {
                     layoutTemplate.save();
                     log(`New layout save into databases ${JSON.stringify(templateJson)}`);
+                } else {
+                    if (reload) {
+                        log(`Re-importing already imported layout template: ${template.name}`);
+                        Object.assign(layout, templateJson);
+                        await layout.save();
+                    } else {
+                        log(`Skipping already imported layout template: ${template.name}`);
+                    }
                 }
 
             })
