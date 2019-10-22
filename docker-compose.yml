@@ -14,7 +14,7 @@ services:
       - MONGODB_USERNAME=user
       - MONGODB_PASSWORD=password123
       - MONGODB_DATABASE=pi_cms
-    restart: 'always'
+    restart: 'no'
 
   nginx:
       image: pi-cms-nginx:1.0.0
@@ -35,23 +35,23 @@ services:
           - '80:80'
           - '443:443'
     #      - '27017:27017'
-      restart: 'always'
+      restart: 'no'
 
-  backend:
-      image: pi-cms-backend:0.1.0
-      container_name: pi-cms-backend
-      build:
-          context: .
-          dockerfile: Dockerfile-backend
-      volumes:
-          - ./.env:/usr/src/app/.env
-          - ./_projects:/usr/src/app/_projects
-      depends_on:
-          - mongodb
-      ports:
-          - "5000:5000"
-      network_mode: host
-      restart: 'always'
+  # backend:
+  #     image: pi-cms-backend:0.1.0
+  #     container_name: pi-cms-backend
+  #     build:
+  #         context: .
+  #         dockerfile: Dockerfile-backend
+  #     volumes:
+  #         - ./.env:/usr/src/app/.env
+  #         - ./_projects:/usr/src/app/_projects
+  #     depends_on:
+  #         - mongodb
+  #     ports:
+  #         - "5000:5000"
+  #     network_mode: host
+  #     restart: 'always'
 
 networks:
     picms-net:

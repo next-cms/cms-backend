@@ -1,7 +1,7 @@
 import {gql} from 'apollo-server-express';
 
 export default gql`
-    type AvailableLayoutTemplate {
+    type LayoutTemplate {
         id: ID!,
         name: String!
         fileName: String!
@@ -14,7 +14,7 @@ export default gql`
         count: Int
     }
     extend type Query {
-        allAvailableComponents(limit: Int, skip: Int): [AvailableLayoutTemplate!]
-        allAvailableLayoutTemplatesMeta: LayoutTemplateMeta
+        allLayoutTemplates(limit: Int, skip: Int): [LayoutTemplate!]
+        _allLayoutTemplatesMeta: LayoutTemplateMeta
     }
 `;

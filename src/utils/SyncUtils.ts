@@ -211,11 +211,11 @@ export async function loadAllLayoutTemplate(reload: boolean=false) {
                     log(`New layout save into databases ${JSON.stringify(templateJson)}`);
                 } else {
                     if (reload) {
-                        log(`Re-importing already imported layout template: ${template.name}`);
+                        log(`Re-importing already imported layout template: ${templateJson.fileName}`);
                         Object.assign(layout, templateJson);
                         await layout.save();
                     } else {
-                        log(`Skipping already imported layout template: ${template.name}`);
+                        log(`Skipping already imported layout template: ${templateJson.fileName}`);
                     }
                 }
 
