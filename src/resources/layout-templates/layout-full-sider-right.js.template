@@ -2,7 +2,8 @@ import React from "react";
 import { Layout } from "antd";
 
 const { Header, Content, Footer, Sider } = Layout;
-const LayoutWithSider = ({ header, sider, children, footer }) => {
+
+const LayoutFullSiderRight = ({ header, sider, children, footer }) => {
     return (
         <Layout>
             {header}
@@ -16,10 +17,12 @@ const LayoutWithSider = ({ header, sider, children, footer }) => {
             </Sider>
             <Layout>
                 {header}
-                <Content>{children}</Content>
+                <Content>
+                    {children}
+                </Content>
             </Layout>
             {footer}
         </Layout>
     );
 };
-export default LayoutWithSider;
+export default LayoutFullSiderRight;
