@@ -10,11 +10,8 @@ export default gql`
         footer: Boolean,
         sider: Boolean
     }
-    type LayoutTemplateMeta {
-        count: Int
-    }
     extend type Query {
         allLayoutTemplates(limit: Int, skip: Int): [LayoutTemplate!]
-        _allLayoutTemplatesMeta: LayoutTemplateMeta
+        _allLayoutTemplatesMeta: Meta
     }
 `;
