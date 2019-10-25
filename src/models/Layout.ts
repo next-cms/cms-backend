@@ -11,7 +11,7 @@ const LayoutSchema: any = new Schema({
     footer: {
         type: String
     },
-    letfSider: {
+    leftSider: {
         type: String
     },
     rightSider: {
