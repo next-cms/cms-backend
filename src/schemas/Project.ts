@@ -26,11 +26,13 @@ export default gql`
   type ProjectMeta {
     count: Int
   }
+ 
   extend type Query {
     allProjects(limit: Int, skip: Int): [Project!]
-    projects(limit: Int, skip: Int): [Project!]
+    projects(title: String, limit: Int, skip: Int): [Project]
     project(id: String!): Project
-    _projectsMeta: ProjectMeta
+    _projectsMeta: [ProjectMeta]
+   
   }
   extend type Mutation {
     createProject(

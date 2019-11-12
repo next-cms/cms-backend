@@ -17,8 +17,15 @@ const ProjectResolver: IResolvers = {
             }
         ),
         projects: combineResolvers(
-            isAuthenticated, async (parent, {limit, skip}, {user}) => {
-                return await Project.getAllProjectsByOwnerId(user.id, limit, skip);
+            isAuthenticated, async (parent, {title, limit, skip}, {user}) => {
+                if(title === ""){
+                    return await Project.getAllProjectsByOwnerId(user.id, limit, skip);
+                }
+                else
+                {
+                    return await Project.getAllFilteredProjectsByOwnerId(user.id, title, limit, skip);
+                }
+                
             }
         ),
         project: combineResolvers(
@@ -31,13 +38,14 @@ const ProjectResolver: IResolvers = {
             }
         ),
         _projectsMeta: combineResolvers(isAuthenticated,
-            async (parent, args, {user}) => {
-                return {
-                    count: await Project.countDocuments({ownerId: user.id})
-                    // count: await Project.estimatedDocumentCount({})
-                };
+            async (parent, args,{user}) => {
+                 return {
+                        count: await Project.find({ownerId: user.id}).count()
+                        // count: await Project.estimatedDocumentCount({})
+                    };
+
             }
-        ),
+        )
     },
 
     Mutation: {
