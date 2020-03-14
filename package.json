@@ -34,7 +34,7 @@
         "@types/next-server": "^8.1.2",
         "@zeit/next-css": "^1.0.1",
         "@zeit/next-sass": "^1.0.1",
-        "acorn": "^7.1.0",
+        "acorn": "^7.1.1",
         "acorn-jsx": "^5.0.2",
         "acorn-jsx-walk": "^2.0.0",
         "acorn-walk": "^7.0.0",
