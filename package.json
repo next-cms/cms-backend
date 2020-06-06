@@ -38,7 +38,7 @@
         "acorn-jsx": "^5.0.2",
         "acorn-jsx-walk": "^2.0.0",
         "acorn-walk": "^7.0.0",
-        "apollo-server-express": "^2.9.5",
+        "apollo-server-express": "^2.14.2",
         "astring": "^1.4.2",
         "babel-eslint": "^10.0.3",
         "babel-plugin-import": "^1.12.2",
