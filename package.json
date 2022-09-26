@@ -73,7 +73,7 @@
         "next-compose-plugins": "^2.2.0",
         "node-sass": "^4.12.0",
         "null-loader": "^3.0.0",
-        "pm2": "^3.5.1",
+        "pm2": "^5.2.0",
         "react": "^16.10.2",
         "react-dom": "^16.10.2",
         "saslprep": "^1.0.3",
